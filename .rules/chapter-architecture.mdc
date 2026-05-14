@@ -1,0 +1,274 @@
+---
+description: STRATEGICLAND — Chapter architecture. Narrative sequencing, emotional progression, chapter-as-component pattern, scene structure inside a chapter. Consult when authoring or reorganizing pages.
+globs: app/**/*.{ts,tsx,mdx}, content/**/*.mdx, components/chapters/**/*.{ts,tsx}, lib/chapters/**/*.ts
+alwaysApply: true
+---
+
+# STRATEGICLAND — Chapter Architecture
+
+> The site is **not a website with sections**. It is **a film with chapters**.
+> Every chapter has a tone, a rhythm, an atmosphere, and a beginning, middle, end.
+> Chapters are first-class citizens of the codebase.
+
+---
+
+## 1. Chapter Philosophy
+
+- A **chapter** is a self-contained narrative unit with its own atmosphere, pacing, and palette.
+- A **scene** is a single shot inside a chapter — typically one viewport tall.
+- A **page** is a sequence of chapters bound by a route.
+- Chapters are **portable** — moving a chapter to a different page should require zero code changes.
+
+---
+
+## 2. Canonical Chapter Types
+
+The project defines **6 canonical chapter types**. New chapters must extend one — not invent new categories.
+
+| Type            | Role                                    | Example use                                        |
+|-----------------|-----------------------------------------|----------------------------------------------------|
+| `hero`          | Opens a page; immersive establishing    | Home hero, project landing                         |
+| `editorial`     | Long-form text + image, contemplative   | Manifesto, philosophy, written essays              |
+| `case`          | Pinned horizontal storytelling          | Project deep-dive (Horizontal Case Study System)   |
+| `human`         | Stillness, philosophy, intimate scale   | Founder note, team voice, dedications              |
+| `cultural`      | Atmospheric immersion, cultural framing | Heritage, place-based work, manifestos             |
+| `closing`       | Outro, resolution, residue              | Footer-as-chapter, contact prelude                 |
+
+---
+
+## 3. Chapter Structure (Internal)
+
+Every chapter follows the **shot-list pattern** (referenced from `cinematic-language.mdc`):
+
+```
+Chapter
+ ├─ Scene 0: Atmosphere prelude   (ambient hold, ≤ 60vh)
+ ├─ Scene 1: Establishing shot    (wide, atmospheric, ≥ 100vh)
+ ├─ Scene 2: Detail shot          (intimate, single element, ≥ 80vh)
+ ├─ Scene 3: Pull-back / context  (re-establishing, ≥ 100vh)
+ ├─ Scene 4: Hold / silence       (≥ 50vh)
+ └─ Scene 5: Seam to next chapter (transition, ≥ 50vh)
+```
+
+### Constraints
+- Minimum **3 scenes** per chapter. Fewer = the chapter is a section, not a chapter — collapse into the adjacent chapter.
+- Maximum **7 scenes** per chapter. More = split into two chapters.
+- Total chapter scroll height: **300–800vh**. Below 300vh = section. Above 800vh = chapter is too dense, break it.
+
+---
+
+## 4. Page-Level Chapter Sequencing
+
+A page is a **rhythmic sequence** of chapter types. No page may repeat the same chapter type back-to-back without an intervening chapter of a different tone.
+
+### 4.1 Canonical home sequence
+```
+hero → editorial → case → human → case → cultural → closing
+```
+
+### 4.2 Sequencing rules
+- Always open with `hero`.
+- Always close with `closing`.
+- Place `human` chapters **between** dense `case` chapters as breathing rests.
+- Place `cultural` chapters as climactic moments (≤ 1 per page).
+- Never two `case` chapters in a row.
+- Never two `editorial` chapters in a row (collapse them).
+
+### 4.3 Emotional contour
+The page's emotional curve must trace this arc:
+
+```
+intensity
+  │
+  │       ▲ climax (cultural / case)
+  │     ◢
+  │   ◢
+  │ ◢                             ▼ residue (closing)
+  │
+  └────────────────────────────── time/scroll
+   hero  edit  case  human  case  cultural  closing
+```
+
+If a page is flat-line in intensity, the chapter sequence is wrong.
+
+---
+
+## 5. Chapter Component API
+
+Each chapter is a single React component exported from `components/chapters/<ChapterName>/`:
+
+```ts
+// components/chapters/DriftChapter/index.tsx
+export type DriftChapterProps = {
+  index: number;                        // sequential chapter number (e.g., 003)
+  eyebrow: string;                      // "003 — DRIFT"
+  variant?: "default" | "muted";
+};
+
+export function DriftChapter(props: DriftChapterProps) { /* ... */ }
+```
+
+Each chapter folder contains:
+```
+DriftChapter/
+ ├─ index.tsx               // composition of scenes + atmosphere
+ ├─ atmosphere.config.ts    // grain, vignette, light leak, palette, webgl profile
+ ├─ scenes/                 // scene components (Scene01.tsx, Scene02.tsx, ...)
+ ├─ motion.ts               // chapter-specific GSAP timelines
+ ├─ content.mdx             // copy (if editorial)
+ └─ DriftChapter.test.tsx   // visual regression test
+```
+
+---
+
+## 6. Atmosphere per Chapter
+
+Each chapter declares its atmosphere via `atmosphere.config.ts`. The chapter's `<ChapterShell>` wrapper composes the atmosphere automatically.
+
+```ts
+import type { ChapterAtmosphere } from "@/lib/chapters/types";
+
+export const atmosphere: ChapterAtmosphere = {
+  palette: "warm-fog",                  // from color-system
+  background: "color.bg.warmBlack",
+  text: "color.text.cream",
+  grain: { texture: "1024", opacity: 0.10, drift: true },
+  vignette: { intensity: 0.32, origin: "center" },
+  lightLeak: { intensity: 0.06, origin: "upper-left", warmth: "warm" },
+  webgl: {
+    scene: "fog-noise",
+    frequency: { speed: 0.012, amplitude: 0.04 },
+  },
+  blur: { entryFromAbove: "soft", exitDownward: "veil" },
+};
+```
+
+### Constraints
+- Palette must be one of the chapter palettes defined in `color-system.mdc`. No custom hex values in chapter configs.
+- WebGL config is optional. CSS atmosphere alone is acceptable for `human` and `editorial` chapters.
+
+---
+
+## 7. Chapter Transitions (between chapters)
+
+Chapter-to-chapter transitions are governed by `transition-system.mdc` (Tier T2). Specifically:
+
+- Triggered by a `<ChapterSeam>` component placed between two `<ChapterShell>` siblings.
+- The seam consumes both chapters' atmospheres and orchestrates the cross-grade.
+- Atmosphere is interpolated continuously across the seam (60vh transition zone).
+
+```tsx
+<ChapterShell chapter={driftChapter} />
+<ChapterSeam from={driftChapter} to={humanChapter} />
+<ChapterShell chapter={humanChapter} />
+```
+
+---
+
+## 8. Narrative Rhythm Inside a Chapter
+
+Within a chapter, scenes follow a **rhythm signature**:
+
+- **Editorial** chapters: slow, even rhythm. Scenes are roughly equal length. Atmosphere is constant.
+- **Case** chapters: build → climax → release. Pinned horizontal compresses time.
+- **Human** chapters: large silences (≥ 80vh holds). Sparse content. No hover affordances.
+- **Cultural** chapters: layered atmosphere shifts within the chapter. WebGL frequency may modulate.
+- **Hero** chapters: single sustained moment (no internal scene cuts beyond reveal sequence).
+- **Closing** chapters: descending intensity. Final scene is **always** stillness with a small textual residue.
+
+---
+
+## 9. Scene Component Pattern
+
+Scenes are colocated under `chapters/<X>/scenes/`:
+
+```tsx
+// scenes/Scene02_Detail.tsx
+/**
+ * @shot detail
+ * @chapter drift
+ * @ambient inherits chapter atmosphere
+ * @holdMin 80vh
+ */
+export function Scene02_Detail() {
+  return (
+    <SceneShell shot="detail" minHeight="80vh">
+      <DisplayTitle>The shape of stillness.</DisplayTitle>
+    </SceneShell>
+  );
+}
+```
+
+`<SceneShell>` enforces:
+- `minHeight` token snapping (60/80/100/120vh).
+- Optional pin behavior (passed via prop).
+- Reveal coordination via the chapter's master timeline.
+
+---
+
+## 10. Chapter Index (Optional)
+
+Some pages expose a chapter index (table of contents):
+- Lives in the global header as a slide-in panel (not a dropdown).
+- Lists each chapter with its index, title, and a 6-word summary.
+- Clicking jumps via `lenis.scrollTo` with `DUR.epic` (1.8s).
+- Atmosphere of the index panel inherits the **current** chapter's atmosphere.
+
+---
+
+## 11. Implementation Standards
+
+### Naming
+- Chapter folders: `PascalCaseChapter` (e.g., `DriftChapter`).
+- Scene files: `Scene<NN>_<ShotName>.tsx` (e.g., `Scene03_Pullback.tsx`).
+- Atmosphere config: always `atmosphere.config.ts`.
+- Motion file: always `motion.ts`.
+
+### Composition
+- Pages compose chapters declaratively in `app/<route>/page.tsx`:
+  ```tsx
+  export default function Home() {
+    return (
+      <>
+        <HeroChapter />
+        <ChapterSeam from={heroAtmosphere} to={driftAtmosphere} />
+        <DriftChapter />
+        <ChapterSeam from={driftAtmosphere} to={humanAtmosphere} />
+        <HumanChapter />
+        ...
+      </>
+    );
+  }
+  ```
+- Pages **never** contain layout, GSAP, or atmosphere code — only chapter composition.
+
+### Content
+- Editorial copy lives in `content/chapters/<chapter>/content.mdx`.
+- Chapter components consume MDX via dynamic import.
+- Long-form text **never** lives in TSX literals — always in MDX.
+
+---
+
+## 12. DO / DON'T
+
+### DO
+- DO design every section as a self-contained chapter.
+- DO declare atmosphere per chapter.
+- DO follow the shot-list pattern inside each chapter.
+- DO sequence chapters by emotional contrast (no two same-type adjacent).
+- DO keep editorial copy in MDX, never in TSX.
+
+### DON'T
+- DON'T create chapters under 300vh.
+- DON'T create pages without a `closing` chapter.
+- DON'T repeat chapter types back-to-back.
+- DON'T mix layout and atmosphere code into a chapter component — atmosphere belongs in `atmosphere.config.ts`.
+- DON'T orchestrate chapter transitions from inside a chapter — use `<ChapterSeam>`.
+
+---
+
+## 13. Cinematic Rationale
+
+- Chapters as first-class units enforce **narrative thinking** at the file-system level. You can't accidentally write a SaaS landing page when your component is named `EditorialChapter`.
+- The shot-list pattern guarantees that every chapter has cinematic structure — you can't ship a flat scene that "doesn't end".
+- Cross-chapter atmosphere interpolation is what makes the project feel like a **continuous film**, not a sequence of pages — this is the most expensive single design decision in the project, and the most defining.

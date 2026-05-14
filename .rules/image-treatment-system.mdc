@@ -1,0 +1,265 @@
+---
+description: STRATEGICLAND — Image treatment system. Reveal patterns, clip-path masks, blur entry, grain overlays, crop philosophy, scaling interpolation, editorial composition. Consult before adding any image, video, or media element.
+globs: app/**/*.{ts,tsx,mdx}, components/media/**/*.{ts,tsx}, components/images/**/*.{ts,tsx}, content/**/*.mdx, public/images/**/*
+alwaysApply: true
+---
+
+# STRATEGICLAND — Image Treatment System
+
+> Images are not **assets**. Images are **artifacts**.
+> The audience must feel they have **discovered** an image, not been **shown** one.
+> Every image must look like it was photographed for this site, even if it wasn't.
+
+---
+
+## 1. Image Philosophy
+
+- Images live inside the **atmosphere** of the chapter — they are graded into it, not pasted on top.
+- Images are **revealed**, never **placed**. There is no such thing as an image that just appears.
+- Crop, weight, and composition matter more than the image itself. A weak image well-composed beats a strong image carelessly placed.
+- Stock imagery is **forbidden**. Editorial, documentary, and original photography only.
+
+---
+
+## 2. Image Asset Standards
+
+### 2.1 Format priority
+1. **AVIF** — primary format (best compression, modern browsers).
+2. **WebP** — fallback.
+3. **JPG** — ultimate fallback for ancient browsers.
+
+Use Next.js `<Image>` component (App Router) — it handles format negotiation automatically. Verify against `node_modules/next/dist/docs/` for any Next 16 specifics.
+
+### 2.2 Color depth & profile
+- Embedded sRGB profile only.
+- 8-bit per channel (10-bit AVIF only for hero rare cases).
+- Convert all source assets to sRGB before delivery.
+
+### 2.3 Naming
+- `images/<chapter>/<scene>-<descriptor>.avif`
+- Example: `images/drift/scene02-foglake.avif`
+- No spaces, lowercase, kebab-case.
+
+### 2.4 Sizes
+- Hero images: max **2400×1600px** (3:2) source. Below 600 KB AVIF.
+- Editorial images: max **1800×1200px** source. Below 400 KB AVIF.
+- Case study slides: max **2000×1500px**. Below 500 KB AVIF.
+- Inline thumbnails: max **800×600px**. Below 120 KB AVIF.
+
+---
+
+## 3. Crop Philosophy
+
+- Crops are **deliberate framing**, not "make it fit". Every crop must respect the image's narrative center.
+- Default editorial crop ratios:
+  - Hero / cinematic: **2.39:1** (anamorphic) or **2:1**.
+  - Editorial portrait: **3:4** (classic editorial vertical).
+  - Editorial landscape: **3:2**.
+  - Square: **1:1** — used rarely, only as deliberate punctuation.
+
+### Constraints
+- Never crop a face below the eyes or above the chin (unless deliberately abstract).
+- Never crop hands at the wrist (creates "cut limb" effect).
+- Never use circular crops on photographs.
+- Always honor the **rule of negative space** — leave breathing room in the direction the subject "looks" or "moves".
+
+---
+
+## 4. Image Reveal Systems
+
+The project ships **3 canonical reveal patterns**. Choose by context, never invent new ones.
+
+### 4.1 Mask Reveal (default for editorial images)
+- `clip-path: inset(0 100% 0 0)` → `inset(0 0 0 0)` — reveals from left to right.
+- Direction may be reversed for asymmetric pairings (left of column → reveal from right).
+- Duration: `DUR.cinematic` (1.2s).
+- Ease: `EASE.cinematic`.
+- Image inside the mask scales **slightly** during reveal: `scale(1.04)` → `scale(1.0)` for a "settling" feel.
+
+```tsx
+<RevealImage src="..." direction="left-to-right" />
+```
+
+### 4.2 Blur Reveal (used for hero / atmospheric images)
+- `filter: blur(20px)` → `blur(0)` over `DUR.cinematic`.
+- Combined with `opacity: 0` → `1`.
+- Combined with `scale(1.06)` → `scale(1.0)`.
+- Used **at most twice per page** — expensive on GPU.
+
+### 4.3 Edge-Drift Reveal (used for case study slides)
+- Image translates from `yPercent: 8` → `0` while opacity 0 → 1.
+- Inner image translates inverse `yPercent: -4` → `0` to create parallax-on-entry depth.
+- Used during pinned horizontal storytelling.
+
+### Reveal constraints
+- Every reveal triggers **once** per scroll direction. No re-reveal on scroll-up.
+- All reveals respect `prefers-reduced-motion` (opacity-only fallback).
+- No reveal animates `width`, `height`, `top`, `left`. Use `clip-path`, `transform`, `filter`, `opacity` only.
+
+---
+
+## 5. Image Atmosphere Treatment
+
+Every image on the site receives **3 atmospheric layers** automatically (via `<EditorialImage>` wrapper):
+
+1. **Grain overlay** — `mix-blend-mode: overlay`, opacity 0.05–0.08 (matched to chapter's grain).
+2. **Edge vignette** — radial darkening 4% at corners, helps the image sit into atmosphere.
+3. **Color grade tint** — `mix-blend-mode: multiply` with chapter's `palette.tint` color at 4% opacity.
+
+Implementation:
+```tsx
+<EditorialImage
+  src="..."
+  alt="..."
+  ratio="2:1"
+  reveal="mask"
+  grain      // default true
+  vignette   // default true
+  grade      // default true, uses chapter atmosphere palette
+/>
+```
+
+Components composed under the hood:
+```tsx
+<div className="image-frame">
+  <Image ... />
+  <div className="image-grade" />     {/* color grade */}
+  <div className="image-vignette" />  {/* radial darken */}
+  <div className="image-grain" />     {/* grain overlay */}
+</div>
+```
+
+---
+
+## 6. Hover Treatment (desktop only)
+
+- Default hover: subtle brightness shift (`filter: brightness(1.04)`) over 380ms.
+- Optional: GLSL displacement on hover for case study key images (see `webgl-system.mdc`, displacement amplitude ≤ 0.04 UV).
+- Magnetic image lift (`transform: translateY(-4px)`) for clickable case study covers.
+
+### Constraints
+- Hover effects on **clickable images only**. Decorative images do not respond to hover.
+- No "Ken Burns" continuous zoom on hover.
+- No image swap (image A → image B) on hover.
+
+---
+
+## 7. Image-as-Image, Not as Carousel
+
+- **Carousels are forbidden** as a default presentation pattern.
+- Multiple images in a sequence must be presented as either:
+  - A **horizontal pinned case study** (see `scroll-system.mdc`).
+  - A **vertical editorial sequence** (each image its own scene with reveal).
+  - A **deliberate gallery grid** (max 4 images per viewport, asymmetric grid).
+
+### Forbidden patterns
+- ❌ Auto-advancing slideshows.
+- ❌ Image rings / 3D rotators.
+- ❌ Hover-flipping cards revealing alternate images.
+- ❌ Image masonry walls (Pinterest-style).
+
+---
+
+## 8. Editorial Image Composition
+
+### 8.1 Position rules
+- Default editorial image position: **off-center**, weighted to a 3-column block in the desktop 12-column grid.
+- Allow images to **bleed** to the viewport edge in one direction (left or right) for asymmetric tension.
+- Always pair an image with **at least one beat of empty space** adjacent — minimum 80px breathing margin.
+
+### 8.2 Pairing rules
+- Image + caption: caption sits **below** image, sans-serif, `type.caption`, color text-muted, 24px below.
+- Image + display title: title sits **above** image, never beside (vertical hierarchy reads as cinematic plate).
+- Image + body copy: copy sits **opposite-column**, never wrapping the image.
+
+### 8.3 Captions
+- Captions are **always** present, even when "obvious".
+- Format: `Photographer · Year · Place / Project`. Example: `Hiroshi Sugimoto · 2014 · Lake Superior`.
+- Use **·** (interpunct) as separator (per `typography-system.mdc`).
+- Captions reveal **after** the image, with a delay equal to `DUR.standard * 0.4`.
+
+---
+
+## 9. Video Treatment
+
+If video is used:
+- Always **muted by default**.
+- Always autoplay only after `IntersectionObserver` confirms ≥ 50% in viewport.
+- Always `playsInline` for mobile.
+- Always `poster` attribute set with a blurred frame at LQIP quality.
+- Maximum 1 video per chapter; maximum 4 per page.
+- Source: AV1 (`.webm`) primary, H.264 (`.mp4`) fallback.
+- Bitrate: ≤ 4 Mbps for hero videos, ≤ 1.5 Mbps for editorial inserts.
+- Same atmosphere treatment as images (grain, vignette, grade overlays).
+
+---
+
+## 10. LQIP / Placeholder
+
+- Use Next.js `placeholder="blur"` with custom `blurDataURL` for above-fold imagery.
+- For below-fold, allow native lazy-load with no placeholder (atmosphere holds the visual until image arrives).
+- LQIP color must match chapter atmosphere — never gray.
+
+---
+
+## 11. Implementation Standards
+
+### Components
+- `<EditorialImage>` — primary image primitive (`components/media/EditorialImage.tsx`).
+- `<RevealImage>` — image with reveal direction prop.
+- `<HeroImage>` — full-bleed hero with blur+scale reveal.
+- `<CaseSlideImage>` — used inside horizontal case study slides, includes edge-drift reveal.
+- `<EditorialVideo>` — video with same atmosphere treatment.
+
+### Props
+```ts
+type EditorialImageProps = {
+  src: string;
+  alt: string;
+  ratio: "2.39:1" | "2:1" | "3:2" | "4:3" | "1:1" | "3:4";
+  reveal?: "mask" | "blur" | "drift" | "none";
+  direction?: "left-to-right" | "right-to-left";
+  caption?: { author: string; year?: string; place?: string };
+  priority?: boolean;            // above-fold = true
+  grain?: boolean;
+  vignette?: boolean;
+  grade?: boolean;
+};
+```
+
+### Loading priority
+- `priority` on the **single** above-fold hero image. Never on more than one image per chapter.
+- Otherwise lazy via Next.js `<Image>` defaults.
+
+### Storage
+- All curated imagery in `public/images/<chapter>/`.
+- Source masters in `assets/source/images/` (gitignored, synced via design ops).
+
+---
+
+## 12. DO / DON'T
+
+### DO
+- DO reveal every image with intention (`mask`, `blur`, or `drift`).
+- DO grade every image with grain + vignette + chapter tint.
+- DO crop deliberately, respecting subject and negative space.
+- DO caption every image with author / year / place.
+- DO use the Next.js `<Image>` component for all rasters.
+
+### DON'T
+- DON'T use carousels, slideshows, or auto-rotators.
+- DON'T use stock photography.
+- DON'T animate `top/left/width/height` on image entry.
+- DON'T hover-swap images.
+- DON'T over-grade — tints stay ≤ 4% opacity.
+- DON'T crop circular avatars — this is not a SaaS team page.
+- DON'T let images sit on plain background without atmosphere treatment.
+
+---
+
+## 13. Cinematic Rationale
+
+- Every image in cinema is **lit, graded, and composed**. Every image on this site receives the same dignity.
+- Mask reveals (left-to-right `clip-path`) read as **curtain-rises** — the most cinematic image entry available on the web.
+- The 4% multiply tint is what makes images feel **of the chapter**, not foreign to it. Without it, photos look "linked", not "shot".
+- Captions per image are not a UX nicety — they are **editorial credibility**. They turn a website into a publication.

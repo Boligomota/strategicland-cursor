@@ -1,0 +1,269 @@
+---
+description: STRATEGICLAND — Scroll system. Lenis configuration, inertial behavior, horizontal pinned storytelling, scrub timing, scroll-velocity choreography. Consult before any scroll-related component.
+globs: app/**/*.{ts,tsx}, components/**/*.{ts,tsx}, lib/scroll/**/*.ts, hooks/useScroll*.ts, hooks/useLenis*.ts
+alwaysApply: true
+---
+
+# STRATEGICLAND — Scroll System
+
+> Scroll is the **camera dolly**.
+> The user is not "scrolling a page" — they are **operating a camera** through a film.
+> Every scroll input must feel weighted, intentional, and slightly slower than they expect.
+
+---
+
+## 1. Scroll Philosophy
+
+- Scroll has **mass**. Default browser scroll is too immediate; we damp it.
+- Scroll is **directional narrative**. Up/down is not navigation — it is **time**.
+- Scroll velocity is an **input signal** for atmosphere (light leaks bloom, blur breathes).
+- Never fight the user's scroll. Smooth it, slow it, but never lock it without a transition reason.
+
+---
+
+## 2. Lenis Configuration (LOCKED)
+
+Single Lenis instance lives at the app root. Initialized in `lib/scroll/lenis.ts`. **Do not** instantiate Lenis elsewhere.
+
+```ts
+import Lenis from "lenis";
+
+export const lenis = new Lenis({
+  duration: 1.4,                    // cinematic weight; default Lenis is 1.2
+  easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // expo.out
+  orientation: "vertical",
+  gestureOrientation: "vertical",
+  smoothWheel: true,
+  wheelMultiplier: 0.8,             // slow down wheel input slightly
+  touchMultiplier: 1.4,             // mobile native momentum is faster; preserve feel
+  infinite: false,
+  syncTouch: true,                  // smooth touch with consistent damping
+  syncTouchLerp: 0.075,
+});
+```
+
+### Constraints
+- **Never** set `duration < 1.2` — fast scroll kills cinematic weight.
+- **Never** set `wheelMultiplier > 1.0` — overscroll feels like a CMS.
+- **Always** set `syncTouch: true` for consistent mobile feel.
+- **Always** integrate Lenis with GSAP ScrollTrigger via the official update bridge (see §6).
+
+---
+
+## 3. Lenis ↔ GSAP Integration
+
+```ts
+// lib/scroll/lenisGsapBridge.ts
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { lenis } from "./lenis";
+
+gsap.registerPlugin(ScrollTrigger);
+
+lenis.on("scroll", ScrollTrigger.update);
+gsap.ticker.add((time) => lenis.raf(time * 1000));
+gsap.ticker.lagSmoothing(0);
+```
+
+### Constraints
+- Bridge is initialized **once**, in the root layout's client boundary.
+- Never call `lenis.raf()` from a custom requestAnimationFrame loop — only via `gsap.ticker`.
+- ScrollTrigger refresh on layout-changing events: image load, font load, route change. Use `ScrollTrigger.refresh()` after any deferred content.
+
+---
+
+## 4. Inertial Scroll Behavior
+
+- Wheel input is **lerped** (default Lenis behavior with `duration: 1.4`).
+- Touch input on mobile uses native momentum modulated by `touchMultiplier: 1.4`.
+- Trackpad two-finger gestures are treated as wheel (smooth-wheel mode).
+- **Do not** add additional inertia layers (e.g., custom rAF lerp on top). Lenis is the single source of damping.
+
+---
+
+## 5. Pinned Sections (Vertical)
+
+Pinning is the project's primary scroll device for chapter establishing and case study compression.
+
+### 5.1 Standards
+- All pins use `gsap.scrollTrigger` with `pin: true`, `pinSpacing: true`.
+- Pin height (`end: "+=Xpx"`) is calculated as a function of content, **not hard-coded**:
+  ```ts
+  end: () => `+=${innerTimeline.totalDuration() * 600}`,
+  ```
+- Pins must `anticipatePin: 1` for smooth entry.
+- Pinned sections must `invalidateOnRefresh: true` to recalc on resize.
+
+### 5.2 Constraints
+- Maximum **2 pinned sections per page** (excluding horizontal storytelling).
+- Pin duration (scroll travel) max: **3× viewport height**.
+- Always release the pin gently — never `snap` to release (jarring).
+
+---
+
+## 6. Horizontal Storytelling
+
+The Horizontal Case Study System is the project's signature scroll-driven storytelling device.
+
+### 6.1 Pattern
+- Outer container is **vertical** with pin.
+- Inner track is **horizontal**, translated via `xPercent` driven by ScrollTrigger progress.
+- Inner track length: `xPercent: -((slides - 1) * 100)`.
+
+```ts
+const tl = gsap.timeline({
+  scrollTrigger: {
+    trigger: outerRef.current,
+    start: "top top",
+    end: () => `+=${trackRef.current.scrollWidth - window.innerWidth}`,
+    pin: true,
+    scrub: 1,
+    anticipatePin: 1,
+    invalidateOnRefresh: true,
+  },
+});
+
+tl.to(trackRef.current, {
+  x: () => -(trackRef.current.scrollWidth - window.innerWidth),
+  ease: "none",
+});
+```
+
+### 6.2 Constraints
+- Each "slide" must occupy **exactly 100vw** unless intentionally aspect-locked (e.g., 75vw editorial image with 25vw breathing).
+- Always provide a **scroll affordance** at the entry of the horizontal section (small caption: *scroll to advance*).
+- Horizontal track elements may have **layered parallax** (background slower than foreground), but max 3 depth layers.
+- Mobile fallback: convert to **vertical stacked** layout (see `responsive-system.mdc`) — never preserve horizontal scroll on touch (UX hostile).
+
+---
+
+## 7. Scroll-Linked Choreography
+
+Scroll progress drives more than position — it drives **atmosphere**.
+
+### 7.1 Drivers
+- **Velocity** — atmosphere brightness, light leak bloom, image micro-zoom.
+- **Direction** — chapter eyebrow visibility, reveal direction.
+- **Progress (0–1 within scene)** — blur, opacity, parallax.
+
+### 7.2 Velocity reactor
+```ts
+const velocity = lenis.velocity;             // px/frame, signed
+const normalized = gsap.utils.clamp(0, 1, Math.abs(velocity) / 60);
+gsap.to(lightLeakRef.current, {
+  opacity: 0.04 + normalized * 0.05,
+  duration: 0.4,
+  ease: "power2.out",
+  overwrite: "auto",
+});
+```
+
+Reactors must:
+- **Always clamp** — raw velocity causes motion sickness.
+- **Always damp** with `gsap.to(..., duration: ≥0.3)` — no instant reactions.
+- **Never** drive pure layout properties (top, left, width).
+
+---
+
+## 8. Scroll Pacing
+
+Scroll **distance** is a narrative tool. Engineer it deliberately.
+
+| Scene type           | Scroll distance (vh) |
+|----------------------|----------------------|
+| Hero / chapter intro | 100                  |
+| Establishing scene   | 80–120               |
+| Editorial body       | 60–100               |
+| Pinned case study    | 200–300              |
+| Hold / silence       | 50–80                |
+
+- Never cram two major scenes into less than 100vh combined.
+- Always give **silence** (≥ 60vh of low-content scroll) between dense chapters.
+
+---
+
+## 9. Snap & Section Boundaries
+
+- **No CSS scroll-snap**. Lenis + GSAP control all snapping.
+- Optional soft-snap on chapter boundaries via ScrollTrigger snap, with **long duration**:
+  ```ts
+  snap: { snapTo: "labels", duration: { min: 0.6, max: 1.2 }, ease: EASE.gsap.editorial }
+  ```
+- Snap must never feel "magnetic" — it nudges, it doesn't grab. Disable on touch devices.
+
+---
+
+## 10. Scroll Anchors & Programmatic Navigation
+
+- Use `lenis.scrollTo(target, opts)` — never `window.scrollTo` or `element.scrollIntoView`.
+- Default anchor scroll:
+  ```ts
+  lenis.scrollTo(target, { offset: 0, duration: 1.6, easing: (t) => 1 - Math.pow(1 - t, 4) });
+  ```
+- Programmatic scroll always disables snap during the move and re-enables after.
+
+---
+
+## 11. Scrollbars
+
+- Native scrollbar **hidden** globally:
+  ```css
+  html { scrollbar-width: none; }
+  html::-webkit-scrollbar { display: none; }
+  ```
+- Custom scroll progress indicator: optional, only for editorial chapters with table-of-contents:
+  - 1px hairline on right edge, opacity 0.16, animated by Lenis progress.
+  - Color: text-tone token, never accent.
+
+---
+
+## 12. Implementation Standards
+
+### Hook layer
+- `useLenis()` — returns the global Lenis instance.
+- `useScrollProgress(ref)` — returns 0–1 within a target.
+- `useScrollVelocity()` — returns clamped, damped velocity.
+- `useHorizontalSection(opts)` — encapsulates the pinned horizontal track pattern.
+
+### SSR
+- Lenis initializes only on the client (`"use client"` boundary).
+- Never reference `window` outside of `useEffect` / `useLayoutEffect`.
+
+### Cleanup
+- Every ScrollTrigger created in a component must be killed on unmount via `gsap.context()` revert.
+- On route change, call `ScrollTrigger.killAll()` then re-create from the incoming page.
+
+### Reduced motion
+- In `prefers-reduced-motion: reduce`:
+  - Disable Lenis smoothing (`lenis.destroy()` and use native scroll).
+  - Convert pinned sections to static stacked layouts.
+  - Convert horizontal sections to vertical stacks.
+  - Keep ScrollTrigger reveals but cap durations at `DUR.quick`.
+
+---
+
+## 13. DO / DON'T
+
+### DO
+- DO use Lenis as the single source of scroll truth.
+- DO clamp and damp every velocity-driven reactor.
+- DO use horizontal pinning sparingly and intentionally — it's a punctuation device, not a default.
+- DO refresh ScrollTrigger after fonts and images load.
+- DO scroll programmatically only via `lenis.scrollTo`.
+
+### DON'T
+- DON'T add CSS `scroll-behavior: smooth`. Lenis owns smoothing.
+- DON'T use `scroll-snap-type` CSS. GSAP owns snapping.
+- DON'T preserve horizontal scroll on touch devices.
+- DON'T animate scroll position with native APIs (`scrollIntoView`, `window.scrollTo`).
+- DON'T set Lenis `duration < 1.2`.
+- DON'T pin more than 2 sections per page.
+- DON'T leave ScrollTriggers alive across route changes.
+
+---
+
+## 14. Cinematic Rationale
+
+- The 1.4s Lenis duration is **the entire personality** of the project's scroll. Every weight cue cascades from this number.
+- Horizontal scroll on vertical pin is the cinematic equivalent of a **dolly track** — the camera moves laterally while the audience sits still.
+- Velocity-driven atmosphere is the difference between a **website** and a **scene**: the air responds to the camera.

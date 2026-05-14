@@ -1,0 +1,435 @@
+---
+description: STRATEGICLAND — Project structure. Folder organization, naming conventions, component/motion/shader/chapter architecture, scalability standards. Consult before creating new files, folders, or modules.
+globs: app/**/*, components/**/*, lib/**/*, hooks/**/*, content/**/*, shaders/**/*, styles/**/*, public/**/*, package.json, tsconfig.json, next.config.ts
+alwaysApply: true
+---
+
+# STRATEGICLAND — Project Structure
+
+> The codebase is **the second product**.
+> A clear file system is **a clear film**.
+> If a new contributor can't open the repo and locate a chapter in 60 seconds, the structure has failed.
+
+---
+
+## 1. Structural Philosophy
+
+- The project is organized by **narrative units (chapters)** first, **technical concerns** second.
+- Domain logic (motion, atmosphere, scroll) is **lifted into `lib/`** when reused; **co-located** when chapter-specific.
+- The folder tree must read as **the film's table of contents** at the top level.
+- No deep nesting beyond **4 levels** below `app/` or `components/`.
+
+---
+
+## 2. Top-Level Layout
+
+```
+strategicland-cursor/
+├─ app/                     # Next.js App Router (routes only, no logic)
+├─ components/              # All React components, grouped by domain
+├─ content/                 # MDX editorial copy, per chapter
+├─ hooks/                   # Reusable React hooks
+├─ lib/                     # Engine code (motion, scroll, webgl, transitions, chapters)
+├─ public/                  # Static assets (images, fonts, textures, video)
+├─ shaders/                 # Raw .glsl shader files
+├─ styles/                  # Global CSS, design tokens, font setup
+├─ types/                   # Shared TypeScript types
+├─ .rules/                  # Cursor MDC rules (this folder)
+├─ AGENTS.md
+├─ next.config.ts
+├─ tsconfig.json
+├─ tailwind.config.* (if needed; v4 prefers CSS @theme)
+└─ package.json
+```
+
+---
+
+## 3. `app/` (App Router)
+
+Holds **routing only**. No business logic, no GSAP, no atmosphere code.
+
+```
+app/
+├─ layout.tsx               # Root layout: <html>, <body>, providers, global atmosphere shell
+├─ page.tsx                 # Home page: composes chapters
+├─ globals.css              # @theme tokens, base resets, Lenis-friendly defaults
+├─ providers.tsx            # CursorProvider, LenisProvider, TransitionDirector, MotionConfig
+├─ template.tsx             # Optional: per-route mount/unmount transitions
+├─ (chapters)/              # Route group for narrative pages
+│  ├─ work/
+│  │  ├─ page.tsx
+│  │  └─ [slug]/page.tsx    # Case study detail
+│  ├─ studio/page.tsx       # Human chapter (about / philosophy)
+│  └─ contact/page.tsx
+└─ not-found.tsx
+```
+
+### Constraints
+- Pages declaratively compose `<XChapter>` components and `<ChapterSeam>` between them.
+- No raw `<h1>`, `<section>`, `<div>` for layout in pages — only chapter components.
+- `layout.tsx` handles fonts, providers, and the root `<WebGLRoot>` and `<CustomCursor>`.
+
+---
+
+## 4. `components/`
+
+Organized by **role**, not by route.
+
+```
+components/
+├─ chapters/                # Chapter components (first-class)
+│  ├─ HeroChapter/
+│  ├─ DriftChapter/
+│  ├─ HumanChapter/
+│  ├─ CulturalChapter/
+│  └─ ClosingChapter/
+├─ atmosphere/              # Atmosphere primitives
+│  ├─ Grain.tsx
+│  ├─ Vignette.tsx
+│  ├─ LightLeak.tsx
+│  ├─ Scrim.tsx
+│  ├─ AmbientLayer.tsx
+│  └─ ChapterAtmosphere.tsx # Reads atmosphere.config and composes layers
+├─ media/                   # Image / video primitives
+│  ├─ EditorialImage.tsx
+│  ├─ RevealImage.tsx
+│  ├─ HeroImage.tsx
+│  ├─ CaseSlideImage.tsx
+│  └─ EditorialVideo.tsx
+├─ primitives/              # Type, layout primitives
+│  ├─ Type.tsx
+│  ├─ DisplayTitle.tsx
+│  ├─ EditorialBlock.tsx
+│  ├─ Eyebrow.tsx
+│  ├─ Caption.tsx
+│  └─ SceneShell.tsx
+├─ navigation/              # Header, chapter index, route links
+│  ├─ Header.tsx
+│  ├─ ChapterIndex.tsx
+│  └─ EditorialLink.tsx
+├─ interaction/             # Cursor, magnetic, link primitives
+│  ├─ CustomCursor.tsx
+│  ├─ CursorProvider.tsx
+│  ├─ Link.tsx
+│  ├─ CtaButton.tsx
+│  └─ HoverImage.tsx
+├─ transitions/             # Transition orchestration
+│  ├─ TransitionDirector.tsx
+│  ├─ ChapterSeam.tsx
+│  ├─ RouteVeil.tsx
+│  └─ HeroIntro.tsx
+├─ webgl/                   # WebGL scene components (R3F)
+│  ├─ WebGLRoot.tsx         # Single Canvas + tunnel
+│  ├─ scenes/
+│  │  ├─ FogScene.tsx
+│  │  ├─ DustScene.tsx
+│  │  └─ DisplacementImage.tsx
+│  └─ helpers/
+└─ debug/                   # Dev-only overlays (FPS counter, layout grid)
+   ├─ FpsMeter.tsx
+   └─ GridOverlay.tsx
+```
+
+### Per-chapter folder pattern
+```
+components/chapters/DriftChapter/
+├─ index.tsx                # Composition entry
+├─ atmosphere.config.ts     # Chapter atmosphere
+├─ motion.ts                # Chapter-specific GSAP timelines
+├─ scenes/                  # Scene components (Scene01_Establish.tsx ...)
+└─ DriftChapter.test.tsx
+```
+
+---
+
+## 5. `lib/` (Engine Code)
+
+```
+lib/
+├─ motion/
+│  ├─ eases.ts              # EASE dictionary
+│  ├─ durations.ts          # DUR dictionary
+│  ├─ stagger.ts            # STAGGER dictionary
+│  ├─ reveal.ts             # Reveal helpers (revealText, revealImage, revealBlock)
+│  ├─ matchMedia.ts         # gsap.matchMedia helpers
+│  └─ index.ts
+├─ scroll/
+│  ├─ lenis.ts              # Lenis singleton init
+│  ├─ lenisGsapBridge.ts    # Lenis ↔ ScrollTrigger bridge
+│  ├─ horizontalSection.ts  # Pinned horizontal pattern
+│  ├─ velocity.ts           # Velocity reactor utility
+│  └─ index.ts
+├─ transitions/
+│  ├─ dissolve.ts
+│  ├─ chapterCross.ts
+│  ├─ heroIntro.ts
+│  └─ index.ts
+├─ webgl/
+│  ├─ canvasRoot.ts
+│  ├─ tunnel.ts
+│  ├─ materials/
+│  │  ├─ fogMaterial.ts
+│  │  ├─ dustMaterial.ts
+│  │  └─ displacementMaterial.ts
+│  ├─ textures.ts
+│  └─ index.ts
+├─ atmosphere/
+│  ├─ palettes.ts
+│  ├─ tints.ts
+│  └─ composeAtmosphere.ts
+├─ chapters/
+│  ├─ types.ts              # ChapterType, ChapterAtmosphere, etc.
+│  ├─ registry.ts           # Map of chapter IDs → metadata
+│  └─ sequencing.ts         # Validation: no two same types adjacent
+├─ interaction/
+│  ├─ useCursor.ts
+│  ├─ useMagnetic.ts
+│  ├─ useHoverIntent.ts
+│  └─ index.ts
+└─ utils/                   # Generic helpers (clamp, lerp, prefersReducedMotion)
+```
+
+---
+
+## 6. `hooks/`
+
+Cross-cutting React hooks (when not domain-specific to `lib/`).
+
+```
+hooks/
+├─ useReducedMotion.ts
+├─ useBreakpoint.ts
+├─ useIsTouch.ts
+├─ useScrollProgress.ts
+├─ useLenisScroll.ts
+└─ useGsapContext.ts
+```
+
+### Constraints
+- Hook files: one hook per file. Default export is the hook function.
+- Hook names: always `useX`. Always TypeScript.
+- Avoid hooks that wrap a single line of state — prefer inline.
+
+---
+
+## 7. `content/`
+
+MDX-driven editorial copy. Pages and chapters import from here.
+
+```
+content/
+├─ chapters/
+│  ├─ drift/
+│  │  ├─ content.mdx
+│  │  └─ images.ts          # Image manifest with captions
+│  ├─ human/content.mdx
+│  └─ ...
+├─ work/
+│  └─ <case-study-slug>/
+│     ├─ content.mdx
+│     ├─ slides.ts          # Case slide manifest
+│     └─ atmosphere.config.ts
+└─ studio.mdx
+```
+
+### Constraints
+- Long-form copy (≥ 50 words) lives in MDX, never in TSX literals.
+- Each chapter's content folder is portable — moving it does not break imports if the chapter component reads via dynamic path.
+
+---
+
+## 8. `shaders/`
+
+Raw GLSL.
+
+```
+shaders/
+├─ atmosphere/
+│  ├─ fog.frag
+│  ├─ fog.vert
+│  ├─ dust.frag
+│  └─ dust.vert
+├─ displacement/
+│  ├─ image.frag
+│  └─ image.vert
+└─ lib/
+   ├─ noise.glsl            # Simplex / Perlin / FBM utilities
+   ├─ blend.glsl
+   └─ tone.glsl             # Color grading helpers
+```
+
+### Constraints
+- Use `glsl` Vite plugin or equivalent to import shader strings.
+- Each shader file ≤ 200 lines (per `webgl-system.mdc`).
+- All shared utilities (noise, FBM) live in `shaders/lib/` and are `#include`-d.
+
+---
+
+## 9. `styles/`
+
+```
+styles/
+├─ tokens/
+│  ├─ colors.ts             # COLOR (mirror of @theme tokens)
+│  ├─ typography.ts         # TYPE_SCALE, TRACK, LEAD
+│  ├─ spacing.ts            # SPACE
+│  ├─ z.ts                  # Z-index tokens
+│  └─ index.ts
+├─ fonts.ts                 # next/font configuration (serif + sans)
+└─ globals.css              # base resets, @theme, Lenis defaults
+```
+
+### Constraints
+- All design tokens have a **single source of truth**. CSS `@theme` and TS `tokens/` mirror each other — generate one from the other if drift becomes an issue.
+- Never hard-code values in JSX. Always reference tokens.
+
+---
+
+## 10. `public/`
+
+```
+public/
+├─ images/
+│  ├─ hero/
+│  ├─ chapters/
+│  └─ work/
+├─ textures/
+│  ├─ grain-512.png
+│  ├─ grain-1024.png
+│  └─ noise-256.png
+├─ fonts/                   # Local woff2 files (if using next/font/local)
+└─ video/
+```
+
+### Constraints
+- Image filenames: kebab-case, descriptive, prefixed by chapter (`drift-scene02-foglake.avif`).
+- Texture filenames: include resolution suffix (`grain-1024.png`).
+- All static assets versioned (`-v2`, `-v3`) when re-uploaded to bust caches.
+
+---
+
+## 11. `types/`
+
+Cross-cutting TypeScript types not owned by a single module.
+
+```
+types/
+├─ chapter.ts               # ChapterType, ChapterAtmosphere
+├─ motion.ts                # Ease names, duration tokens
+├─ webgl.ts                 # Material uniform contracts
+└─ global.d.ts              # GLSL imports, custom asset modules
+```
+
+---
+
+## 12. Naming Conventions
+
+| Kind                    | Convention              | Example                                   |
+|-------------------------|-------------------------|-------------------------------------------|
+| Component file          | `PascalCase.tsx`        | `EditorialImage.tsx`                      |
+| Component folder        | `PascalCase/`           | `DriftChapter/`                           |
+| Chapter folder          | `PascalCaseChapter/`    | `DriftChapter/`                           |
+| Scene file              | `Scene<NN>_Name.tsx`    | `Scene02_Detail.tsx`                      |
+| Hook file               | `useCamelCase.ts`       | `useScrollProgress.ts`                    |
+| Lib utility             | `camelCase.ts`          | `lenisGsapBridge.ts`                      |
+| Shader file             | `kebab-case.{frag,vert,glsl}` | `fog.frag`, `image.vert`            |
+| MDX content             | `kebab-case.mdx` or `content.mdx` | `content.mdx`                  |
+| Type file               | `camelCase.ts`          | `chapter.ts`                              |
+| Token file              | `camelCase.ts`          | `typography.ts`                           |
+| Image asset             | `kebab-case` with chapter prefix | `drift-scene02-foglake.avif`     |
+| Texture asset           | `kebab-case-<size>.png` | `grain-1024.png`                          |
+
+### Constraints
+- No abbreviations (`btn`, `img`, `nav`). Spell it out.
+- No generic names (`Component.tsx`, `helpers.ts`, `utils.ts` at file level — always be specific).
+- `index.ts` only as folder barrel — never as actual logic file.
+
+---
+
+## 13. Imports & Path Aliases
+
+```jsonc
+// tsconfig.json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"],
+      "@app/*": ["./app/*"],
+      "@components/*": ["./components/*"],
+      "@lib/*": ["./lib/*"],
+      "@hooks/*": ["./hooks/*"],
+      "@content/*": ["./content/*"],
+      "@shaders/*": ["./shaders/*"],
+      "@styles/*": ["./styles/*"],
+      "@types/*": ["./types/*"],
+      "@public/*": ["./public/*"]
+    }
+  }
+}
+```
+
+### Constraints
+- Always use `@` aliases in source files. Never relative `../../../`.
+- Within a folder, relative imports are fine (`./scenes/Scene02`).
+
+---
+
+## 14. Modular Architecture Standards
+
+- **Single-responsibility per file**: a component file exports one component; a hook file exports one hook.
+- **Co-locate** chapter-specific motion, atmosphere, and content with the chapter component.
+- **Lift to `lib/`** only when reused across two or more chapters.
+- **Never** create utility "kitchen sink" files (`utils.ts`, `helpers.ts`).
+- **Never** export both default and named from the same file (pick one — prefer named exports).
+
+---
+
+## 15. Reusable Motion Controllers
+
+Motion that is reused (reveal, dissolve, magnetic) lives in `lib/motion/` or `lib/transitions/`:
+
+- Each controller is a **pure function** taking refs/elements + options, returning a cleanup function or a GSAP timeline.
+  ```ts
+  // lib/motion/reveal.ts
+  export function revealBlock(target: gsap.TweenTarget, opts?: RevealOpts): gsap.core.Timeline { ... }
+  ```
+- Components consume controllers via `useGSAP` / `useEffect` + `gsap.context`.
+
+---
+
+## 16. Scalability Standards
+
+- Adding a new chapter = creating a new folder under `components/chapters/` + entry in `lib/chapters/registry.ts` + content folder under `content/chapters/`. No other code changes required.
+- Adding a new chapter palette / accent = **forbidden** unless approved at design-direction level. Color system is locked.
+- Adding a new motion ease / duration = **forbidden** unless approved. Motion system is locked.
+- Adding a new shader = new file under `shaders/` + new material under `lib/webgl/materials/`. Stay within budget.
+
+---
+
+## 17. DO / DON'T
+
+### DO
+- DO group code by narrative unit (chapter) first.
+- DO use path aliases (`@components`, `@lib`).
+- DO co-locate chapter-specific atmosphere, motion, and content.
+- DO name files specifically (no `utils.ts`).
+- DO use named exports.
+- DO follow the per-chapter folder pattern strictly.
+
+### DON'T
+- DON'T create `utils.ts`, `helpers.ts`, `common.ts` files.
+- DON'T deep-nest more than 4 levels under `app/` or `components/`.
+- DON'T mix routing with business logic in `app/`.
+- DON'T use relative imports across modules — use aliases.
+- DON'T create a chapter without `atmosphere.config.ts`.
+- DON'T create a component without a clear domain folder.
+
+---
+
+## 18. Cinematic Rationale
+
+- A folder structure organized by **chapter** rather than by **technology** is the single most powerful design decision in the codebase. It forces narrative thinking at every level.
+- Co-located chapter motion + atmosphere means a chapter is a **portable unit** — a designer can take it, modify it, and drop it into a different page without breaking anything.
+- Locking design tokens (color, motion, typography) at the system level prevents the slow erosion of cinematic discipline that destroys most "premium" projects after 6 months of iteration.
+- The chapter registry pattern means adding new content **never** requires rewiring the engine — the engine knows nothing about specific chapters, only about chapter shapes.

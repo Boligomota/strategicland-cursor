@@ -1,0 +1,262 @@
+---
+description: STRATEGICLAND — Performance system. Frame budgets, GPU usage, lazy loading, animation/shader constraints, mobile degradation, rendering priorities. Consult before any heavy import, asset, or animation addition.
+globs: app/**/*.{ts,tsx}, components/**/*.{ts,tsx}, lib/**/*.ts, next.config.ts, package.json
+alwaysApply: true
+---
+
+# STRATEGICLAND — Performance System
+
+> Performance is **the medium**.
+> Cinema requires **time**, and time requires **frame budget**.
+> Spectacle is **never** an excuse for jank. Spectacle that drops frames is broken spectacle.
+
+---
+
+## 1. Performance Philosophy
+
+- The site must run at **60 FPS sustained** on a 2019 MacBook Pro and 2021 mid-range Android.
+- The site must achieve **LCP ≤ 2.0s** on 4G mobile, **CLS = 0**, **INP ≤ 200ms**.
+- Every byte added must be defended. Every effect added must be measured.
+- A scene that drops frames is a **failed scene** — even if it looks beautiful in screenshots.
+
+---
+
+## 2. Performance Budgets (LOCKED)
+
+### 2.1 Asset budgets
+| Asset                       | Budget                        |
+|-----------------------------|-------------------------------|
+| First-load JS (gzip)        | ≤ 180 KB                       |
+| First-load CSS (gzip)       | ≤ 30 KB                        |
+| Initial fonts (woff2)       | ≤ 90 KB total (2 weights)      |
+| Hero image (above fold)     | ≤ 220 KB (AVIF) / ≤ 350 KB (WebP) |
+| Per-chapter additional JS   | ≤ 60 KB gzip                   |
+| Per-chapter shaders + textures | ≤ 80 KB                     |
+| Total page weight (no cache, home) | ≤ 1.4 MB                |
+
+### 2.2 Runtime budgets (per frame, 16.6ms)
+| Subsystem                | Budget |
+|--------------------------|--------|
+| Layout / paint            | ≤ 4ms  |
+| GSAP timelines + ticker   | ≤ 3ms  |
+| WebGL render              | ≤ 4ms  |
+| Lenis update              | ≤ 1ms  |
+| React reconciliation      | ≤ 2ms  |
+| Headroom                  | ≥ 2.6ms|
+
+### 2.3 Counts
+| Element                          | Cap |
+|----------------------------------|-----|
+| Concurrent GSAP tweens           | ≤ 16 |
+| Concurrent ScrollTriggers        | ≤ 24 |
+| Active particles (WebGL)         | ≤ 1500 |
+| Total scene tris (active chapter)| ≤ 20k |
+| `will-change` elements at any time | ≤ 8 |
+
+---
+
+## 3. Animation Constraints
+
+### 3.1 Property allow-list
+Animate **only**:
+- `transform: translate3d / scale / rotate`
+- `opacity`
+- `filter` (blur, brightness — sparingly)
+- `clip-path` (rare, expensive)
+- WebGL uniforms
+
+### 3.2 Forbidden animated properties
+- ❌ `top`, `left`, `width`, `height`, `margin`, `padding`
+- ❌ `background-color`, `border-color` on large surfaces (paint thrash)
+- ❌ `box-shadow` (composite + paint cost)
+- ❌ `border-radius` (rasterization on every frame)
+- ❌ `font-size` (layout reflow)
+
+### 3.3 will-change discipline
+- Set `will-change` only when an element is **about to animate**, clear it `onComplete`.
+- Never set `will-change: transform, opacity` permanently — costs a compositor layer per element.
+- Never set on > 8 elements simultaneously.
+
+---
+
+## 4. GPU & Compositing
+
+- Promote animated layers via `transform: translateZ(0)` or `will-change`.
+- Avoid stacking-context conflicts: keep z-index hierarchy explicit (see `project-structure.mdc` for `z` tokens).
+- Avoid creating compositor layers on scroll (e.g., applying `filter: blur()` to a large surface during scroll).
+- Use `contain: layout paint` on isolated scene containers to limit invalidation scope.
+
+---
+
+## 5. Image Strategy
+
+### 5.1 Format
+- **AVIF** primary, **WebP** fallback, JPG ultimate fallback.
+- Hero / above-fold imagery served as AVIF + WebP via Next.js `<Image>`.
+- Below-fold imagery: lazy-loaded.
+
+### 5.2 Sizing
+- Always provide explicit `width` / `height` to prevent CLS.
+- Use `sizes` attribute matching the layout (e.g., `(max-width: 768px) 100vw, 50vw`).
+- Never serve images larger than their max display size × 2 (DPR cap).
+
+### 5.3 LQIP
+- Use Next.js `placeholder="blur"` with a `blurDataURL` for hero / large editorial imagery.
+- Custom LQIP for case studies: 24×16 pixel preview, blurred to atmosphere.
+
+### 5.4 Constraints
+- Maximum **3 above-fold images** per page.
+- Maximum **6 images per chapter** (case studies excepted).
+- Total image weight per page (above fold) ≤ 600 KB.
+
+---
+
+## 6. Font Loading
+
+- Use `next/font/local` (preferred) or `next/font/google` (free fallback).
+- Preload critical weights only (`preload: true`) — typically the primary serif Regular and primary sans Regular.
+- Other weights load lazily via CSS.
+- Use `font-display: swap` after a 100ms `block` window.
+- Subset to `latin`, `latin-ext` only.
+
+---
+
+## 7. Code Splitting & Lazy Loading
+
+### 7.1 Default split points
+- Each chapter is a dynamic import:
+  ```ts
+  const HumanChapter = dynamic(() => import("@/components/chapters/HumanChapter"), {
+    ssr: true,
+    loading: () => <ChapterFallback />,
+  });
+  ```
+- WebGL chapters: `ssr: false`.
+- Heavy modules (`gsap` plugins, `three` extensions) imported only inside the chapter that uses them.
+
+### 7.2 Below-fold strategy
+- Use `IntersectionObserver` to defer expensive setup (ScrollTrigger creation, Three scene mount) until the chapter is within `rootMargin: 50%`.
+- Do not block first paint with below-fold work.
+
+---
+
+## 8. Shader Optimization
+
+- Fragment shader length cap: **200 lines**.
+- FBM octaves cap: **4**.
+- Texture samples per fragment: **≤ 4**.
+- Uniforms per material: **≤ 12**.
+- Render targets per scene: **≤ 2**.
+- Post-processing: **≤ 1 effect** (FXAA only if necessary, no Bloom + DOF stacks).
+- Atmospheric scenes render at **30 FPS** (demand-driven `invalidate()` at half rate).
+
+See `webgl-system.mdc` for full shader budget rationale.
+
+---
+
+## 9. Lenis & GSAP Optimization
+
+- **Single** Lenis instance per app.
+- **Single** `gsap.ticker` for all motion + Lenis raf bridge.
+- ScrollTriggers killed on route change (`ScrollTrigger.killAll()`).
+- Use `gsap.context()` for scoped cleanup in React components.
+- Use `gsap.matchMedia()` for responsive timeline branching — avoids running desktop-only timelines on mobile.
+
+---
+
+## 10. Mobile Degradation Strategy
+
+The site **cannot** ship the same experience on mobile. Mobile preserves emotion, not full spectacle.
+
+### 10.1 Auto-degraded on touch / `< md` breakpoint
+| Feature              | Mobile state                                   |
+|----------------------|------------------------------------------------|
+| WebGL ambient        | Disabled by default; CSS atmosphere only        |
+| Custom cursor        | Disabled                                       |
+| Magnetic effects     | Disabled                                       |
+| Image displacement   | Disabled (static reveal only)                  |
+| Horizontal pinning   | Converted to vertical stacked layout            |
+| Heavy parallax       | Reduced to single-layer subtle parallax        |
+| Lenis                | Lower `duration` (1.2), higher `touchMultiplier` (1.4) |
+| Atmospheric blur     | Reduced to ≤ `BLUR.haze` (no `veil`/`fog`)     |
+| Particles            | Capped at 600 (vs 1500 desktop)                |
+
+### 10.2 Adaptive
+- FPS rolling average < 45 for 2s → drop DPR, disable secondary WebGL scenes.
+- FPS < 30 → unmount canvas entirely, CSS atmosphere replaces it.
+
+---
+
+## 11. Rendering Priorities
+
+When the page is constrained, sacrifice in this order:
+
+1. **Sacrifice last**: typography rendering, body copy legibility, focus states, CLS.
+2. **Sacrifice mid**: WebGL fidelity, blur range, parallax depth.
+3. **Sacrifice first**: secondary atmospheric layers, image displacement, magnetic effects, custom cursor.
+
+---
+
+## 12. Measurement & Verification
+
+### 12.1 Required CI gates (before merge)
+- Lighthouse CI on home: Performance ≥ 90, Accessibility ≥ 95.
+- Bundle analyzer report attached to PR.
+- INP probe via Web Vitals: ≤ 200ms 75th percentile.
+
+### 12.2 Local verification
+- Chrome DevTools → Performance tab: scroll through page, verify ≥ 55 FPS sustained.
+- Network throttling: Slow 4G, verify LCP ≤ 4s (worst-case).
+- CPU throttling: 4× slowdown, verify no janky frames.
+- Memory profile: GL contexts not leaking on route changes.
+
+---
+
+## 13. Implementation Standards
+
+### Bundle hygiene
+- Tree-shake Three: import only required modules (`import { Mesh } from "three"`), never `import * as THREE`.
+- Tree-shake GSAP: import core + only used plugins.
+- Avoid `lodash` (ban). Use native `Array` / `Object` methods or specific packages (`lodash.debounce` only, if absolutely necessary).
+- Avoid `moment`, `dayjs`, etc. — date formatting via `Intl.DateTimeFormat`.
+
+### Memoization
+- `React.memo` only when measured-needed; default React reconciliation is fast enough.
+- `useMemo` / `useCallback` for stable deps passed to heavy children (canvas scenes, ScrollTrigger callbacks).
+- Avoid premature memoization — most reveals run once.
+
+### Suspense / streaming
+- Use Next.js App Router streaming for chapter shells; below-fold chapters stream after first paint.
+- Verify behavior against `node_modules/next/dist/docs/` — Next 16 may diverge.
+
+### Caching
+- Static assets via Next.js immutable cache headers.
+- Fonts via `Cache-Control: public, max-age=31536000, immutable`.
+- HTML pages: ISR / streaming defaults.
+
+---
+
+## 14. DO / DON'T
+
+### DO
+- DO measure before optimizing; measure after shipping.
+- DO defer below-fold setup with IntersectionObserver.
+- DO degrade WebGL invisibly on low-end devices.
+- DO keep `will-change` ephemeral.
+- DO tree-shake Three and GSAP imports.
+
+### DON'T
+- DON'T animate `top/left/width/height/margin/box-shadow`.
+- DON'T set `will-change` permanently.
+- DON'T mount nested `<Canvas>` instances.
+- DON'T ship images larger than display size × 2.
+- DON'T add libraries above 50 KB gzip without a defended use case.
+- DON'T sacrifice typography or accessibility for spectacle.
+
+---
+
+## 15. Cinematic Rationale
+
+- Cinema runs at 24fps because **judder is intentional**. The web runs at 60fps because **judder is broken**. We must respect the medium.
+- Performance is **the difference between a film and a slideshow**. Every dropped frame is a missed cut.
+- Mobile users are never given the same experience as desktop, but they are given the **same emotional residue** — that is the contract. Spectacle is negotiable; emotion is not.

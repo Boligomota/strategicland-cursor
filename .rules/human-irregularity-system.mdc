@@ -1,0 +1,500 @@
+---
+description: STRATEGICLAND — Human irregularity system. Controlled imperfection, timing drift, organic delay, documentary texture, tactile friction. Counter-balances the locked motion/atmosphere systems to prevent the project from feeling generated.
+globs: app/**/*.{ts,tsx}, components/**/*.{ts,tsx}, lib/motion/**/*.ts, lib/atmosphere/**/*.ts, lib/irregularity/**/*.ts, hooks/use*Irregular*.ts
+alwaysApply: true
+---
+
+# STRATEGICLAND — Human Irregularity System
+
+> The locked systems (motion, color, atmosphere, type) make the project **coherent**.
+> This system makes it **alive**.
+> If the page reads as "perfectly tuned", it has failed. The page must read as **shot, not rendered**.
+
+---
+
+## 1. Irregularity Philosophy
+
+- Perfection is **uncanny**. The audience reads perfect timing, perfect symmetry, and perfect gradients as **machine-made**, not human-made.
+- Irregularity is **controlled**, never random. Every imperfection is **designed**, deliberate, and bounded.
+- The goal is not **chaos**. The goal is **the residue of a hand**. The same way a great photograph carries the photographer's breath in the frame.
+- Irregularity is **invisible at the conscious level** — the user never notices it, but they feel that the page "isn't a template".
+
+This rule **modifies, does not override**, the locked systems in `motion-system.mdc`, `atmosphere-system.mdc`, `transition-system.mdc`. Tokens stay locked; **variance** is added at controlled boundaries.
+
+---
+
+## 2. Variance Budget (LOCKED)
+
+All irregularity is bounded by the **variance budget** — a fixed envelope of allowed deviation from the canonical token values.
+
+| Subsystem      | Variance ceiling                                    |
+|----------------|-----------------------------------------------------|
+| Duration       | ±8% of token value (e.g., `DUR.standard` 720ms → 663–778ms) |
+| Stagger gap    | ±18% of token value (e.g., `STAGGER.editorial` 80ms → 65–94ms) |
+| Reveal y-offset| ±1.5% of viewport height around the canonical 8%    |
+| Opacity peak   | 0.92–1.00 instead of always 1.00 (low-bias)         |
+| Translation    | ±1px on x (off-grid breath, never repeated identically) |
+| Atmosphere blur| ±10% of token (e.g., `BLUR.haze` 20px → 18–22px)    |
+| Grain opacity  | ±0.01 around the chapter's declared value           |
+| Light leak intensity | ±15% around the chapter's declared value      |
+| Cursor lerp    | 0.16–0.20 (instead of fixed 0.18)                   |
+| Magnetic strength | 0.22–0.28 (instead of fixed 0.25)                |
+
+### Enforcement
+- A central utility, `lib/irregularity/jitter.ts`, exposes `jitter(value, percent)` and `pick(values: T[])` — the **only** allowed sources of variance.
+- Direct `Math.random()` in motion / atmosphere / interaction code is **forbidden**. Always go through `jitter()` so variance is seeded, replayable, and bounded.
+- Variance is **seeded per session** (or per chapter, optional) — so the page is irregular but **internally consistent** across a single visit.
+
+```ts
+// lib/irregularity/jitter.ts
+import { mulberry32 } from "./prng";
+
+const seed = mulberry32(Date.now() & 0xffffffff);
+
+export function jitter(base: number, percent = 0.08): number {
+  const delta = base * percent;
+  return base + (seed() * 2 - 1) * delta;
+}
+
+export function pick<T>(values: readonly T[]): T {
+  return values[Math.floor(seed() * values.length)];
+}
+
+export function asymmetricJitter(base: number, lowPct: number, highPct: number): number {
+  return base * (1 - lowPct + seed() * (lowPct + highPct));
+}
+```
+
+---
+
+## 3. Micro-Irregularity Systems
+
+### 3.1 Timing drift
+Every reveal in a stagger group must drift slightly from the canonical interval — **never** uniformly spaced.
+
+```ts
+gsap.from(".reveal", {
+  yPercent: jitter(8, 0.18),         // 6.6–9.4%
+  opacity: 0,
+  duration: jitter(DUR.standard, 0.08), // 663–778ms
+  ease: EASE.gsap.cinematic,
+  stagger: {
+    each: jitter(STAGGER.editorial, 0.18),
+    from: "start",
+  },
+});
+```
+
+### 3.2 Asymmetric reveal pacing
+Within a single reveal cluster (e.g., a paragraph of 6 lines), one or two lines should reveal **faster** or **slower** than the rest by `±25%`.
+
+```ts
+const lines = gsap.utils.toArray<HTMLElement>(".line");
+const tl = gsap.timeline();
+
+lines.forEach((line, i) => {
+  const isAccent = i === pick([1, 2, lines.length - 2]); // pick a "weight" line
+  tl.from(line, {
+    yPercent: 8,
+    opacity: 0,
+    duration: isAccent ? DUR.cinematic : jitter(DUR.standard, 0.08),
+    ease: EASE.gsap.cinematic,
+  }, jitter(i * STAGGER.editorial, 0.18));
+});
+```
+
+The result: the paragraph **breathes** — one line lingers, the others settle. The eye stops on the lingering one without knowing why.
+
+### 3.3 Imperfect stagger variance
+- Standard stagger groups: `±18%` per-element offset.
+- For "documentary" chapters (`human`, `editorial`): `±25%` allowed.
+- For "kinetic" sequences (case study reveals): `±10%` (tighter, but not perfect).
+- **Never** zero variance. Even mechanical sequences should drift slightly.
+
+### 3.4 Controlled timing interruption
+A "skip beat" — one element in a cluster pauses for `jitter(120, 0.4)` ms longer than expected, then catches up.
+
+Use **at most once per scene**, on a single emphasis word or a single image caption. This is the editorial equivalent of an actor pausing mid-sentence.
+
+```ts
+tl.from(emphasisWord, { ... }, "+=" + jitter(0.12, 0.4));
+```
+
+### 3.5 Analog feeling (sub-frame jitter)
+Slow looped atmosphere (`EASE.breath`, `DUR.glacial`) must include a **sub-amplitude jitter** layered on top of the sine wave — to prevent the loop reading as a `sin(t)` curve.
+
+```ts
+gsap.to(lightLeakRef.current, {
+  opacity: () => 0.06 + jitter(0.02, 0.5), // re-randomized per cycle
+  duration: jitter(DUR.glacial, 0.12),
+  ease: EASE.gsap.breath,
+  repeat: -1,
+  yoyo: true,
+});
+```
+
+### 3.6 Human delay systems
+First-frame after page load: introduce a **150–280ms** human "reaction delay" before any motion begins. This mimics the analog pause between a scene loading and a viewer's attention engaging.
+
+```ts
+gsap.delayedCall(jitter(0.22, 0.3), () => heroIntro.play());
+```
+
+Apply only to:
+- Hero intro entry.
+- Chapter establishing shot reveal.
+- Re-entry after a route transition.
+
+**Do not** apply to user-initiated motion (clicks, scroll velocity) — those must remain immediate.
+
+---
+
+## 4. Temporal Breathing
+
+### 4.1 Pauses between transitions
+Between two scene reveals in the same chapter, insert a **silence beat** of `jitter(280, 0.3)` ms before the second begins.
+
+This is not a loading state — it is **dramatic pause**. The same way a film cuts and **holds black for a beat** before the next shot.
+
+```ts
+const tl = gsap.timeline();
+tl.add(scene01Reveal())
+  .to({}, { duration: jitter(0.28, 0.3) }) // dramatic pause
+  .add(scene02Reveal());
+```
+
+### 4.2 Emotional silence
+Each chapter must contain **at least one "silent scene"** — a viewport where:
+- No element is animating (atmosphere drift only).
+- No reveal triggers on entry.
+- No hover affordance is present.
+- Scroll holds for `≥ 60vh` (`≥ 50vh` mobile).
+
+This is governed by `narrative-density-system.mdc` (TIER 01 — SILENCE), but enforced here at the timing/motion level.
+
+### 4.3 Lingering states
+On hover-out from interactive elements (links, images), the **return** to baseline takes **2× longer** than the hover-in.
+
+```ts
+// lib/interaction/lingering.ts
+export const HOVER_IN  = jitter(DUR.micro, 0.08);  // ~180ms
+export const HOVER_OUT = jitter(DUR.quick, 0.10);  // ~380ms
+```
+
+Lingering creates the cinematic feel of **the eye not wanting to leave**.
+
+### 4.4 Non-linear pacing
+A chapter's reveal sequence must **not** be uniform tempo. Use the following pacing sequence as a default:
+
+```
+slow → slow → fast → pause → slow
+```
+
+Translated to timeline positions:
+```ts
+tl.add(s01, 0)
+  .add(s02, "+=0.4")
+  .add(s03, "+=0.18")
+  .add(silenceBeat, "+=0.32")
+  .add(s04, "+=0.6");
+```
+
+### 4.5 Suspended moments
+A "suspended moment" is when a reveal **freezes mid-motion** for `jitter(80, 0.5)` ms before completing.
+
+Used **at most once per chapter**, on the climactic reveal. Implementation:
+
+```ts
+gsap.timeline()
+  .from(target, { yPercent: 12, opacity: 0, duration: 0.6, ease: "power2.out" })
+  .to(target, { yPercent: 4, duration: 0.001 }) // freeze position briefly
+  .to({}, { duration: jitter(0.08, 0.5) })       // hold
+  .to(target, { yPercent: 0, opacity: 1, duration: 0.5, ease: EASE.gsap.cinematic });
+```
+
+This is the cinematic equivalent of a freeze-frame mid-shot — used **sparingly**.
+
+---
+
+## 5. Documentary Texture Logic
+
+### 5.1 Grain philosophy (extended)
+Beyond `atmosphere-system.mdc`'s base grain rules:
+
+- Grain texture must be **organic noise**, sourced from **scanned analog film stock** (Kodak Portra 400 push, Tri-X grain — never synthetic Photoshop noise).
+- Each chapter may use **2 different grain textures** (one base, one overlay at 0.02 opacity, with rotation `45deg`) to break the tile-repeat pattern.
+- Grain drift direction is **per-chapter randomized at session start** — chapters in the same session keep their direction, but two visits will differ.
+
+### 5.2 Tactile visual imperfection
+Allowed micro-imperfections (none of these are bugs — they are **specifications**):
+
+- **Off-grid type** — display titles may sit `±1.5px` off the column grid (chosen via `jitter`, not random).
+- **Imperfect baseline alignment** — captions vs body text may sit `±2px` off baseline grid for editorial humanity.
+- **Slight underline drift** — animated underlines may end at `99–101%` width (not always exactly 100%).
+- **Image edge softening** — editorial images may have a `1px` feathered edge mask on one side (different per image, picked at chapter mount).
+
+### 5.3 Environmental softness
+- Sharp 90° corners on UI elements: **softened to 1px or 2px radius** (token: `radius.hairline = 1px`).
+- Hairlines (`line.warm`, `line.cool`) rendered at **0.85px** (sub-pixel) where the device DPR allows — gives the line a "drawn" quality.
+- Shadows (already rare per `atmosphere-system.mdc`) drift `±2px` on x and `±10%` on opacity per render.
+
+### 5.4 Subtle instability
+Atmospheric WebGL scenes (see `webgl-system.mdc`) must include a **JS-driven uniform** `uInstability` that drifts in `[0, 0.03]` over `jitter(8, 0.3)` seconds. Inside the shader, this perturbs the FBM seed slightly:
+
+```glsl
+float instability = uInstability;
+vec2 driftUv = uv + vec2(uTime * 0.012 + instability * 0.04, uTime * 0.006);
+```
+
+Effect: the fog / dust never **loops perfectly**. It evolves.
+
+### 5.5 Emotional realism
+Reject the urge to "fix" small imperfections that arise from the variance system. If a stagger lands on a slightly awkward beat, **leave it**. Awkwardness is **realism**.
+
+The only justification to override variance is an **accessibility regression** (e.g., flicker triggering photosensitivity) — never an aesthetic preference.
+
+---
+
+## 6. Humanized Motion
+
+### 6.1 Imperfect interpolation
+Standard reveals lerp linearly through the easing curve. **Humanized** reveals add a tiny `±0.5%` perturbation at the midpoint.
+
+This is implemented as a **two-segment ease**:
+
+```ts
+const humanEase = (t: number) => {
+  const easedT = 1 - Math.pow(2, -10 * t); // expo.out base
+  const wobble = Math.sin(t * Math.PI * 3) * 0.005; // ±0.5%
+  return Math.min(1, easedT + wobble);
+};
+
+// Use only for cinematic reveals (DUR.cinematic+), never for micro interactions.
+gsap.to(target, { ..., ease: humanEase });
+```
+
+Use only on:
+- Hero intro reveals.
+- Chapter establishing titles.
+- Climactic case study reveals.
+
+**Forbidden** on:
+- Micro hovers.
+- Magnetic effects.
+- UI feedback (would read as broken).
+
+### 6.2 Delayed reaction systems
+For interactive elements that respond to scroll velocity (light leak intensity, image micro-zoom):
+
+- Add a **secondary delay layer** of `jitter(160, 0.3)` ms behind the primary response.
+- Result: the atmosphere doesn't react **with** the user; it reacts **just after** — like a person registering an event.
+
+```ts
+function useDelayedScrollReaction(value: number) {
+  const [delayed, setDelayed] = useState(value);
+  useEffect(() => {
+    const t = setTimeout(() => setDelayed(value), jitter(160, 0.3));
+    return () => clearTimeout(t);
+  }, [value]);
+  return delayed;
+}
+```
+
+### 6.3 Organic pacing
+Hero typography reveals: **never word-for-word equal**. Use this distribution:
+
+```ts
+const words = gsap.utils.toArray<HTMLElement>(".hero-word");
+words.forEach((word, i) => {
+  const weight = pick([1.0, 1.0, 1.2, 0.85, 1.0]); // mostly normal, occasional drift
+  tl.from(word, {
+    yPercent: 10,
+    opacity: 0,
+    duration: DUR.cinematic * weight * jitter(1, 0.05),
+    ease: EASE.gsap.cinematic,
+  }, jitter(i * STAGGER.scene, 0.20));
+});
+```
+
+### 6.4 Emotional weight
+The **first** and **last** elements of any reveal cluster receive `+15%` duration — they "matter more". This creates the cinematic equivalent of a **held first note** and a **resolved final note**.
+
+```ts
+function clusterDuration(i: number, total: number, base: number) {
+  const isEnd = i === 0 || i === total - 1;
+  return isEnd ? base * 1.15 : base;
+}
+```
+
+---
+
+## 7. Visual Friction
+
+Friction is the **antidote to the project's polish**. Without it, the page reads as a luxury product render.
+
+### 7.1 Subtle contrast interruptions
+- A single editorial paragraph per chapter may use `text.muted` at `90%` opacity (instead of full muted) — creating an unexplained "fade" on a non-emphatic line.
+- A single image per chapter may sit at `92%` opacity instead of full — looking faintly recessed.
+- A single hairline per chapter may be `2px` instead of `1px` — without explanation.
+
+These "rule-breakers" must be **declared, not random** — but they should look spontaneous.
+
+### 7.2 Emotional roughness
+On dark chapters: allow **one** crushed-shadow region (a corner where vignette intensity reaches `0.45` instead of the standard `0.32`).
+
+This creates a "weight" the eye reads as **emotional gravity** — not as a UI mistake.
+
+### 7.3 Restrained instability
+Per chapter, declare exactly **one of three** instability behaviors:
+
+- **Drift** — atmosphere position drifts slowly on scroll velocity.
+- **Pulse** — vignette intensity breathes at `jitter(14, 0.15)` second cycles.
+- **Flicker** — a single light leak fades in/out 1× per `jitter(45, 0.3)` seconds for `400ms` peak.
+
+**Never two** at once. **Never zero**. Each chapter has its own breathing pattern.
+
+### 7.4 Tactile atmosphere
+- The cursor (per `interaction-system.mdc`) gains a sub-pixel jitter when stationary for >2s — `±0.4px` at 4 Hz. Mimics **muscle micro-tremor**. Disabled on `prefers-reduced-motion`.
+- Hover states "settle" with one micro-bounce of `0.4px` at the end of the in-transition (single oscillation, not a bounce ease).
+
+---
+
+## 8. Asymmetry of Atmosphere
+
+The locked atmosphere system declares **per-chapter** atmosphere. The irregularity layer adds **per-scene** drift within the chapter:
+
+- Each scene re-rolls its atmosphere parameters within the chapter's variance envelope (grain ±0.01, vignette ±0.04 intensity, light leak position ±5% origin).
+- Two scenes in the same chapter never look **identical** under a still screenshot — but the **average** is the chapter's declared atmosphere.
+
+Implementation:
+```ts
+function deriveSceneAtmosphere(chapter: ChapterAtmosphere, sceneIndex: number) {
+  return {
+    ...chapter,
+    grain: { ...chapter.grain, opacity: jitter(chapter.grain.opacity, 0.10) },
+    vignette: { ...chapter.vignette, intensity: jitter(chapter.vignette.intensity, 0.12) },
+    lightLeak: chapter.lightLeak && {
+      ...chapter.lightLeak,
+      intensity: jitter(chapter.lightLeak.intensity, 0.15),
+    },
+  };
+}
+```
+
+---
+
+## 9. Documentary References
+
+The project's irregularity vocabulary is sourced from these analog references:
+
+- **Hiroshi Sugimoto's seascapes** — slow drift, breath, near-stillness with imperceptible variation.
+- **Wim Wenders' "Wings of Desire" cinematography** — non-perfect framing, on-the-shoulder breath.
+- **Roger Deakins' lighting in "Sicario"** — vignette weight that crushes asymmetrically.
+- **Sebastião Salgado's silver gelatin prints** — grain that has age, depth, and warmth.
+- **Christopher Doyle's handheld work** — deliberately imperfect motion that reads as human.
+- **Apartamento Magazine layouts** — copy that breathes off-baseline; images that sit slightly off-grid.
+- **Aperture Magazine print runs** — paper imperfections embraced, never corrected.
+
+---
+
+## 10. Forbidden Patterns
+
+### Hyper-perfection
+- ❌ Identical stagger gaps (always exactly 80ms).
+- ❌ Identical reveal durations across a cluster (every line exactly 720ms).
+- ❌ Reveal y-offsets all set to the same value (always exactly 8%).
+- ❌ Atmosphere parameters identical across all scenes in a chapter.
+- ❌ Hover-in and hover-out durations symmetrical.
+
+### Robotic synchronization
+- ❌ All elements in a viewport revealing on the **exact** same scroll progress trigger.
+- ❌ Multiple breathing loops sharing the same period (`8s` everywhere).
+- ❌ Chapter transitions starting at exactly the same scroll position every time.
+- ❌ Uniform light leak intensity across an entire scene.
+
+### Over-smoothed motion
+- ❌ Continuous lerp without any sub-amplitude jitter.
+- ❌ Atmospheric shaders that loop perfectly (period `n × π`).
+- ❌ Scroll-velocity reactions with no delay layer.
+
+### Sterile transitions
+- ❌ Chapter transitions that crossfade with no atmosphere drift.
+- ❌ Route transitions with mathematically perfect blur curves.
+- ❌ Hero intros with no human delay before motion begins.
+
+### Excessive consistency
+- ❌ Identical text reveal across all chapters.
+- ❌ Same vignette intensity in every scene.
+- ❌ Cursor lerp identical regardless of state.
+
+### Fake sophistication
+- ❌ Random parameters dressed up as "design" (the antithesis of this system — **all variance is bounded and seeded**).
+- ❌ "Glitch" effects, datamosh, faux-VHS — these are **performance of imperfection**, not imperfection.
+- ❌ "Brutalist" type with intentionally awkward kerning — that is **affectation**, not humanity.
+- ❌ "Lo-fi" aesthetic overlays (vinyl crackle, CRT scanlines) — costume, not character.
+
+---
+
+## 11. Implementation Standards
+
+### File structure
+- `lib/irregularity/jitter.ts` — `jitter()`, `pick()`, `asymmetricJitter()`, seeded PRNG.
+- `lib/irregularity/humanEase.ts` — humanized easing curves (paired with `EASE` dictionary).
+- `lib/irregularity/sceneAtmosphere.ts` — per-scene atmosphere derivation.
+- `lib/irregularity/timing.ts` — `clusterDuration()`, pause beats, suspended moments.
+
+### Hooks
+- `useJitter(base, percent)` — memoized jitter for stable per-mount values.
+- `useDelayedReaction(value, baseDelayMs)` — secondary reaction delay layer.
+- `useChapterInstability(chapterId)` — picks one of (drift / pulse / flicker) at chapter mount.
+
+### Seeding
+- The PRNG seed is derived from `Date.now() & 0xffffffff` at app boot, stored in a context.
+- Optionally accept a `?seed=` URL parameter for design review reproducibility.
+- Per-chapter seeds derived as `seed XOR chapterIndex` so each chapter gets its own sub-stream.
+
+### Reduced motion
+Under `prefers-reduced-motion: reduce`:
+- `jitter()` collapses to its base value (`percent → 0`).
+- `pick()` always returns the first value of the array.
+- Suspended moments are skipped.
+- Sub-pixel cursor tremor is disabled.
+- Atmospheric drift continues (it is not motion in the user's frame of reference).
+
+### Performance
+- All `jitter()` calls are O(1). PRNG is `mulberry32` (seedable, fast, zero-dependency).
+- `jitter()` is **synchronous** and **inline** — no async, no batched scheduling.
+- Atmosphere uniforms updated via `gsap.ticker` at 30 FPS (per `webgl-system.mdc`), not per-frame.
+
+---
+
+## 12. DO / DON'T
+
+### DO
+- DO route every variance through `jitter()` / `pick()` — never raw `Math.random()`.
+- DO seed variance per session for internal consistency.
+- DO bound variance to the locked envelope (Section 2).
+- DO leave first/last cluster elements 15% longer than middle.
+- DO let one element per scene "linger" or "skip a beat" deliberately.
+- DO derive per-scene atmosphere from the chapter's declared atmosphere with bounded variance.
+- DO insert dramatic pauses between scene reveals.
+- DO reverse-engineer the variance budget from analog film references, not from intuition.
+
+### DON'T
+- DON'T use raw `Math.random()` in motion / atmosphere code.
+- DON'T allow variance to break locked tokens — `jitter()` operates **inside** the envelope.
+- DON'T add "glitch", "VHS", "lo-fi" effects — these are costume, not character.
+- DON'T make hover-in and hover-out symmetrical durations.
+- DON'T loop atmosphere shaders on perfect mathematical periods.
+- DON'T disable irregularity in production — it **is** production.
+- DON'T attempt to "balance out" variance to feel even — irregularity is the point.
+
+---
+
+## 13. Cinematic Rationale
+
+- Locked tokens guarantee **coherence**. Bounded variance guarantees **life**. A system with only one is incomplete.
+- The reason luxury cinematic web design eventually feels generic is that it lacks variance — every reveal is the same reveal, every transition is the same transition. The audience subconsciously detects the pattern within 30 seconds and disengages.
+- Bounded, seeded variance creates **the impression of presence** — the user feels someone made this for them, not for everyone.
+- The 15% emphasis on first/last cluster elements is a direct lift from musical phrasing (the held downbeat, the resolved final note) — applied to motion, it produces the same emotional weight.
+- The ban on raw `Math.random()` is what separates this system from "hand-coded chaos". Variance must be **designed**, not **wild**.

@@ -1,0 +1,323 @@
+---
+description: STRATEGICLAND — Sound behavior system. Atmospheric audio architecture, environmental ambience, silence systems, opt-in activation, spatial logic. Defines audio philosophy BEFORE implementation. Consult before adding any sound, music, or audio-reactive feature.
+globs: app/**/*.{ts,tsx}, components/sound/**/*.{ts,tsx}, lib/sound/**/*.ts, public/audio/**/*, hooks/useSound*.ts, hooks/useAudio*.ts
+alwaysApply: true
+---
+
+# STRATEGICLAND — Sound Behavior System
+
+> Sound is **the air the room remembers**.
+> The audience must feel the space, not hear the website.
+> If a soundtrack makes a moment "feel cinematic", that moment was **not** cinematic to begin with.
+
+---
+
+## 1. Audio Philosophy
+
+- Sound exists to **deepen presence**, not to **perform emotion**.
+- The default state of the project is **silence**. Audio is **opt-in**. Always.
+- Sound is **environmental**, not narrative. We do not score the experience — we **populate the room**.
+- The audience must feel that they are listening to the **space**, not to the **content**.
+- If sound were removed, the experience must still hold. Sound is **not load-bearing**.
+
+This rule pre-architects audio for the project. Implementation may follow later, but the **shape** is locked now to prevent the future temptation of adding cinematic music ("just for the hero").
+
+---
+
+## 2. Sound Categories (LOCKED)
+
+The project allows **only** these categories. Any audio that doesn't fit one of these is **forbidden**.
+
+| Category                  | Role                                              | Examples                                          |
+|---------------------------|---------------------------------------------------|---------------------------------------------------|
+| **Room tone**             | Continuous low-amplitude environmental presence   | Distant traffic; air movement; analog hum         |
+| **Atmospheric drift**     | Slow-evolving ambient texture                     | Wind across stone; water far away; forest air     |
+| **Spatial resonance**     | Single, infrequent, low-mid frequency event       | Door closing in distance; bell decay; rain pulse  |
+| **Transition resonance**  | Sub-audible low-frequency wash during chapter cut | 40–80 Hz sub rumble, 1.8s decay                   |
+| **Tactile micro-tone**    | Sub-audible response to deliberate interactions   | 1.2s decay tone on chapter index open             |
+| **Silence states**        | Engineered absences (room cuts to dead air)       | TIER 01 scenes; mid-chapter holds                 |
+
+### Categories explicitly forbidden
+- ❌ **Music** — orchestral, electronic, ambient with melody, drone synths.
+- ❌ **Voice / narration** (unless an editorial chapter explicitly carries an interview piece, in which case it is content, not soundtrack).
+- ❌ **Foley / SFX** — clicks, swooshes, "whooshes", tap clicks.
+- ❌ **Notification sounds** — chimes, dings, alerts.
+- ❌ **Cinematic stings** — riser/impact pairs.
+- ❌ **Lo-fi / vinyl crackle** — costume sound, not real environment.
+
+---
+
+## 3. Sound Sources & Production Standards
+
+### 3.1 Source material
+- All audio is **field-recorded** (analog or digital field recorder), never synthesized melodically.
+- Allowed synth use: **sub-bass** layer (40–80 Hz) for transition resonance, **always** mixed under a field recording.
+- Source recordings come from:
+  - Real spaces relevant to the project's narrative (architectural interiors, landscapes, urban edges).
+  - Public domain field libraries (with provenance attribution in `content/audio/credits.mdx`).
+
+### 3.2 Mixing / mastering
+| Property              | Constraint                                              |
+|-----------------------|---------------------------------------------------------|
+| Peak level            | ≤ -18 dB LUFS integrated                                |
+| True peak             | ≤ -3 dBTP                                               |
+| Dynamic range         | ≥ 9 LU (preserve breath; no broadcast compression)      |
+| Sample rate           | 48 kHz                                                  |
+| Bit depth (delivery)  | 16-bit AAC (96 kbps) for ambience, 192 kbps for transition resonance |
+| File format           | `.m4a` (AAC) primary, `.opus` fallback for modern browsers |
+| Loudness consistency  | All tracks normalized to **-23 LUFS** integrated         |
+| Stereo image          | Mid-heavy (no extreme L/R panning); width factor ≤ 0.6  |
+| Sub content           | High-pass at 30 Hz (avoid sub-audible noise on phone speakers) |
+| Loop discipline       | Seamless cross-fade loops (≥ 4s overlap), no audible seam |
+
+### 3.3 File budget
+| Asset                       | Budget                              |
+|-----------------------------|-------------------------------------|
+| Per-chapter ambience loop   | ≤ 200 KB (60s loop @ AAC 96 kbps)   |
+| Transition resonance        | ≤ 30 KB (1.8s sub wash)             |
+| Tactile micro-tone          | ≤ 20 KB (1.2s decay)                |
+| Total audio per page (initial fetch) | ≤ 400 KB                   |
+
+---
+
+## 4. Chapter Audio Behavior
+
+Each chapter type has a default audio profile, declared in `audio.config.ts` alongside `atmosphere.config.ts`.
+
+| Chapter type | Ambience              | Transition resonance | Tactile micro-tones |
+|--------------|-----------------------|----------------------|---------------------|
+| `hero`       | Distant urban edge / wind across glass | On entry (1.8s) | None                |
+| `editorial`  | Room tone (interior, soft) | Subtle (1.2s)    | None                |
+| `case`       | Project-specific recording (varies) | Mid (1.6s) | Allowed on slide advance (≤ -28 dB) |
+| `human`      | Near-silence; subtle breath / wind | Almost imperceptible (0.8s wash) | Forbidden |
+| `cultural`   | Place-specific field recording | Full (2.0s sub wash) | None         |
+| `closing`    | Room tone fading to dead air | None — silence is the cut | None        |
+
+### Chapter declaration
+```ts
+// components/chapters/CulturalChapter/audio.config.ts
+import type { ChapterAudio } from "@/lib/sound/types";
+
+export const audio: ChapterAudio = {
+  ambience: {
+    src: "/audio/cultural-monsoon-loop.m4a",
+    peakLufs: -23,
+    fadeInMs: 4000,
+    fadeOutMs: 6000,
+    duckOnTransition: 0.4,        // duck to 40% during cross-chapter
+  },
+  transitionResonance: {
+    src: "/audio/transition-sub-warm.m4a",
+    durationMs: 2000,
+    triggerOn: "enter",
+  },
+  tactileMicroTones: {
+    enabled: false,
+  },
+};
+```
+
+---
+
+## 5. Silence Systems
+
+Silence is the most important sound in the project.
+
+### 5.1 Intentional silence
+- TIER 01 (silence) scenes per `narrative-density-system.mdc`: **all audio ducks to -inf** during the scene's scroll envelope, with a 1.4s fade.
+- The audience experiences the **room being removed** — the most cinematic sound effect available.
+- Silence holds for the **full** scene duration. No "subtle" continuation.
+
+### 5.2 Emotional absence
+- After a TIER 05 → TIER 01 transition: silence is **delayed** to begin **300ms after** the visual transition completes, then fades in over 800ms. The audience hears the climax, then hears it removed.
+- This is the audio equivalent of the **freeze frame** in `human-irregularity-system.mdc`.
+
+### 5.3 Audio withdrawal
+- During chapter transitions (T2 per `transition-system.mdc`): outgoing chapter ambience ducks to **40%** during the seam, incoming chapter ambience fades in **after** the visual settle, never simultaneous.
+- Result: the audio "lags" the image by ~200ms — the same lag that gives film cuts their weight.
+
+### 5.4 Pacing through silence
+- Maximum continuous ambience runtime: **90 seconds**. After that, a **silence pocket** of ≥ 4 seconds must occur (often aligned with a TIER 01 scene).
+- Silence pockets prevent the audience from **stopping hearing** the ambience (auditory adaptation kicks in around 90s; we reset before then).
+
+### 5.5 Contrast through silence
+- The page's most powerful audio moment is the **first silence** after the hero ambience starts. It tells the audience that audio in this project is **deliberate**, not background.
+
+---
+
+## 6. Interaction Audio Rules
+
+The project rejects the entire genre of "interactive web audio".
+
+### 6.1 Forbidden interaction sounds
+- ❌ Click sounds on links / buttons.
+- ❌ Hover sounds (any kind).
+- ❌ Scroll-driven audio events (every scroll tick triggering a sample).
+- ❌ Form input feedback sounds.
+- ❌ Modal open/close sounds (modals are forbidden anyway, per `cinematic-language.mdc`).
+- ❌ Page load chimes, "ready" sounds, splash audio.
+- ❌ Cursor-state-change sounds.
+
+### 6.2 Allowed interaction sounds
+- ✅ **Single tactile micro-tone** on opening the chapter index (≤ -28 dB, 1.2s decay, low-mid frequency).
+- ✅ **Single tactile micro-tone** on case study slide advance (only if chapter declares `tactileMicroTones.enabled: true`).
+- ✅ **Subtle environmental response** — when WebGL atmosphere reacts to scroll velocity, the ambience may subtly modulate its low-frequency content (±2 dB at 80 Hz). This is the **only** scroll-reactive audio behavior.
+- ✅ **Toggle confirmation tone** (≤ -32 dB, 0.4s decay) when the user enables / disables sound for the first time.
+
+### 6.3 Tactile micro-tone spec
+- Always low-mid frequency content (160 Hz – 800 Hz).
+- Always single, short, decaying.
+- Never percussive ("click" / "tick").
+- Designed to feel like the **air responding**, not the **interface clicking**.
+- Reference: a finger gently tapping a wooden tabletop in an empty room, recorded at distance.
+
+---
+
+## 7. Spatial Audio Logic
+
+The project does **not** use HRTF / 3D positional audio (overkill, perf cost). It uses **2D spatial cueing** via stereo placement and frequency content.
+
+### 7.1 Directional atmosphere
+- Hero ambience: panned slightly **left** (mid-side, 20% bias) to suggest the world extending beyond the frame.
+- Cultural chapters: ambience panned **right** in alternating chapters (cinematic spatial alternation).
+- Human chapters: **dead center** (intimacy = no width).
+- Closing: width **collapses** to mono over the chapter duration.
+
+### 7.2 Environmental depth
+- Ambience EQ: **gently rolled off above 8 kHz** to suggest distance / room boundaries.
+- Transition resonance: **rolled off above 4 kHz** to read as sub-audible weight, not a "swoosh".
+- Tactile micro-tones: **full bandwidth** (the only audio that "speaks" near the audience).
+
+### 7.3 Cinematic positioning
+- The audience is always in the **same listening position** across chapters — the same seat in the same theatre. We change the **scene around them**, not their position.
+- No audio "moves" through the stereo field. Things may **fade in / out**, but never **traverse**.
+
+### 7.4 Emotional distance
+- Loudness signals proximity. Quiet ambience = **far**. Slightly louder ambience = **closer**.
+- The hero ambience is the **furthest** ambience on the page. The closing ambience is **closer** (the audience has been brought into the room).
+- This is opposite of typical web audio (which gets quieter at the end). It is **deliberate** — the project closes by **drawing the audience in**, not pushing them out.
+
+### 7.5 Low-frequency grounding
+- Each chapter's ambience contains **low-frequency content** (60–120 Hz) at -28 to -32 dB. This grounds the chapter in the listener's body without being audible as "bass".
+- Removed entirely on mobile (small speakers cannot reproduce; would only add noise).
+
+---
+
+## 8. Audio Performance Rules
+
+### 8.1 Lazy loading
+- Audio assets are **never** loaded at first paint.
+- Hero ambience loads after the hero intro completes (audio activation happens after the user explicitly enables sound).
+- Subsequent chapter ambience loads on chapter approach (`IntersectionObserver` rootMargin: 100%).
+- Transition resonance: pre-loaded for the **next** chapter only, never for the entire page.
+
+### 8.2 Muted-by-default behavior
+- Audio is **off** on first visit. Always.
+- A small editorial toggle (`sound · off / on`) sits in the header, labeled in body type (not an icon). On click, the user enables audio.
+- State persists in `localStorage` under key `strategicland.audio = "on" | "off"`.
+- On enable, the project plays a single confirmation tone (Section 6.2) — this is the **only** audio that plays without scroll context.
+
+### 8.3 Optional activation
+- The activation is a **one-time courtesy** — once enabled, audio remains enabled across visits.
+- The toggle is **never animated to draw attention**. It is an editorial element, not a CTA.
+- No "tap to enable sound" overlays. No "click for the full experience" prompts. Both are forbidden.
+
+### 8.4 Reduced mobile usage
+- On `< md` breakpoint:
+  - Transition resonance: **disabled** (sub-bass content unreproducible on phone speakers).
+  - Tactile micro-tones: **disabled**.
+  - Ambience: optional, lower bitrate (64 kbps AAC), shorter loops (30s).
+  - Total audio budget halved (≤ 200 KB initial, ≤ 100 KB per chapter).
+- On data-saver mode (`navigator.connection.saveData === true`): **all audio disabled**, toggle hidden.
+
+### 8.5 Adaptive quality
+- Use `Audio` element with `preload="metadata"` (never `auto`) to defer download.
+- For Web Audio API integration (ducking, fades, low-pass filter for ambience, sub modulation), instantiate `AudioContext` only on user gesture (browser autoplay policy).
+- A single `AudioContext` per session. Disposed on route change between non-audio routes.
+
+### 8.6 Power-save respect
+- If the page is hidden (`document.visibilityState === "hidden"`), audio pauses in 2 seconds. Resumes on return.
+- If the user has not interacted in **120 seconds** (no scroll, no pointer), ambience ducks to 40% (assumes inattentive listening).
+- Battery API (where supported): if `< 20%` battery, ambience disabled with a one-line subtle disclosure in the header tooltip.
+
+---
+
+## 9. Audio + Reduced Motion
+
+`prefers-reduced-motion: reduce` is a signal about **all** sensory motion, not just visual:
+
+- All ambience volume capped at -32 dB (50% of standard).
+- Transition resonance disabled (the sub wash can be vestibularly disruptive).
+- Tactile micro-tones disabled.
+- Silence pockets remain (silence is restful, not motion).
+
+---
+
+## 10. Implementation Standards
+
+### File structure
+- `lib/sound/AudioDirector.ts` — singleton, owns the AudioContext and routing.
+- `lib/sound/ambienceLayer.ts` — chapter ambience playback + crossfade.
+- `lib/sound/transitionResonance.ts` — fires sub wash on chapter transitions.
+- `lib/sound/tactileTone.ts` — micro-tone playback for declared interactions.
+- `lib/sound/silenceController.ts` — orchestrates ducking during TIER 01 scenes.
+- `lib/sound/types.ts` — `ChapterAudio`, `AudioState`.
+- `components/sound/SoundToggle.tsx` — header editorial toggle.
+- `public/audio/` — all `.m4a` and `.opus` files.
+
+### Hooks
+- `useAudioEnabled()` — boolean from `localStorage` + AudioContext state.
+- `useChapterAudio(audioConfig)` — registers a chapter's audio profile with the director.
+- `useTactileTone(target)` — wires a tactile tone to an interaction.
+- `useDuckOnTier(tier)` — used inside `<SceneShell>` to duck during TIER 01.
+
+### Integration with existing systems
+- `<TransitionDirector>` (per `transition-system.mdc`) calls into `AudioDirector` on `play("chapter:cross")` to fire transition resonance.
+- `<SceneShell>` (per `narrative-density-system.mdc`) calls `useDuckOnTier(tier)` to coordinate ducking.
+- `useScrollVelocity()` (per `scroll-system.mdc`) is consumed by `AudioDirector` to modulate ambient low-frequency content (±2 dB at 80 Hz, damped over 800ms).
+
+### Variance integration
+- Per `human-irregularity-system.mdc`: ambience loops have **±150ms jittered start offsets** so two playthroughs do not align identically. The loop point itself is fixed; the **entry point** drifts.
+- Transition resonance peak amplitude jittered ±0.6 dB.
+- Tactile tone pitch jittered ±5 cents (imperceptible but prevents identical-replay machine feel).
+
+### Accessibility
+- Audio must **never** carry critical information. Visual is always primary; audio is supplemental atmosphere.
+- The audio toggle is keyboard-focusable, ARIA-labeled `Toggle ambient sound`, with state announced via `aria-live`.
+- All audio respects `prefers-reduced-motion`.
+- Provide a transcript / description in the colophon page for any chapter that uses field recordings of cultural significance (provenance + acknowledgment).
+
+---
+
+## 11. DO / DON'T
+
+### DO
+- DO ship the project muted by default.
+- DO use field-recorded ambience only.
+- DO duck audio during TIER 01 silence scenes.
+- DO crossfade chapter ambience with the audio lagging the visual by ~200ms.
+- DO declare per-chapter audio profiles colocated with atmosphere config.
+- DO disable transition resonance on mobile.
+- DO end the page in silence (closing chapter fades to dead air).
+
+### DON'T
+- DON'T add music — orchestral, ambient melodic, drone, or otherwise.
+- DON'T add UI sounds (clicks, hovers, swooshes, chimes).
+- DON'T autoplay audio. Ever.
+- DON'T use cinematic stings (risers, impacts, "boom" transitions).
+- DON'T move sounds through the stereo field (no traversal).
+- DON'T overlay multiple ambiences simultaneously (one per chapter).
+- DON'T let ambience run continuously > 90 seconds without a silence pocket.
+- DON'T prompt the user with "click to enable the full experience".
+- DON'T treat audio as load-bearing — the experience must hold without it.
+
+---
+
+## 12. Cinematic Rationale
+
+- **Music tells the audience what to feel**. We refuse this. The audience must arrive at their feeling **on their own** — that is the difference between cinema and advertising.
+- **Field recordings** are the difference between **a place** and **a soundtrack**. A wind recording from a real Patagonian valley carries meaning a synth pad never can, even if both are technically "ambient".
+- **Audio lagging visual by 200ms** at chapter transitions reproduces the temporal staggering of live experience. In real life, light reaches us instantly; sound reaches us with delay. Acknowledging this in the project makes the audience's nervous system **trust the space**.
+- **Silence as the most powerful audio event** is a principle from John Cage and from the entire history of cinema sound design (Walter Murch's "rule of two and a half" for sound dimensions). The project respects this lineage.
+- **Muted-by-default** is not a UX concession. It is an **editorial stance** — we are not auto-playing a film at the audience. We are inviting them in.
+- **Sound is not load-bearing** is the safety net for the entire system: if a user disables audio, they get a coherent experience. If audio were load-bearing, we would be back in the territory of trailer-style "wow moments" — the genre we are explicitly building **against**.

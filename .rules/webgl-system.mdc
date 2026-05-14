@@ -1,0 +1,285 @@
+---
+description: STRATEGICLAND — WebGL system. Three.js + React Three Fiber. Atmospheric shaders, breathing systems, density modulation, performance budget. Consult before any 3D, shader, or canvas work.
+globs: app/**/*.{ts,tsx}, components/webgl/**/*.{ts,tsx}, lib/webgl/**/*.{ts,tsx,glsl}, shaders/**/*.{glsl,vert,frag}
+alwaysApply: true
+---
+
+# STRATEGICLAND — WebGL System
+
+> WebGL is **the air**, never the **sentence**.
+> If the audience names what they're looking at as "a 3D thing", the system has failed.
+> WebGL augments atmosphere; it does not produce content.
+
+---
+
+## 1. WebGL Philosophy
+
+- WebGL exists to **modulate atmosphere** — light, fog, depth, breathing.
+- WebGL is **never** the primary subject. No hero 3D objects, no rotating logos, no spinning models.
+- WebGL must **degrade invisibly** on low-end devices. If the user can't tell the canvas is missing, the design is correct.
+- Shaders are **moodboards in code** — restrained, atmospheric, slow. Never demoscene, never glitch, never "shaderpark".
+
+---
+
+## 2. When to Use WebGL
+
+✅ Allowed:
+- Ambient fog/noise behind a chapter.
+- Subtle particle drift suggesting wind, dust, embers (≤ 800 particles, ≤ 0.5 alpha).
+- Image displacement on hover (image-treatment) — tiny GLSL distortion.
+- Volumetric light leaks behind a hero scene.
+- Low-poly fog landscapes for cultural chapters (≤ 5k tris, baked lighting).
+
+🚫 Forbidden:
+- 3D models as primary content (no hero objects, no rotating product shots).
+- Real-time PBR scenes (too cinematic-tech, never atmospheric).
+- Custom physics simulations.
+- Generative art that draws attention to itself.
+- Shader-based UI controls.
+- Postprocessing stacks > 1 effect (one bloom, or one grade — never both).
+
+---
+
+## 3. Stack & Tooling
+
+- **Three.js** v0.184+ (verify in `package.json`; respect AGENTS.md note about possible API drift in deps).
+- **@react-three/fiber** v9+ (React 19 compatible).
+- **@react-three/drei** v10+ (limited subset — see §4).
+- **GLSL** raw shaders preferred over `THREE.ShaderMaterial` chunks for clarity.
+- **Forbidden adjacencies:** `@react-three/postprocessing` heavy use, `three-stdlib` model loaders for hero content, anything bringing > 200KB gzipped.
+
+### Drei subset (allowed)
+- `OrthographicCamera`, `PerspectiveCamera`, `useFBO`, `shaderMaterial`, `useTexture`, `useAspect`.
+- `Plane`, `Float` (sparingly), `Environment` (low-fidelity HDR for ambient grading only).
+
+### Drei forbidden
+- `Effects`, `Bloom`, `DepthOfField`, `OrbitControls`, `Stage`, `PresentationControls`, `Stars`, `Sparkles` — all reject by default.
+
+---
+
+## 4. Canvas Architecture
+
+### 4.1 Single root canvas
+- The site has **one** `<Canvas>` instance, mounted at the app root via a `<WebGLRoot>` client component.
+- All scenes **share** this canvas via a scene-portaling pattern (drei `View` or custom render targets).
+- **Never** mount nested `<Canvas>` instances — each costs a WebGL context (browser limit ~16).
+
+### 4.2 Tunneling pattern
+Use `tunnel-rat` (or drei `View`) to teleport scene content from React tree into the root canvas. Each chapter's WebGL content sits inside its component tree but renders into the global canvas.
+
+```tsx
+// components/webgl/SceneTunnel.tsx — root
+import { Canvas } from "@react-three/fiber";
+import tunnel from "tunnel-rat";
+export const sceneTunnel = tunnel();
+
+// In root layout
+<>
+  <Canvas dpr={[1, 1.5]} gl={{ antialias: false, alpha: true }}>
+    <sceneTunnel.Out />
+  </Canvas>
+  {children}
+</>
+
+// In a chapter component
+<sceneTunnel.In>
+  <FogScene />
+</sceneTunnel.In>
+```
+
+### 4.3 Canvas defaults
+```tsx
+<Canvas
+  dpr={[1, 1.5]}                 // hard cap. Never let DPR hit 2 on retina (2× perf cost).
+  gl={{
+    antialias: false,            // we use FXAA in shader if needed
+    alpha: true,                 // canvas blends with HTML atmosphere
+    powerPreference: "high-performance",
+    stencil: false,
+    depth: true,
+  }}
+  frameloop="demand"             // render only when scenes mark dirty (see §6)
+  flat                           // no tone mapping; we grade in shader
+/>
+```
+
+---
+
+## 5. Atmospheric Shader Philosophy
+
+Every shader is built around **5 frequencies of subtle change**:
+
+1. **Drift** — slow UV scroll over time. `uTime * 0.02`.
+2. **Breath** — sinusoidal density oscillation. `sin(uTime * 0.3) * 0.05`.
+3. **Pulse** — slower, larger amplitude, ≥12s period. Used for lighting bloom.
+4. **Grain** — high-frequency noise modulated by texture lookup, not full-random.
+5. **Velocity** — JS-driven uniform from scroll velocity, clamped 0–1.
+
+### Reference fragment skeleton
+```glsl
+precision highp float;
+
+uniform float uTime;
+uniform float uScrollVelocity;     // 0..1, damped from JS
+uniform vec2  uResolution;
+uniform sampler2D uGrain;          // 256x256 grayscale
+uniform vec3 uTone;                // chapter atmosphere tint
+
+varying vec2 vUv;
+
+float fbm(vec2 p);                 // small fractal brownian motion, ≤ 4 octaves
+
+void main() {
+  vec2 uv = vUv;
+
+  // Drift
+  vec2 driftUv = uv + vec2(uTime * 0.012, uTime * 0.006);
+  float density = fbm(driftUv * 1.4);
+
+  // Breath
+  density += sin(uTime * 0.3) * 0.04;
+
+  // Velocity reactor
+  density += uScrollVelocity * 0.08;
+
+  // Grain
+  float grain = texture2D(uGrain, uv * (uResolution / 256.0)).r;
+  density += (grain - 0.5) * 0.06;
+
+  vec3 color = mix(uTone * 0.6, uTone * 1.05, density);
+  gl_FragColor = vec4(color, 0.4 + uScrollVelocity * 0.15);
+}
+```
+
+### Constraints
+- Fragment shader length: **≤ 200 lines including helpers**.
+- FBM octaves: **≤ 4**.
+- Texture samples per fragment: **≤ 4**.
+- Branches in fragment: **≤ 2** (use `mix()` and `step()`, not `if`).
+- Total uniforms per material: **≤ 12**.
+
+---
+
+## 6. Render Loop & Performance
+
+### 6.1 Demand-based rendering
+- `frameloop="demand"`. Scenes call `invalidate()` only when state changes (uTime tick is via custom strategy).
+- For continuous atmosphere (drift, breath), drive `uTime` via Lenis-aligned `gsap.ticker` and call `invalidate()` at **30 FPS** (not 60) — atmospheric motion doesn't need 60.
+
+### 6.2 Frame budget
+- Total WebGL frame budget: **≤ 4ms** (out of 16.6ms 60fps budget).
+- Total scene poly count (across all active tunneled scenes): **≤ 20k tris**.
+- Active particles: **≤ 1500** total.
+- Active render targets: **≤ 2**.
+
+### 6.3 Adaptive quality
+- Detect FPS via `useFrame` rolling average. If < 45 FPS for ≥ 2s:
+  - Drop DPR to 1.0.
+  - Disable secondary scenes.
+  - Increase shader noise step size (lower-fidelity FBM).
+- If < 30 FPS: unmount the canvas entirely; CSS atmosphere remains.
+
+### 6.4 Mobile
+- DPR cap: **1.0** (never 1.5 on mobile).
+- Disable any chapter's `webglAmbient` config on `< md` breakpoint by default.
+- Provide CSS-only fallback for every WebGL atmosphere.
+
+---
+
+## 7. Emotional Frequency Systems
+
+Each chapter declares an **emotional frequency profile** that drives shader uniforms:
+
+```ts
+export const chapterFrequency = {
+  drift:    { speed: 0.012, amplitude: 0.04, palette: "warm-fog" },
+  human:    { speed: 0.006, amplitude: 0.02, palette: "cool-paper" },
+  cultural: { speed: 0.020, amplitude: 0.08, palette: "amber-dust" },
+} as const;
+```
+
+The shader reads this profile at chapter mount. Shader code is shared across chapters; **only uniforms change**.
+
+---
+
+## 8. Image Displacement (Image-Treatment Adjacent)
+
+For hover or scroll-driven image displacement (used sparingly):
+- Single GLSL plane per image, custom material.
+- Displacement amplitude: **≤ 0.04 in UV space** (≤ 4% of image).
+- Driven by mouse delta or scroll velocity, damped via lerp 0.08.
+- Disable on touch devices (use static reveal instead).
+
+---
+
+## 9. Lighting
+
+- **No real-time directional/point lights** for atmospheric scenes — bake into shader color.
+- Allowed: a single low-cost ambient light + hemisphere light if a low-poly geometry chapter exists.
+- Forbidden: shadow casting, area lights, environment IBL beyond a single low-fidelity HDR for ambient grading.
+
+---
+
+## 10. Color Grading
+
+- Output color space: `THREE.SRGBColorSpace`.
+- Tone mapping: `THREE.NoToneMapping` (we grade manually in shader for cinematic control).
+- Final color in shader is multiplied by chapter `uTone` palette (sourced from `color-system.mdc`).
+- Never use vibrant color picks in shader — saturated colors break atmospheric subtlety.
+
+---
+
+## 11. Implementation Standards
+
+### File structure
+- `lib/webgl/` — engine primitives (canvas root, tunnel, materials registry).
+- `components/webgl/` — React-side scene components (`<FogScene>`, `<DustScene>`).
+- `shaders/` — raw `.glsl` files imported via `glslify`-style loader or `vite-plugin-glsl`.
+  - Subdivide: `shaders/atmosphere/`, `shaders/displacement/`, `shaders/lib/` (FBM, noise utilities).
+
+### Material registry
+- All custom shader materials live in `lib/webgl/materials/`.
+- Each material exports a typed factory: `createFogMaterial(opts) → THREE.ShaderMaterial`.
+- Materials must declare uniform contracts as TypeScript types.
+
+### Disposal
+- Every material, geometry, texture, and FBO must be disposed on unmount:
+  ```ts
+  useEffect(() => () => {
+    material.dispose(); geometry.dispose();
+  }, []);
+  ```
+- Never leak GL resources — use Chrome DevTools Memory tab to verify on PR.
+
+### SSR
+- WebGL trees are gated behind `"use client"` and dynamic import with `ssr: false`.
+- Server renders the CSS atmosphere fallback; canvas hydrates after.
+
+---
+
+## 12. DO / DON'T
+
+### DO
+- DO use a single root canvas with tunneled scenes.
+- DO keep shaders ≤ 200 lines and ≤ 4 FBM octaves.
+- DO render at 30 FPS for atmospheric scenes.
+- DO degrade invisibly on low-end devices.
+- DO bake all lighting into shader color.
+
+### DON'T
+- DON'T mount nested `<Canvas>` instances.
+- DON'T use postprocessing stacks (Bloom, DOF, SSAO).
+- DON'T render real-time PBR scenes.
+- DON'T use OrbitControls or any camera-control demo helpers.
+- DON'T create hero 3D objects — WebGL is air, not subject.
+- DON'T let DPR exceed 1.5 on desktop or 1.0 on mobile.
+- DON'T use shader colors more saturated than 30%.
+
+---
+
+## 13. Cinematic Rationale
+
+- A single root canvas with tunneled scenes preserves WebGL context and enables seamless cross-chapter atmospheric transitions.
+- Shaders capped at 200 lines force the team to think in **frequencies and tones**, not in **demos**.
+- Atmospheric WebGL at 30 FPS is **indistinguishable from 60 FPS** to the eye, but halves the GPU cost — the freed budget pays for the rest of the page's motion.
+- The frequency-profile-per-chapter pattern means we extend the system by adding data, not code — every new chapter gets atmosphere for free.

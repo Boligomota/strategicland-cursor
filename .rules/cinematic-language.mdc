@@ -1,0 +1,159 @@
+---
+description: STRATEGICLAND — Master cinematic language. Visual identity, editorial composition, spatial hierarchy, emotional pacing. Foundational rule consulted before any UI, layout, or motion work.
+globs: app/**/*.{ts,tsx,mdx,css}, components/**/*.{ts,tsx}, content/**/*.mdx
+alwaysApply: true
+---
+
+# STRATEGICLAND — Cinematic Language
+
+> The site is **a film, not a website**.
+> Every component is a **shot**. Every section is a **scene**. Every page is a **chapter**.
+> If a decision can't be defended in cinematic language, it doesn't ship.
+
+---
+
+## 1. Cinematic Philosophy
+
+STRATEGICLAND is a **slow medium**. The user is an audience, not a "visitor". We do not optimize for clicks, dwell time, or conversion choreography. We optimize for **emotional residue**: what the user *feels* 30 seconds after closing the tab.
+
+References (the only acceptable visual ancestors):
+- **Simon Holm Studio** — restraint, weight of negative space, editorial type as architecture.
+- **A24 title sequences** — pacing of silence, asymmetric composition, contemplative cuts.
+- **Nowness / Aperture / Apartamento editorial** — image as artifact, type as rhythm.
+- **Drive (2011), The Master, Arrival** — cinematography of stillness; light as character.
+
+Forbidden ancestors:
+- Awwwards 2018–2022 portfolios (gradient-chrome aesthetic).
+- Linear/Vercel SaaS marketing language.
+- Generic Three.js demo culture.
+- Cyberpunk neon stacks.
+
+---
+
+## 2. Visual Identity Pillars
+
+The aesthetic is locked to **five non-negotiable pillars**:
+
+1. **Restraint** — fewer elements, larger weight. If a layout needs more than 3 active visual objects per viewport, simplify.
+2. **Spatiality** — every composition has foreground / midground / background. Flat layouts are a bug.
+3. **Materiality** — surfaces feel like paper, ink, glass, granite, fog. Never "screen".
+4. **Silence** — empty space is content. ≥ 40% of any viewport must be intentional negative space.
+5. **Inevitability** — motion, transitions, and reveals must feel pre-determined, never decorative.
+
+---
+
+## 3. Editorial Composition Rules
+
+### 3.1 Grid
+- Use a **12-column desktop grid** with a **120px outer gutter** (≥1440px) / **64px** (1024–1439).
+- Columns are **soft constraints**, not visual cages. Type and images may overflow gutters intentionally for asymmetry.
+- Never center everything. Default alignment is **off-center, weighted to the optical golden ratio (≈ 0.382 / 0.618)**.
+
+### 3.2 Asymmetry
+- **DO** offset titles into column 2–7 while images sit in 8–12.
+- **DO** allow type to violate the column grid by 8–24px to create optical tension.
+- **DO** use a single dominant element per scene; everything else recedes.
+- **DON'T** center-stack title + subtitle + CTA + image. That is SaaS, not editorial.
+- **DON'T** distribute weight evenly. Editorial composition is **weighted**.
+
+### 3.3 Spatial Hierarchy
+Every viewport must declare a **primary**, **secondary**, and **ambient** layer:
+- **Primary** — the single thing the eye lands on first (≤1 per scene).
+- **Secondary** — supporting type, secondary image, caption.
+- **Ambient** — grain, atmospheric blur, background WebGL, vignette, light leak.
+
+If the ambient layer is missing, the scene feels flat → reject.
+
+### 3.4 Visual Density
+- Maximum **3 typographic sizes per viewport**.
+- Maximum **2 image elements per viewport** (excluding background atmosphere).
+- Maximum **1 interactive affordance** per scene (one CTA, one cursor target).
+- Cards, badges, pills, tag clouds → **forbidden** unless explicitly editorial (e.g., chapter index).
+
+---
+
+## 4. Emotional Pacing
+
+The site reads like a **120-page essay**, not a landing page.
+
+| Beat            | Duration on viewport | Emotional Tone        |
+|-----------------|----------------------|-----------------------|
+| Hero / Opening  | 1500–3000ms breath   | Suspension, awe       |
+| Establishing    | 2000ms hold          | Orientation, calm     |
+| Build           | 800–1400ms reveals   | Intent, momentum      |
+| Climax (case)   | Pinned, scroll-paced | Compression, focus    |
+| Release / Human | ≥1500ms stillness    | Reflection, intimacy  |
+| Closing         | 2000ms fade          | Memory, residue       |
+
+**Rule of pacing:** No two consecutive scenes share the same emotional tone. Rhythm = contrast.
+
+---
+
+## 5. Visual Restraint Standards
+
+- **Color** — never more than 2 chromatic accents per chapter (see `color-system.mdc`).
+- **Motion** — never animate more than 2 properties simultaneously per element (see `motion-system.mdc`).
+- **Decoration** — no ornamental icons, no decorative dividers, no "sparkle" microinteractions.
+- **Copy** — no marketing voice. Sentences are **short, declarative, and unhurried**. No exclamation marks. No emoji. No buzzwords.
+
+---
+
+## 6. Cinematic Sequencing Logic
+
+Every chapter follows a **shot-list pattern**:
+
+1. **Establishing shot** — wide, atmospheric, contextual (often WebGL or full-bleed image).
+2. **Cut to detail** — typography or single hero element, intimate scale.
+3. **Pull back** — context returns; user understands relationship between detail and whole.
+4. **Hold** — a moment of intentional stillness before the next chapter loads.
+
+Never cut → cut → cut without a hold. The hold is the meaning.
+
+---
+
+## 7. DO / DON'T
+
+### DO
+- DO design every scene as a single frame from a film.
+- DO let images breathe with ≥ 15% margin from any text.
+- DO use silence (empty scroll distance) as a narrative device.
+- DO write copy that could appear in a printed monograph.
+- DO compose with optical balance, not geometric symmetry.
+- DO let typography carry emotional weight before color or motion.
+
+### DON'T
+- DON'T add hover states to non-interactive elements.
+- DON'T use drop shadows for "depth" — depth comes from atmosphere, not Photoshop.
+- DON'T animate decoratively. Motion must serve narrative.
+- DON'T use stock layouts (hero / 3-column / testimonial / CTA grid).
+- DON'T use emoji, gradients-as-decoration, or trendy "glassmorphism".
+- DON'T center copy by default. Default is **left-aligned, ragged-right**.
+- DON'T add loading spinners. Use cinematic intros (see `transition-system.mdc`).
+
+---
+
+## 8. Implementation Standards
+
+- Every new section component must declare its **shot type** in a top-level JSDoc comment:
+  ```ts
+  /**
+   * @shot establishing | detail | pullback | hold | climax
+   * @chapter hero | case | human | cultural | closing
+   * @ambient grain + low-blur webgl
+   */
+  ```
+- Every section must consume tokens from `cinematic.tokens.ts` — no hard-coded spacing, type, or color in JSX.
+- Every section must be reviewable as a **single still frame screenshot**. If the still doesn't read as a film frame, the design fails.
+- Before merging, run the **3-second test**: pause the page at 3s into the scroll. If it doesn't look like a movie poster, redesign.
+
+---
+
+## 9. Cinematic Rationale (read before pushing back)
+
+Why these rules exist:
+- **Restraint** is not minimalism — it is **confidence**. Confident brands don't decorate.
+- **Asymmetry** creates **time**. Symmetry resolves instantly; asymmetric compositions hold the eye.
+- **Silence** is the most expensive element on the page; budget it like a scarce resource.
+- **Cinematic pacing** is the only defense against the user's infinite scroll instinct. We are training a different rhythm.
+
+If a stakeholder asks "can we add more here?", the answer is almost always **no**.

@@ -1,0 +1,234 @@
+---
+description: STRATEGICLAND — Motion system. GSAP, Framer Motion, Lenis-linked motion. Easing, timing, stagger, hierarchy, forbidden patterns. Consult before any animation work.
+globs: app/**/*.{ts,tsx}, components/**/*.{ts,tsx}, lib/motion/**/*.ts, hooks/use*Motion*.ts, hooks/useGsap*.ts
+alwaysApply: true
+---
+
+# STRATEGICLAND — Motion System
+
+> Motion is **cinematography**, not decoration.
+> Every animation must answer: *what does the camera want the audience to feel?*
+> If the answer is "nothing" or "look at me", delete the animation.
+
+---
+
+## 1. Motion Philosophy
+
+- We animate **fewer things, more slowly, with more intention**.
+- Motion is **physical**, not parametric — every move respects mass, inertia, and friction.
+- The default state of the page is **stillness**. Motion is an event, not a baseline.
+- Every motion has a **director's reason**: reveal, focus, transition, or breathing.
+
+---
+
+## 2. Tooling Hierarchy
+
+Use the right tool. Never mix without reason.
+
+| Tool             | Use For                                                                 |
+|------------------|-------------------------------------------------------------------------|
+| **GSAP**         | Scroll-linked timelines, pinned sequences, complex chained reveals, SVG/clip-path morphing. |
+| **GSAP ScrollTrigger** | Pinning, scrubbed scroll, horizontal sections, chapter transitions. |
+| **Framer Motion**| Component mount/unmount, layout transitions, gesture (drag, tap), shared layout. |
+| **Lenis**        | Global inertial scroll. Source of truth for `scroll` driver. Never bypass. |
+| **CSS transitions** | Micro hover (≤200ms) on simple properties (opacity, color). Nothing else. |
+
+**DON'T** animate the same property with two libraries. **DON'T** use `setInterval` / `requestAnimationFrame` outside of GSAP/R3F render loops.
+
+---
+
+## 3. Easing System (LOCKED)
+
+The project ships with a single easing dictionary. Import from `lib/motion/eases.ts`. **No inline cubic-béziers** elsewhere.
+
+```ts
+export const EASE = {
+  // Cinematic primaries — use these 90% of the time
+  cinematic:   "cubic-bezier(0.16, 1, 0.3, 1)",     // gsap "expo.out" feel — primary reveal
+  editorial:   "cubic-bezier(0.65, 0, 0.35, 1)",    // symmetric, for transitions
+  drift:       "cubic-bezier(0.22, 1, 0.36, 1)",    // long, contemplative reveal (≥1200ms)
+  settle:      "cubic-bezier(0.4, 0, 0.2, 1)",      // micro-settle, hovers (≤200ms)
+
+  // Atmospheric — for ambient/breathing motion
+  breath:      "cubic-bezier(0.45, 0.05, 0.55, 0.95)", // sine-like, infinite loops
+
+  // GSAP-named equivalents (when using gsap.to)
+  gsap: {
+    cinematic: "expo.out",
+    editorial: "power2.inOut",
+    drift:     "power3.out",
+    settle:    "power1.out",
+    breath:    "sine.inOut",
+  },
+} as const;
+```
+
+### Forbidden eases
+- `bounce`, `elastic`, `back` — **all variants forbidden**. They register as "cute" → kills cinematic tone.
+- `linear` — forbidden except in continuous loops (rotation, breathing, scroll-scrubbed value mapping).
+- `ease-in-out` (default CSS) — forbidden. Always use the named tokens.
+- Custom inline beziers in JSX — forbidden. Add to the dictionary first.
+
+---
+
+## 4. Timing System (LOCKED)
+
+| Token              | Duration | Use Case                                             |
+|--------------------|---------:|------------------------------------------------------|
+| `DUR.micro`        | 180ms    | Hover state changes, focus rings, cursor adapt       |
+| `DUR.quick`        | 380ms    | Small reveals, button reactions, label fades         |
+| `DUR.standard`     | 720ms    | Default content reveal (image, paragraph, heading)   |
+| `DUR.cinematic`    | 1200ms   | Hero element reveal, chapter title entry             |
+| `DUR.epic`         | 1800ms   | Chapter transitions, full-bleed dissolves            |
+| `DUR.glacial`      | 2600ms   | Atmospheric ambient loops, ultra-slow drifts        |
+
+```ts
+export const DUR = {
+  micro: 0.18, quick: 0.38, standard: 0.72,
+  cinematic: 1.2, epic: 1.8, glacial: 2.6,
+} as const;
+```
+
+### Constraints
+- **Never** use durations between tokens (no 0.5s, no 1s). Snap to the dictionary.
+- **Never** animate longer than `DUR.glacial` (2.6s) for a single property.
+- **Never** animate shorter than `DUR.micro` (180ms) — anything faster reads as a glitch.
+
+---
+
+## 5. Stagger System
+
+Stagger creates **rhythm**. Treat it as musical.
+
+```ts
+export const STAGGER = {
+  tight:    0.04,  // letters in a word, dots in a list
+  editorial: 0.08, // words in a phrase, image grid
+  scene:    0.16,  // sibling sections, paragraph blocks
+  chapter:  0.32,  // major elements between chapters
+} as const;
+```
+
+### Rules
+- Stagger groups must contain **3–9 elements**. More than 9 → break into sub-staggers.
+- For text reveal, stagger by **word**, not by character (character-stagger reads as "techy").
+  - Exception: short oversized titles (≤3 words) may stagger by character with `tight`.
+- Stagger direction defaults to **start** (top→bottom, left→right). For dramatic emphasis, use `from: "center"`.
+
+---
+
+## 6. Reveal System
+
+All reveals follow the **STRATEGICLAND reveal grammar**:
+
+```ts
+// Default content reveal
+gsap.from(target, {
+  yPercent: 8,        // never more than 12, never less than 4
+  opacity: 0,
+  filter: "blur(8px)",// optional, atmospheric reveals only
+  duration: DUR.standard,
+  ease: EASE.gsap.cinematic,
+  stagger: STAGGER.editorial,
+});
+```
+
+### Constraints
+- Translation: `yPercent` only, range **4–12%**. Never `xPercent` for reveals (reads as carousel).
+- Scale: forbidden for reveals (use opacity + translate). Scale is reserved for image treatments.
+- Rotation: forbidden except for ambient atmospheric motion ≤ 0.6deg.
+- Blur reveal (`filter: blur(8px)→blur(0)`): allowed only for hero / chapter establishing shots. Cost: GPU layer.
+- Always reveal **once** per scroll direction. No re-reveal on re-scroll up.
+
+---
+
+## 7. Scroll-Linked Motion
+
+- Scroll-scrubbed timelines must use `scrub: 1` (1-second smoothing) — **never** `scrub: true` (instant).
+- Scroll-velocity-driven values must clamp: `gsap.utils.clamp(min, max, value)`. No raw velocity → reads as motion sickness.
+- Parallax depth: max **3 layers** per scene. Background `0.3x`, midground `0.6x`, foreground `1x` (native).
+- Parallax displacement: max **15% of viewport height** total travel.
+- Always integrate with Lenis: subscribe via `lenis.on("scroll", ...)`, never via native `window.addEventListener("scroll")`.
+
+---
+
+## 8. Inertia & Physics Principles
+
+- All draggable / momentum elements obey **inertial decay** (Lenis or `gsap.InertiaPlugin`-style logic).
+- No element instantly stops. Every motion has a **falloff tail ≥ 200ms**.
+- Magnetic cursor effects (see `interaction-system.mdc`) use **damped lerp**: `lerp factor 0.08–0.12`.
+- Mouse-driven parallax intensity max: **24px translate** for hero elements, **8px** for body.
+
+---
+
+## 9. Layered Motion Hierarchy
+
+A single scene may compose motion in **at most 4 layers**:
+
+1. **Atmospheric** — slow ambient (grain drift, light leak, WebGL noise) → `breath` ease, ≥`DUR.glacial`.
+2. **Structural** — main reveal (hero text, image) → `cinematic` ease, `DUR.cinematic`.
+3. **Detail** — captions, secondary text → `cinematic` ease, `DUR.standard`, staggered after structural.
+4. **Reactive** — pointer-driven (parallax, magnetic) → `lerp 0.1`, no easing.
+
+Layers must enter in **order: 1 → 2 → 3**. Layer 4 is always-on. Never animate two structural elements simultaneously without stagger.
+
+---
+
+## 10. Forbidden Motion Patterns
+
+- ❌ Bouncy, elastic, back-out, overshooting eases.
+- ❌ Continuous looping rotation on UI elements (decorative spinners).
+- ❌ Pulsing CTAs, "breathing" buttons, scale-on-hover ≥ 1.05.
+- ❌ Carousel auto-advance.
+- ❌ Marquee tickers (unless explicitly editorial chapter device, never decorative).
+- ❌ Cursor trails / particle followers.
+- ❌ Splash screens with progress bars (use atmospheric intro instead).
+- ❌ Hover-triggered Lottie / SVG morph "fun" interactions.
+- ❌ Animating `top`, `left`, `width`, `height`, `margin`. Use `transform` and `opacity` only.
+- ❌ `will-change` set permanently. Set on enter, clear on complete.
+
+---
+
+## 11. Implementation Standards
+
+### File location
+- All reusable motion utilities live in `lib/motion/`.
+- Per-component motion in a co-located `<component>.motion.ts`.
+- Never inline > 8 lines of GSAP timeline inside a JSX file.
+
+### GSAP context isolation
+- All GSAP work in React must use `gsap.context()` and clean up in effect return.
+  ```ts
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from(".reveal", { /* ... */ });
+    }, scopeRef);
+    return () => ctx.revert();
+  }, []);
+  ```
+- Use `useGSAP` from `@gsap/react` if/when added to the stack — preferred over manual context.
+
+### Reduced motion
+- Respect `prefers-reduced-motion: reduce` globally via a `useReducedMotion()` hook.
+- In reduced mode: opacity reveals only, no translate, no blur, no scrub. Duration capped at `DUR.quick`.
+- Never disable navigation/transition logic — only soften it.
+
+### SSR / Hydration
+- Never animate during the first paint. Wait for `useLayoutEffect` and Lenis ready event.
+- Initial state must be **the final state** (so SSR snapshot is correct), then GSAP `from()` to move backward → forward.
+
+---
+
+## 12. Motion Review Checklist
+
+Before merging any motion work, confirm:
+- [ ] Eases come from `EASE` dictionary.
+- [ ] Durations come from `DUR` dictionary.
+- [ ] Stagger comes from `STAGGER` dictionary.
+- [ ] No animated `top/left/width/height/margin`.
+- [ ] No bouncy/elastic eases.
+- [ ] Reduced-motion path tested.
+- [ ] GSAP context cleaned up on unmount.
+- [ ] Single layer per element (no stacking translate + scale + rotate without reason).
+- [ ] If scrubbed, `scrub: 1` minimum.
+- [ ] Looks intentional at 0.5x playback (Cmd+Shift+P → "throttle CPU 4x" in DevTools).
