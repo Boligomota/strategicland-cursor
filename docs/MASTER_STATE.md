@@ -42,17 +42,22 @@ The KPI is **emotional residue at 30 seconds after closing the tab**.
 ## 3. Current State (Living Status)
 
 ### Phase
-| Phase                  | Status        |
-|------------------------|---------------|
-| Creative governance    | ✅ LOCKED — 17 `.mdc` rules + 9 `/docs` files in place |
-| HTML canon             | ✅ LOCKED — 6 reference HTML systems frozen as canon |
-| Next.js scaffold       | 🟡 IN PROGRESS — App Router boot, providers, fonts, Lenis bridge |
-| Component primitives   | 🔴 NOT STARTED — `<Type>`, `<EditorialBlock>`, `<SceneShell>`, `<EditorialImage>` |
-| Chapter system         | 🔴 NOT STARTED — chapter shells + atmosphere config |
-| WebGL root             | 🔴 NOT STARTED — single canvas + tunnel pattern |
-| Motion engine          | 🔴 NOT STARTED — `lib/motion/`, `lib/scroll/`, `lib/transitions/` |
-| Irregularity engine    | 🔴 NOT STARTED — `lib/irregularity/jitter.ts` |
-| Audio architecture     | 🔴 DEFERRED — `sound-behavior-system.mdc` defined; implementation later |
+> **Active phase:** HERO SYSTEM MODULARIZATION (declared 2026-05-13 — see `docs/changelogs/2026-05-13-foundational-governance-baseline.md §10`).
+
+| Phase                       | Status        |
+|-----------------------------|---------------|
+| Creative governance         | ✅ LOCKED — 17 cinematic `.mdc` rules + 10 foundational `/docs` files |
+| Continuity infrastructure   | ✅ LOCKED — 4 continuity prompt docs + immutable changelog system |
+| Orchestration governance    | ✅ LOCKED — `mcp-orchestration-system.mdc` + `MCP_ORCHESTRATION.md` (5 active MCPs, L0–L3) |
+| HTML canon                  | ✅ LOCKED — 6 reference HTML systems frozen as canon (HC-01 → HC-06) |
+| Next.js scaffold            | 🟡 IN PROGRESS — App Router boot, providers, fonts, Lenis bridge |
+| Hero chapter modularization | 🟡 ACTIVE PHASE — next architectural session begins here |
+| Component primitives        | 🔴 NOT STARTED — `<Type>`, `<EditorialBlock>`, `<SceneShell>`, `<EditorialImage>` |
+| Chapter system              | 🔴 NOT STARTED — chapter shells + atmosphere config |
+| WebGL root                  | 🔴 NOT STARTED — single canvas + tunnel pattern |
+| Motion engine               | 🔴 NOT STARTED — `lib/motion/`, `lib/scroll/`, `lib/transitions/` |
+| Irregularity engine         | 🔴 NOT STARTED — `lib/irregularity/jitter.ts` |
+| Audio architecture          | 🔴 DEFERRED — `sound-behavior-system.mdc` defined; implementation later |
 
 > **Update protocol:** when status changes, edit this section directly. Status badges: 🔴 not started · 🟡 in progress · ✅ done · ⛔ blocked · 🚫 cancelled.
 
@@ -66,6 +71,9 @@ The KPI is **emotional residue at 30 seconds after closing the tab**.
 - `tailwindcss@4` — uses `@theme` in CSS, not JS config
 
 ### Decisions logged
+- **2026-05-13 — Foundational governance baseline** — 18 `.mdc` rules + 14 `/docs/` files + 6 HC mappings frozen as immutable baseline. Phase advanced to `HERO SYSTEM MODULARIZATION`. See `docs/changelogs/2026-05-13-foundational-governance-baseline.md`.
+- **2026-05-13 — Changelog system established** — `docs/changelogs/INDEX.md` initialized with append-only governance preamble, naming convention, immutable policy, rollback referencing system, and future-entry template.
+- **2026-05-13 — MCP orchestration governance established** — 5 active MCPs assigned authority levels (Chrome DevTools L0, Context7 L0, Sequential Thinking L1, Supabase L2, Vercel L3). Anti-swarm philosophy locked. Continuity layer declared MCP-untouchable.
 - **Cursor rules path** — `.rules/` (not `.cursor/rules/`) per project owner's request.
 - **Documentation language** — code English, conversation Spanish (per user rules).
 - **Audio shipping mode** — muted by default, opt-in editorial toggle in header.
@@ -78,7 +86,7 @@ The KPI is **emotional residue at 30 seconds after closing the tab**.
 The project is governed by three interlocking layers:
 
 ### Layer 1 — `.rules/` (Cursor MDC rule system)
-Always-on creative + technical constraints. **17 files**:
+Always-on creative + technical constraints. **18 files** (17 cinematic + 1 orchestration):
 
 ```
 .rules/
@@ -98,13 +106,14 @@ Always-on creative + technical constraints. **17 files**:
 ├─ project-structure.mdc            # folders + naming
 ├─ human-irregularity-system.mdc    # bounded variance
 ├─ narrative-density-system.mdc     # tier system T01–T05
-└─ sound-behavior-system.mdc        # audio architecture
+├─ sound-behavior-system.mdc        # audio architecture
+└─ mcp-orchestration-system.mdc     # MCP authority + anti-swarm governance
 ```
 
 ### Layer 2 — `/docs/` (this folder)
-Human-readable governance. **13 files + 1 changelog folder**, organized in two tracks:
+Human-readable governance. **14 files + 1 changelog folder**, organized in two tracks:
 
-**Track A — Foundational governance (9 files):**
+**Track A — Foundational governance (10 files):**
 - `MASTER_STATE.md` — this file. Project-state truth.
 - `DESIGN_DNA.md` — what makes this project this project.
 - `SYSTEM_ARCHITECTURE.md` — technical translation of canon → modules.
@@ -114,13 +123,14 @@ Human-readable governance. **13 files + 1 changelog folder**, organized in two t
 - `ATMOSPHERIC_LANGUAGE.md` — atmosphere systems.
 - `CHAPTER_SYSTEM.md` — chapter mapping.
 - `DEVELOPMENT_GUIDELINES.md` — workflow and review.
+- `MCP_ORCHESTRATION.md` — operational manual for orchestration layer.
 
 **Track B — Continuity infrastructure (4 files + 1 folder):**
 - `CHAT_CONTINUITY_WORKFLOW.md` — official protocol for session continuity, modes, and forbidden patterns.
 - `CURRENT_TASK_TEMPLATE.md` — reusable task container injected at every session start.
 - `SESSION_CHANGELOG_GENERATOR.md` — operational prompt for end-of-session changelogs.
 - `DOCS_GENERATOR_PROMPT.md` — operational prompt for generating future docs consistently.
-- `docs/changelogs/` — append-only session deltas (`docs/changelogs/INDEX.md` + per-session entries).
+- `docs/changelogs/` — append-only session deltas (`INDEX.md` + per-session entries; first entry: `2026-05-13-foundational-governance-baseline.md`).
 
 ### Layer 3 — `/Users/juanluis/Desktop/design-*.html` (HTML canon)
 Six frozen HTML files that define the **visual contract**. They are the source of truth for layout, motion choreography, and atmospheric texture. They must never be redesigned — only **modularized, systematized, integrated, unified** into the Next.js architecture.
