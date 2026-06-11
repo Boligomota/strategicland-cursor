@@ -47,27 +47,29 @@ function noiseFrequency(variant: AtmosphericPlaceholderVariant): string {
   }
 }
 
+/* Light documentary tones per the HTML reference image system —
+   plates sit on #ddd surfaces and read as grayscale matter. */
 function glowStops(
   variant: AtmosphericPlaceholderVariant
 ): { offset: string; color: string }[] {
   switch (variant) {
     case "architectural":
       return [
-        { offset: "0%", color: "rgba(217, 196, 154, 0.08)" },
-        { offset: "55%", color: "rgba(22, 19, 16, 0.55)" },
-        { offset: "100%", color: "rgba(10, 9, 7, 0.95)" },
+        { offset: "0%", color: "rgba(221, 218, 211, 1)" },
+        { offset: "55%", color: "rgba(184, 180, 172, 1)" },
+        { offset: "100%", color: "rgba(138, 133, 125, 1)" },
       ];
     case "documentary":
       return [
-        { offset: "0%", color: "rgba(237, 230, 216, 0.06)" },
-        { offset: "60%", color: "rgba(22, 19, 16, 0.6)" },
-        { offset: "100%", color: "rgba(10, 9, 7, 0.95)" },
+        { offset: "0%", color: "rgba(214, 211, 204, 1)" },
+        { offset: "60%", color: "rgba(176, 172, 164, 1)" },
+        { offset: "100%", color: "rgba(126, 121, 113, 1)" },
       ];
     case "peak":
       return [
-        { offset: "0%", color: "rgba(217, 196, 154, 0.12)" },
-        { offset: "50%", color: "rgba(22, 19, 16, 0.55)" },
-        { offset: "100%", color: "rgba(10, 9, 7, 0.92)" },
+        { offset: "0%", color: "rgba(228, 225, 218, 1)" },
+        { offset: "50%", color: "rgba(190, 186, 178, 1)" },
+        { offset: "100%", color: "rgba(146, 141, 133, 1)" },
       ];
   }
 }

@@ -85,7 +85,7 @@ export function TransitionLayer() {
       className="pointer-events-none fixed inset-0 z-[9998]"
       style={{
         opacity: 0,
-        background: "var(--bg-deep-warm)",
+        background: "var(--bg-ivory)",
         willChange: "opacity",
       }}
     />

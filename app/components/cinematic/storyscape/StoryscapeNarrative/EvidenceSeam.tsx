@@ -21,7 +21,7 @@ export function EvidenceSeam() {
       data-density-tier="T01"
       aria-hidden
       className="relative w-full"
-      style={{ minHeight: "30vh" }}
+      style={{ minHeight: "10vh" }}
     />
   );
 }

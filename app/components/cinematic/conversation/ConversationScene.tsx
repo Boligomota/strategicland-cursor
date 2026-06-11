@@ -30,7 +30,7 @@ export function ConversationScene({ children }: { children: ReactNode }) {
       data-chapter="closing"
       data-chapter-name="conversation"
       data-density-tier-default="T01"
-      className="relative w-full"
+      className="section-dark relative w-full"
     >
       {children}
     </section>

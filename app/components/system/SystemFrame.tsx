@@ -1,22 +1,12 @@
 /**
- * SystemFrame — inset architectural border. Site-wide system element.
+ * SystemFrame — RETIRED VISUAL (visual migration to the HTML
+ * reference system). The inset architectural border was part of the
+ * legacy cinematic language; the HTML reference carries no frame.
  *
- * Promoted from app/components/cinematic/hero/HeroFrame during HC-01
- * stabilization. Lives in root layout; persists across chapters.
- *
- * Responsive inset establishes the canonical mobile framing rhythm:
- *   frame inset (16px) → 8px channel → content inset (24px)
- * so every content layer (hero, philosophy, rail, meta) shares the same
- * architectural margin and the frame reads as the outer boundary instead
- * of a competing element.
- *
- * z-index 100 (above content, below SystemMetaNav z101).
+ * The component stays mounted in the canonical provider tree
+ * (docs/SYSTEM_ARCHITECTURE.md §3) so the tree is not reordered;
+ * it simply renders nothing.
  */
 export function SystemFrame() {
-  return (
-    <div
-      aria-hidden
-      className="pointer-events-none fixed inset-[2vw] z-[100] rounded-[4px] border border-[rgba(237,230,216,0.03)] max-md:inset-5"
-    />
-  );
+  return null;
 }

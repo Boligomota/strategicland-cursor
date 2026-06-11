@@ -18,7 +18,7 @@ export function ReflectionBreath() {
       data-density-tier="T02"
       aria-hidden
       className="relative w-full"
-      style={{ minHeight: "40vh" }}
+      style={{ minHeight: "4vh" }}
     />
   );
 }

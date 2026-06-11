@@ -74,14 +74,26 @@ export function SystemMetaNav() {
     <>
       <nav
         aria-label="System meta"
-        className="fixed left-5 right-5 top-5 z-[101] flex justify-between text-[11px] uppercase text-[color:var(--text-dim)] md:hidden"
-        style={{ letterSpacing: "0.12em" }}
+        className="fixed left-0 top-0 z-[101] flex w-full items-start justify-between md:hidden"
+        style={{
+          padding: "1.5rem var(--section-pad)",
+          mixBlendMode: "difference",
+          color: "#fff",
+        }}
       >
-        <span className="font-medium text-[color:var(--text-cream)]">
+        <span
+          style={{
+            fontFamily: "var(--font-serif)",
+            fontSize: "1.5rem",
+            fontWeight: 600,
+            letterSpacing: "0.05em",
+            lineHeight: 1.1,
+          }}
+        >
           wmn/nd
         </span>
         <span
-          className="font-medium text-[color:var(--text-cream)]"
+          className="nav-meta"
           style={{ fontVariantNumeric: "tabular-nums" }}
           suppressHydrationWarning
         >
@@ -91,19 +103,26 @@ export function SystemMetaNav() {
 
       <nav
         aria-label="System meta"
-        className="fixed z-[101] hidden justify-between text-[11px] uppercase text-[color:var(--text-dim)] md:flex"
+        className="fixed left-0 top-0 z-[101] hidden w-full items-start justify-between md:flex"
         style={{
-          top: "4vw",
-          left: "4vw",
-          right: "4vw",
-          letterSpacing: "0.12em",
+          padding: "2rem var(--section-pad)",
+          mixBlendMode: "difference",
+          color: "#fff",
         }}
       >
-        <span className="font-medium text-[color:var(--text-cream)]">
+        <span
+          style={{
+            fontFamily: "var(--font-serif)",
+            fontSize: "1.5rem",
+            fontWeight: 600,
+            letterSpacing: "0.05em",
+            lineHeight: 1.1,
+          }}
+        >
           wmn/nd
         </span>
         <span
-          className="font-medium text-[color:var(--text-cream)]"
+          className="nav-meta"
           style={{ fontVariantNumeric: "tabular-nums" }}
           suppressHydrationWarning
         >

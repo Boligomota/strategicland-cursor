@@ -1,7 +1,6 @@
 "use client";
 
 import { EditorialStatement } from "./HeroNarrative/EditorialStatement";
-import { TemporalPause } from "./HeroNarrative/TemporalPause";
 import { HeroChapterBoundary } from "./HeroState/HeroChapterBoundary";
 
 /**
@@ -14,34 +13,25 @@ import { HeroChapterBoundary } from "./HeroState/HeroChapterBoundary";
  * Interdisciplinaria de Negocios y Marketing" — both owned by
  * EditorialStatement.
  *
- * Removed in the sitemap compliance pass (content with no source in
- * the sitemap):
- *  - Philosophy section (NarrativeFragments) + its meta grid
- *    (Método / Límite / Consecuencia).
- *  - "Sistemas Arquitectados" horizontal track (SYS_01–SYS_04).
- *  - Bottom meta paragraph ("arquitectura algorítmica") and the
- *    "Explorar filosofía" cue.
+ * PRESENTATION SOURCE: approved HTML reference hero — full-viewport
+ * umber field, content vertically centered, 12-column grid, boundary
+ * caption pinned to the bottom edge like the hero-meta-bottom strip.
  *
- *  1. Hero (titular + sub-título)   tier T03 editorial
- *  2. Temporal pause                tier T01 silence
- *  3. Chapter boundary              tier T01 closure
+ *  1. Hero (titular + sub-título)   full viewport, section-dark
+ *  2. Chapter boundary              bottom meta strip
  *
  * Pure structural ownership. No motion, no atmosphere — those live in
  * sibling subtrees and bind to the data-* selectors declared here.
  */
 export function HeroComposition() {
   return (
-    <>
-      <section
-        data-hero-section
-        className="relative flex h-screen w-full flex-col items-center justify-center px-7 md:px-[4vw]"
-      >
-        <EditorialStatement />
-      </section>
-
-      <TemporalPause height="40vh" mdHeight="20vh" label="silence" />
+    <section
+      data-hero-section
+      className="section-dark container-pad relative flex h-screen w-full flex-col justify-center"
+    >
+      <EditorialStatement />
 
       <HeroChapterBoundary />
-    </>
+    </section>
   );
 }

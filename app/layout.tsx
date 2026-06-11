@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Cormorant_Garamond, Inter, Space_Mono } from "next/font/google";
 import "./globals.css";
 import { ReducedMotionProvider } from "./providers/ReducedMotionProvider";
 import { IrregularityProvider } from "./providers/IrregularityProvider";
@@ -19,13 +19,28 @@ import {
 } from "./components/system";
 
 /**
- * Inter loaded per HC-01 canon. Future chapters load their own
- * canon-scoped typefaces (Cormorant + Manrope for HC-02/HC-03 etc.).
+ * Type stack per the approved HTML reference: Cormorant Garamond
+ * (serif display) + Inter (sans body) + Space Mono (metadata).
  */
+const cormorant = Cormorant_Garamond({
+  variable: "--font-cormorant",
+  subsets: ["latin"],
+  weight: ["300", "400", "600"],
+  style: ["normal", "italic"],
+  display: "swap",
+});
+
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   weight: ["300", "400", "500"],
+  display: "swap",
+});
+
+const spaceMono = Space_Mono({
+  variable: "--font-space-mono",
+  subsets: ["latin"],
+  weight: ["400", "700"],
   display: "swap",
 });
 
@@ -74,7 +89,10 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${inter.variable} h-full antialiased`}>
+    <html
+      lang="en"
+      className={`${cormorant.variable} ${inter.variable} ${spaceMono.variable} h-full antialiased`}
+    >
       <body className="min-h-full">
         <ReducedMotionProvider>
           <IrregularityProvider>

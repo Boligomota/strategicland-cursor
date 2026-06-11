@@ -40,11 +40,11 @@ export function CapabilitiesComposition() {
 
       <CapabilityFragments />
 
-      <TemporalPause height="22vh" mdHeight="14vh" label="silence" />
+      <TemporalPause height="8vh" mdHeight="4vh" label="silence" />
 
       <AppliedTension />
 
-      <TemporalPause height="22vh" mdHeight="14vh" label="silence" />
+      <TemporalPause height="8vh" mdHeight="4vh" label="silence" />
 
       <OutcomeLayer />
 

@@ -18,14 +18,15 @@ import { HeroVignette } from "./HeroVignette";
  * All layers are pointer-events:none and aria-hidden. They mount once at
  * chapter root and persist through scene scrolls.
  */
+/**
+ * RETIRED VISUAL (visual migration to the HTML reference system):
+ * the radial gradient base, WebGL particle field and vignette were
+ * legacy cinematic atmosphere layers. The HTML reference hero is a
+ * flat umber field; no atmospheric stack survives. Subcomponents
+ * stay exported for the unmounted legacy chapters.
+ */
 export function HeroAtmosphere() {
-  return (
-    <>
-      <AmbientDepth />
-      <LightField />
-      <HeroVignette />
-    </>
-  );
+  return null;
 }
 
 export { AmbientDepth, LightField, HeroVignette };

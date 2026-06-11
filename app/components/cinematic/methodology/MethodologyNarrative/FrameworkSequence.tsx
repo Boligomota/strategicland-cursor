@@ -3,34 +3,17 @@
 /**
  * FrameworkSequence — HC-02 framework progression (Scene 3, T03).
  *
- * Strategic progression as narrative architecture, NOT cards.
+ * CONTENT SOURCE (immutable law): Strategic Services Portfolio
+ * (sitemap §04 ¿QUÉ HACEMOS?). Five numbered service blocks, copy
+ * literal.
  *
- * Content: the Strategic Services Portfolio (sitemap §04 ¿QUÉ HACEMOS?).
- * Five numbered service blocks read as a single vertical editorial
- * sequence — separated by structural rule lines and amplified breathing
- * space. No card chrome, no border boxes, no shadow elevation. The
- * weight comes from typographic hierarchy and the silence between
- * blocks.
+ * PRESENTATION SOURCE: approved HTML reference .engine section —
+ * monospace section header over a hairline, then a shared-border
+ * node grid (3 columns desktop / 2 tablet / 1 mobile). Each node:
+ * teal monospace id, serif headline, light sans body.
  *
- * Composition:
- *  - Single column on mobile (always; the progression is linear).
- *  - 12-column grid on md+ with each block spanning columns 3-10 —
- *    keeps the eye on a stable axial measure, never sprawled corner
- *    to corner.
- *  - Top hairline rule rendered as an absolute <span> (not border-t)
- *    so MethodologyReveal can animate `opacity` + `scaleX` for the
- *    micro-cognitive "signal enters awareness" cue.
- *  - Each block: numeric eyebrow + title (type.headline) + body
- *    (type.body, lead.body 1.55).
- *
- * Reveal targets per step (cascade):
- *   1. `[data-methodology-framework-number]`  (eyebrow / numerator)
- *   2. `[data-methodology-framework-title]`   (headline)
- *   3. `[data-methodology-framework-body]`    (body)
- * MethodologyReveal stages each cascade with a 40 ms beat offset.
- *
- * Cross-step focus whisper is CSS-only (see globals.css
- * `[data-methodology-framework-list]:hover ...`). No JS hover state.
+ * Reveal targets per step (cascade) preserved:
+ *   [data-methodology-framework-line] / -number / -title / -body
  */
 
 const FRAMEWORK_STEPS = [
@@ -67,25 +50,22 @@ export function FrameworkSequence() {
       data-methodology-scene="framework"
       data-density-tier="T03"
       className="relative w-full"
-      style={{ paddingInline: "clamp(32px, 6vw, 96px)" }}
+      style={{ padding: "8vw 0" }}
     >
-      <div className="mx-auto w-full max-w-[1280px]">
-        <span
-          data-methodology-section-eyebrow
-          className="mb-10 block text-[11px] uppercase text-[color:var(--text-fog)] md:mb-12"
-          style={{ letterSpacing: "0.12em" }}
-        >
-          ¿Qué Hacemos? · Ecosistemas de Crecimiento Tangible
-        </span>
+      <div className="grid-12 container-pad">
+        <div className="section-header text-mono">
+          <span data-methodology-section-eyebrow>¿Qué Hacemos?</span>
+          <span>Ecosistemas de Crecimiento Tangible</span>
+        </div>
 
         <ol
           data-methodology-framework-list
-          className="m-0 flex list-none flex-col gap-[clamp(36px,4vw,64px)] p-0"
+          className="engine-grid m-0 list-none p-0"
         >
           {FRAMEWORK_STEPS.map((step) => (
             <li
               key={step.index}
-              className="methodology-framework-step relative grid w-full grid-cols-1 gap-5 pt-[clamp(20px,2.2vw,32px)] md:grid-cols-12 md:gap-x-[clamp(32px,4vw,72px)] md:gap-y-6"
+              className="methodology-framework-step engine-node relative"
             >
               <span
                 aria-hidden
@@ -93,49 +73,16 @@ export function FrameworkSequence() {
                 className="methodology-framework-line"
               />
 
-              <div className="md:col-span-3 md:pl-[clamp(8px,1vw,16px)]">
-                <span
-                  data-methodology-framework-number
-                  className="block text-[11px] uppercase text-[color:var(--text-fog)]"
-                  style={{
-                    letterSpacing: "0.12em",
-                    willChange: "opacity, transform",
-                  }}
-                >
-                  {step.index}
-                </span>
-              </div>
+              <span
+                data-methodology-framework-number
+                className="text-mono node-id"
+              >
+                {step.index}
+              </span>
 
-              <div className="md:col-span-9 md:max-w-[680px]">
-                <h3
-                  data-methodology-framework-title
-                  style={{
-                    fontSize: "clamp(26px, 3vw, 36px)",
-                    fontWeight: 300,
-                    lineHeight: 1.1,
-                    letterSpacing: "-0.02em",
-                    color: "var(--text-cream)",
-                    marginBottom: "clamp(14px, 1.1vw, 20px)",
-                    textWrap: "balance",
-                    willChange: "opacity, transform",
-                  }}
-                >
-                  {step.title}
-                </h3>
-                <p
-                  data-methodology-framework-body
-                  className="text-[color:var(--text-dim)]"
-                  style={{
-                    fontSize: "clamp(15px, 1.05vw, 17px)",
-                    lineHeight: 1.55,
-                    letterSpacing: "-0.005em",
-                    maxWidth: "62ch",
-                    willChange: "opacity, transform",
-                  }}
-                >
-                  {step.body}
-                </p>
-              </div>
+              <h3 data-methodology-framework-title>{step.title}</h3>
+
+              <p data-methodology-framework-body>{step.body}</p>
             </li>
           ))}
         </ol>

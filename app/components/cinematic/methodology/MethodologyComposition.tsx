@@ -37,11 +37,11 @@ export function MethodologyComposition() {
 
       <MethodStatement />
 
-      <TemporalPause height="28vh" mdHeight="14vh" label="silence" />
+      <TemporalPause height="8vh" mdHeight="4vh" label="silence" />
 
       <FrameworkSequence />
 
-      <TemporalPause height="26vh" mdHeight="12vh" label="silence" />
+      <TemporalPause height="8vh" mdHeight="4vh" label="silence" />
 
       <HumanAITension />
 

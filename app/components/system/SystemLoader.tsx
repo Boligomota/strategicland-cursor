@@ -99,15 +99,16 @@ export function SystemLoader() {
     <div
       ref={ref}
       data-system-loader
-      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[color:var(--bg-deep-warm)]"
+      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[color:var(--bg-umber)]"
     >
       <div
         ref={counterRef}
-        className="font-light leading-none"
+        className="leading-none"
         style={{
+          fontFamily: "var(--font-mono)",
           fontSize: "clamp(2.4883rem, 2.0898rem + 1.9926vw, 3.5619rem)",
           letterSpacing: "-0.02em",
-          color: "var(--text-cream)",
+          color: "var(--text-light)",
           fontVariantNumeric: "tabular-nums",
         }}
       >

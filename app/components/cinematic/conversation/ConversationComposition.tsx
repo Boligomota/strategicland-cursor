@@ -45,7 +45,7 @@ export function ConversationComposition() {
     <>
       <ConversationInvitation />
 
-      <TemporalPause height="28vh" mdHeight="18vh" label="silence (dilated)" />
+      <TemporalPause height="6vh" mdHeight="4vh" label="silence (dilated)" />
 
       <PersistentAtmosphere />
 

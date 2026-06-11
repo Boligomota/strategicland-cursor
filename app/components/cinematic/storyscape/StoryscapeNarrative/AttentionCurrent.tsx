@@ -1,31 +1,22 @@
 "use client";
 
 /**
- * AttentionCurrent — first current of the Storyscape climate
+ * AttentionCurrent — first current of the Storyscape grid
  * (Scene 2, T02): activators 1–3 of the sitemap grid.
  *
  * CONTENT SOURCE (immutable law): Mapa de Sitio Estratégico §07 —
- * "Retícula interactiva de 9 activadores (Herramientas de
- * Transformación)", items 1–3: Atmósferas de entretenimiento ·
- * Hipermediatización · Experiencias Inmersivas. Names and
- * definitions are literal sitemap wording — no invention.
+ * items 1–3, literal sitemap wording.
  *
- * Experiential temperature (architecture §7): KINETIC — md+ renders
- * the three forces side by side in a 3-col cadence, mobile stacks.
- * Motion temperature is owned by StoryscapeReveal via
- * [data-storyscape-current="attention"].
+ * PRESENTATION SOURCE: approved HTML reference .engine section —
+ * monospace section header over a hairline, then the first row of
+ * the shared-border 3-column activator grid (serif headline + light
+ * sans body per node). The two sibling currents continue the same
+ * grid below (engine-grid-cont), so the nine activators read as one
+ * reticle while the three scenes stay architecturally distinct.
  *
- * Grammar inherits the canonical fragment field (FragmentedSignals):
- * hairlines, no cards, breathing between items. Per architecture
- * §10 ACT A carries NO imagery — the invisibility of the forces is
- * the concept. Typography over the global atmospheric field.
- *
- * Reveal targets:
- *  - [data-storyscape-current-eyebrow]
- *  - [data-storyscape-force] (per item)
- *  - [data-storyscape-force-line]
- *  - [data-storyscape-force-name]
- *  - [data-storyscape-force-body]
+ * Reveal targets preserved:
+ *  - [data-storyscape-current-eyebrow] / [data-storyscape-force] /
+ *    -force-line / -force-name / -force-body
  */
 
 const ATTENTION_FORCES = [
@@ -53,74 +44,33 @@ export function AttentionCurrent() {
       data-storyscape-current="attention"
       data-density-tier="T02"
       className="relative w-full"
-      style={{
-        minHeight: "70vh",
-        paddingInline: "clamp(32px, 6vw, 96px)",
-        paddingBlock: "10vh",
-      }}
+      style={{ paddingTop: "6vw" }}
     >
-      <div className="mx-auto w-full max-w-[1280px]">
-        {/* Spacing inline per repo canon — the unlayered global reset
-            (* { margin:0; padding:0 }) outranks Tailwind's layered
-            margin/padding utilities. */}
-        <span
-          data-storyscape-current-eyebrow
-          className="block text-[11px] uppercase text-[color:var(--text-fog)]"
-          style={{
-            letterSpacing: "0.12em",
-            marginBottom: "clamp(40px, 5vh, 56px)",
-            willChange: "opacity, transform",
-          }}
-        >
-          Retícula interactiva de 9 activadores · Herramientas de
-          Transformación
-        </span>
+      <div className="grid-12 container-pad">
+        <div className="section-header text-mono">
+          <span data-storyscape-current-eyebrow>
+            Retícula interactiva de 9 activadores
+          </span>
+          <span>Herramientas de Transformación</span>
+        </div>
 
         <ul
           data-storyscape-force-list
-          className="grid list-none grid-cols-1 gap-x-[clamp(28px,3.4vw,64px)] gap-y-[clamp(36px,4vw,56px)] md:grid-cols-3"
+          className="engine-grid m-0 list-none p-0"
         >
           {ATTENTION_FORCES.map((force) => (
             <li
               key={force.id}
               data-storyscape-force={force.id}
-              className="storyscape-force relative"
-              style={{
-                paddingTop: "clamp(16px, 1.6vw, 24px)",
-                willChange: "opacity, transform",
-              }}
+              className="storyscape-force engine-node relative"
             >
               <span
                 aria-hidden
                 data-storyscape-force-line
                 className="storyscape-force-line"
               />
-              <span
-                data-storyscape-force-name
-                className="block text-[11px] uppercase text-[color:var(--text-fog)]"
-                style={{
-                  letterSpacing: "0.12em",
-                  marginBottom: "clamp(12px, 1.2vw, 16px)",
-                  willChange: "opacity, transform",
-                }}
-              >
-                {force.name}
-              </span>
-              <p
-                data-storyscape-force-body
-                className="text-[color:var(--text-cream)]"
-                style={{
-                  fontSize: "clamp(16px, 1.2vw, 19px)",
-                  fontWeight: 300,
-                  lineHeight: 1.4,
-                  letterSpacing: "-0.01em",
-                  textWrap: "balance",
-                  maxWidth: "26ch",
-                  willChange: "opacity, transform",
-                }}
-              >
-                {force.line}
-              </p>
+              <h3 data-storyscape-force-name>{force.name}</h3>
+              <p data-storyscape-force-body>{force.line}</p>
             </li>
           ))}
         </ul>

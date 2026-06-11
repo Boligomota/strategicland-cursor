@@ -40,8 +40,8 @@ export function PersistentAtmosphere() {
       aria-hidden
       className="relative w-full"
       style={{
-        minHeight: "80vh",
-        paddingInline: "clamp(32px, 6vw, 96px)",
+        minHeight: "6vh",
+        paddingInline: "var(--section-pad)",
       }}
     />
   );
