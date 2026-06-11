@@ -1,0 +1,11 @@
+export { ClosingChapter } from "./ClosingChapter";
+export { ClosingScene } from "./ClosingScene";
+export { ClosingComposition } from "./ClosingComposition";
+export { ClosingProvider, useClosing } from "./ClosingState/ClosingProvider";
+export { ClosingProgressController } from "./ClosingState/ClosingProgressController";
+export { ClosingRegistration } from "./ClosingState/ClosingRegistration";
+export { ClosingSceneRegistration } from "./ClosingState/ClosingSceneRegistration";
+export { ClosingReveal } from "./ClosingMotion/ClosingReveal";
+export { EmergenceFromMemory } from "./ClosingNarrative/EmergenceFromMemory";
+export { AfterimageFragment } from "./ClosingNarrative/AfterimageFragment";
+export { PersistentAtmosphere } from "./ClosingNarrative/PersistentAtmosphere";

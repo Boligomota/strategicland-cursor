@@ -1,26 +1,356 @@
 @import "tailwindcss";
 
+/* ============================================================
+   STRATEGICLAND — Global tokens
+   Sources of truth:
+     .rules/color-system.mdc
+     .rules/typography-system.mdc
+     docs/HTML_CANON.md §HC-01 (canon-resolved warm-black palette)
+   ============================================================ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-deep-warm: #0A0907;
+  --bg-mid-warm: #161310;
+  --text-cream: #EDE6D8;
+  --text-dim: #A8A096;
+  --text-fog: #7A7468;
+  --line-cool: rgba(237, 230, 216, 0.10);
+  --accent-parchment: #D9C49A;
+
+  --hero-depth-collapse: 0;
+
+  --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg-deep-warm: var(--bg-deep-warm);
+  --color-bg-mid-warm: var(--bg-mid-warm);
+  --color-text-cream: var(--text-cream);
+  --color-text-dim: var(--text-dim);
+  --color-text-fog: var(--text-fog);
+  --color-line-cool: var(--line-cool);
+  --color-accent-parchment: var(--accent-parchment);
+  --font-sans: var(--font-inter);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  background-color: var(--bg-deep-warm);
+  color: var(--text-cream);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+html.lenis {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto;
+}
+
+.lenis.lenis-smooth [data-scroll-container] {
+  will-change: transform;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg-deep-warm);
+  color: var(--text-cream);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+/* ============================================================
+   System cursor visibility — hide native cursor only when the
+   custom cursor is mounted and active. Touch devices skip this.
+   Owned by GlobalCursorProvider (app/providers/GlobalCursorProvider.tsx).
+   ============================================================ */
+html.sl-cursor-active,
+html.sl-cursor-active * {
+  cursor: none !important;
+}
+@media (hover: none), (pointer: coarse) {
+  html.sl-cursor-active,
+  html.sl-cursor-active * {
+    cursor: auto !important;
+  }
+}
+
+.sl-cursor-ring.is-hover {
+  width: 64px !important;
+  height: 64px !important;
+  background: rgba(237, 230, 216, 0.04);
+  border-color: rgba(237, 230, 216, 0.28);
+}
+
+/* ============================================================
+   Editorial / Hero image atmospheric layers per
+   .rules/image-treatment-system.mdc §5. Every image (real raster
+   or AtmosphericPlaceholder) is graded into the chapter through
+   three overlays: color-grade tint, edge vignette, grain.
+   ============================================================ */
+.editorial-image-frame,
+.hero-image-frame {
+  isolation: isolate;
+  background-color: var(--bg-deep-warm);
+}
+
+.atmospheric-placeholder {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+}
+
+.editorial-image-grade,
+.editorial-image-vignette,
+.editorial-image-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  display: block;
+}
+
+/* Color grade tint — multiply with parchment warmth at 4% opacity.
+   Lifts the image into the chapter's warm-black field without
+   shifting the photographer's intent. */
+.editorial-image-grade {
+  background-color: var(--accent-parchment);
+  mix-blend-mode: multiply;
+  opacity: 0.04;
+}
+
+/* Edge vignette — radial darken at corners, 4% intensity. */
+.editorial-image-vignette {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 55%,
+    rgba(10, 9, 7, 0.32) 100%
+  );
+  mix-blend-mode: multiply;
+}
+
+/* Grain overlay — SVG noise as data URL, ~6% perceived intensity.
+   Matches the chapter's atmospheric grain (same seeded turbulence
+   recipe as AmbientDepth + AtmosphericPlaceholder). */
+.editorial-image-grain {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='5'/><feColorMatrix values='0 0 0 0 0.55 0 0 0 0 0.5 0 0 0 0 0.45 0 0 0 0.4 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  background-size: 160px 160px;
+  mix-blend-mode: overlay;
+  opacity: 0.07;
+}
+
+/* ============================================================
+   HC-03 · Signal fragment hairline — observational detection
+   cue. Initial state lives in CSS so first paint matches the
+   GSAP-from state (no FOUC). SignalReveal animates opacity
+   0.12 → 0.32 and scaleX 0.92 → 1 once each fragment enters
+   the viewport.
+   No hover whisper here: per HC-03 brief the interaction layer
+   must remain "subconscious / ambient / perceptual" — a hover
+   affordance would read as UI behaviour and break the chapter's
+   observational silence.
+   ============================================================ */
+.signal-fragment-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--text-cream);
+  opacity: 0.12;
+  transform: scaleX(0.92);
+  transform-origin: left center;
+  pointer-events: none;
+}
+
+/* ============================================================
+   HC-02 · Methodology framework — micro-cognitive interaction
+   layer (signal line + cross-step focus whisper).
+
+   Signal line: replaces the prior border-top hairline. Initial
+   state lives in CSS so first paint matches the GSAP-from state
+   (no FOUC). MethodologyReveal animates opacity 0.12 → 0.32 and
+   scaleX 0.92 → 1 once the step enters the viewport.
+
+   Cross-step whisper: pure CSS hover. When the framework list is
+   hovered, sibling steps drift to 0.65 opacity; the hovered step
+   stays at 1. Atmospheric easing 600ms — feels like attention
+   shifting, not like a hover affordance triggering.
+   ============================================================ */
+.methodology-framework-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--text-cream);
+  opacity: 0.12;
+  transform: scaleX(0.92);
+  transform-origin: left center;
+  pointer-events: none;
+}
+
+[data-methodology-framework-list] .methodology-framework-step {
+  transition: opacity 600ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  [data-methodology-framework-list]:hover .methodology-framework-step {
+    opacity: 0.65;
+  }
+  [data-methodology-framework-list] .methodology-framework-step:hover {
+    opacity: 1;
+  }
+}
+
+/* ============================================================
+   HC-04 · Capability fragment hairline — operational structural
+   cue. Mirrors the methodology framework line / signal fragment
+   line recipe (same warm-cream stroke, same 0.12 → 0.32 opacity
+   envelope, same scaleX 0.92 → 1 expansion). Initial state lives
+   in CSS so first paint matches the GSAP-from state (no FOUC).
+   CapabilitiesReveal animates each line individually as its
+   capability enters the viewport — operational sequencing, not a
+   simultaneous burst.
+
+   No hover whisper here: per HC-04 brief the interaction layer
+   must remain "focused / intentional / quietly powerful" — a
+   hover affordance would read as services-grid behaviour and
+   break the operational restraint.
+   ============================================================ */
+.capability-fragment-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--text-cream);
+  opacity: 0.12;
+  transform: scaleX(0.92);
+  transform-origin: left center;
+  pointer-events: none;
+}
+
+/* ============================================================
+   HC-05 ACT A · Storyscape force hairline — the climate's
+   structural cue. Same canonical recipe as the signal /
+   capability lines (warm-cream stroke, 0.12 → 0.32 opacity
+   envelope, scaleX 0.92 → 1 expansion). Initial state lives in
+   CSS so first paint matches the GSAP-from state (no FOUC).
+   StoryscapeReveal animates each line with the temperature of
+   its current (kinetic / warm / serene).
+
+   No hover whisper: the forces are climate, not menu — a hover
+   affordance would read as a services grid (failure mode §15.4).
+   ============================================================ */
+.storyscape-force-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--text-cream);
+  opacity: 0.12;
+  transform: scaleX(0.92);
+  transform-origin: left center;
+  pointer-events: none;
+}
+
+/* ============================================================
+   M-04 · Case frame hairline — strategic structural cue for the
+   StrategicIntro (frame) scene on /work/[slug]. Mirrors the
+   methodology framework line recipe (same warm-cream stroke,
+   same 0.12 → 0.32 opacity envelope, same scaleX 0.92 → 1
+   expansion). Initial state lives in CSS so first paint matches
+   the GSAP-from state (no FOUC). CaseReveal animates the line
+   once the frame scene enters the viewport.
+
+   No hover whisper: a case chapter is evidence, not a services
+   grid — the interaction layer stays still.
+   ============================================================ */
+.case-frame-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--text-cream);
+  opacity: 0.12;
+  transform: scaleX(0.92);
+  transform-origin: left center;
+  pointer-events: none;
+}
+
+/* ============================================================
+   ACT C · Conversation door — animated underline per
+   .rules/interaction-system.mdc §3. Wipe in from the left,
+   wipe out to the right (origin reverse = cinematic motion,
+   not UI affordance). 1px, currentColor, 380ms cinematic
+   easing. Hover is acknowledgment: opacity drifts to 0.7 per
+   §2.1 — the element never becomes a different element.
+   ============================================================ */
+.sl-door-link {
+  position: relative;
+  display: inline-block;
+  transition: opacity 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.sl-door-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform 380ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.sl-door-link:hover,
+.sl-door-link:focus-visible {
+  opacity: 0.7;
+}
+.sl-door-link:hover::after,
+.sl-door-link:focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+
+/* ============================================================
+   Reduced-motion: hard fallbacks per
+   .rules/motion-system.mdc + accessibility discipline.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .methodology-framework-line,
+  .signal-fragment-line,
+  .capability-fragment-line,
+  .storyscape-force-line,
+  .case-frame-line {
+    opacity: 0.32;
+    transform: scaleX(1);
+  }
+
+  /* Static underline under reduced motion (interaction-system §11). */
+  .sl-door-link::after {
+    transform: scaleX(1);
+    transform-origin: left center;
+  }
 }

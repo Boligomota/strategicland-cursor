@@ -132,6 +132,7 @@ If a changelog entry is duplicating governance content, the governance file is t
 
 | Date (UTC) | Filename | Mode | Scope | Phase declared | Supersedes |
 |------------|----------|------|-------|----------------|------------|
+| 2026-06-11 | [`2026-06-11-film-implementation-snapshot.md`](./2026-06-11-film-implementation-snapshot.md) | ARCHITECTURE | 8 chapters + system layer + motion/scroll/transition/irregularity engines + media primitives + asset contracts + case registry + `/work/[slug]` + agent governance | FILM IMPLEMENTATION (de-facto; MASTER_STATE reconciliation pending) | — |
 | 2026-05-13 | [`2026-05-13-foundational-governance-baseline.md`](./2026-05-13-foundational-governance-baseline.md) | ARCHITECTURE | 18 `.mdc` + 14 `/docs/` + 6 HC + MCP orchestration + continuity infrastructure | FOUNDATIONAL GOVERNANCE COMPLETE → HERO SYSTEM MODULARIZATION | — (genesis) |
 
 ---

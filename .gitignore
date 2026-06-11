@@ -20,6 +20,9 @@
 # production
 /build
 
+# asset source masters (design-ops sync, per image-treatment-system.mdc §11)
+/assets/source/
+
 # misc
 .DS_Store
 *.pem
