@@ -18,7 +18,7 @@
 const IDENTITY_FORCES = [
   {
     id: "identity",
-    name: "Identidad y Patrones",
+    name: "Identidad y Patrones (Fetichización de los Datos)",
     line: "Uso estético y analítico de la data para que el usuario mida, entienda y presuma sus propios comportamientos y hábitos vinculados a la marca.",
   },
   {

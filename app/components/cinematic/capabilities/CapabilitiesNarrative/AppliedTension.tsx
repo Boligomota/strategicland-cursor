@@ -60,6 +60,8 @@ export function AppliedTension() {
           data-capabilities-tension-resolve
           style={{ gridColumn: "1 / 9", marginTop: "3rem" }}
         >
+          Nuestra capacidad de discernir lo relevante de lo ruidoso, ponerlo
+          en un lugar adecuado y hacer de lo complejo algo claro y explícito.
           Rechazamos la creencia ciega en la información de nuevas Apps o
           métricas automatizadas para entregar estrategias ancladas en la
           realidad de los negocios.

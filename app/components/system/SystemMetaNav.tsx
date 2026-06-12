@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { SystemInstitutionalIndex } from "./SystemInstitutionalIndex";
 
 /**
  * SystemMetaNav — top corners metadata strip. Site-wide system element.
@@ -13,6 +14,10 @@ import { useEffect, useState } from "react";
  * Systems" / "Active") had no source in the Mapa de Sitio Estratégico
  * and was removed. The strip now carries only the canonical brand
  * mark "wmn/nd" (literal sitemap identity) and the functional clock.
+ *
+ * INSTITUTIONAL INDEX PASS: "wmn/nd" is the discoverability entry point
+ * for the knowledge ecosystem — opens SystemInstitutionalIndex (editorial
+ * archive panel, not a navbar).
  *
  * Mobile cut per responsive-system.mdc §1/§13 ("the same film, shorter
  * cut — never erased"):
@@ -37,6 +42,14 @@ import { useEffect, useState } from "react";
 const PLACEHOLDER_FULL = "—— ——";
 const PLACEHOLDER_SHORT = "——";
 
+const WORDMARK_STYLE: React.CSSProperties = {
+  fontFamily: "var(--font-serif)",
+  fontSize: "1.5rem",
+  fontWeight: 600,
+  letterSpacing: "0.05em",
+  lineHeight: 1.1,
+};
+
 function formatTimeFull(d: Date): string {
   const h = String(d.getHours()).padStart(2, "0");
   const m = String(d.getMinutes()).padStart(2, "0");
@@ -50,9 +63,44 @@ function formatTimeShort(d: Date): string {
   return `${h}:${m}`;
 }
 
+function InstitutionalWordmark({
+  triggerRef,
+  open,
+  onToggle,
+}: {
+  triggerRef: React.RefObject<HTMLButtonElement | null>;
+  open: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <button
+      ref={triggerRef}
+      type="button"
+      className="institutional-wordmark"
+      onClick={onToggle}
+      aria-expanded={open}
+      aria-haspopup="dialog"
+      aria-label="Open institutional index"
+      style={WORDMARK_STYLE}
+    >
+      wmn/nd
+    </button>
+  );
+}
+
 export function SystemMetaNav() {
   const [timeFull, setTimeFull] = useState<string>(PLACEHOLDER_FULL);
   const [timeShort, setTimeShort] = useState<string>(PLACEHOLDER_SHORT);
+  const [indexOpen, setIndexOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+
+  const toggleIndex = useCallback(() => {
+    setIndexOpen((prev) => !prev);
+  }, []);
+
+  const closeIndex = useCallback(() => {
+    setIndexOpen(false);
+  }, []);
 
   useEffect(() => {
     let lastShort = "";
@@ -74,61 +122,38 @@ export function SystemMetaNav() {
     <>
       <nav
         aria-label="System meta"
-        className="fixed left-0 top-0 z-[101] flex w-full items-start justify-between md:hidden"
+        className="institutional-meta-nav fixed left-0 top-0 z-[101] flex w-full items-start justify-between"
         style={{
-          padding: "1.5rem var(--section-pad)",
           mixBlendMode: "difference",
           color: "#fff",
         }}
       >
+        <InstitutionalWordmark
+          triggerRef={triggerRef}
+          open={indexOpen}
+          onToggle={toggleIndex}
+        />
         <span
-          style={{
-            fontFamily: "var(--font-serif)",
-            fontSize: "1.5rem",
-            fontWeight: 600,
-            letterSpacing: "0.05em",
-            lineHeight: 1.1,
-          }}
-        >
-          wmn/nd
-        </span>
-        <span
-          className="nav-meta"
+          className="nav-meta md:hidden"
           style={{ fontVariantNumeric: "tabular-nums" }}
           suppressHydrationWarning
         >
           {timeShort}
         </span>
-      </nav>
-
-      <nav
-        aria-label="System meta"
-        className="fixed left-0 top-0 z-[101] hidden w-full items-start justify-between md:flex"
-        style={{
-          padding: "2rem var(--section-pad)",
-          mixBlendMode: "difference",
-          color: "#fff",
-        }}
-      >
         <span
-          style={{
-            fontFamily: "var(--font-serif)",
-            fontSize: "1.5rem",
-            fontWeight: 600,
-            letterSpacing: "0.05em",
-            lineHeight: 1.1,
-          }}
-        >
-          wmn/nd
-        </span>
-        <span
-          className="nav-meta"
+          className="nav-meta hidden md:inline"
           style={{ fontVariantNumeric: "tabular-nums" }}
           suppressHydrationWarning
         >
           {timeFull}
         </span>
       </nav>
+
+      <SystemInstitutionalIndex
+        open={indexOpen}
+        onClose={closeIndex}
+        triggerRef={triggerRef}
+      />
     </>
   );
 }

@@ -5,7 +5,8 @@
  * (Scene 2, T02): activators 1–3 of the sitemap grid.
  *
  * CONTENT SOURCE (immutable law): Mapa de Sitio Estratégico §07 —
- * items 1–3, literal sitemap wording.
+ * Concepto (introductory framework) plus activators 1–3, literal
+ * sitemap wording.
  *
  * PRESENTATION SOURCE: approved HTML reference .engine section —
  * monospace section header over a hairline, then the first row of
@@ -15,7 +16,8 @@
  * reticle while the three scenes stay architecturally distinct.
  *
  * Reveal targets preserved:
- *  - [data-storyscape-current-eyebrow] / [data-storyscape-force] /
+ *  - [data-storyscape-current-eyebrow] (header + §07 Concepto) /
+ *    [data-storyscape-concept] / [data-storyscape-force] /
  *    -force-line / -force-name / -force-body
  */
 
@@ -47,11 +49,24 @@ export function AttentionCurrent() {
       style={{ paddingTop: "6vw" }}
     >
       <div className="grid-12 container-pad">
-        <div className="section-header text-mono">
-          <span data-storyscape-current-eyebrow>
-            Retícula interactiva de 9 activadores
-          </span>
-          <span>Herramientas de Transformación</span>
+        <div data-storyscape-current-eyebrow style={{ gridColumn: "1 / -1" }}>
+          <div className="section-header text-mono">
+            <span>Retícula interactiva de 9 activadores</span>
+            <span>Herramientas de Transformación</span>
+          </div>
+
+          <div
+            className="manifesto-text"
+            style={{ marginTop: 0, marginBottom: "3rem" }}
+          >
+            <p data-storyscape-concept>
+              No hacemos campañas aisladas con fecha de caducidad; diseñamos
+              universos narrativos expandidos y sostenidos en el tiempo. El{" "}
+              <strong>Storyscape</strong> es el escenario específico hecho a la
+              medida donde la marca coexiste, interactúa y crece con su
+              audiencia.
+            </p>
+          </div>
         </div>
 
         <ul

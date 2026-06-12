@@ -4,8 +4,9 @@
  * FragmentedSignals — HC-03 INPUT CORE dual dimensions (T03).
  *
  * CONTENT SOURCE (immutable law): Mapa de Sitio Estratégico §05
- * INPUT CORE — Columna A: DIMENSIÓN MARCA (Concepto · Conexión) and
- * Columna B: DIMENSIÓN PRODUCTO (Concepto · Conexión), literal.
+ * INPUT CORE — Columna A: DIMENSIÓN MARCA (El Eje del Propósito) and
+ * Columna B: DIMENSIÓN PRODUCTO (El Eje de los Beneficios), each with
+ * Concepto · Conexión bodies, literal sitemap wording.
  *
  * PRESENTATION SOURCE: approved HTML reference .engine section —
  * monospace section header over a hairline, then a shared-border
@@ -55,9 +56,50 @@ export function FragmentedSignals() {
           <span>La Dualidad Estratégica</span>
         </div>
 
+        <div
+          data-signal-column-headers
+          className="engine-grid engine-grid-2 m-0 p-0"
+          style={{ gridColumn: "1 / -1" }}
+        >
+          <div
+            data-signal-fragment
+            data-signal-fragment-register="desire"
+            className="signal-fragment engine-node relative"
+          >
+            <span
+              aria-hidden
+              data-signal-fragment-line
+              className="signal-fragment-line"
+            />
+            <span data-signal-fragment-label className="text-mono node-id">
+              Dimensión Marca
+            </span>
+            <p data-signal-fragment-body>
+              El Eje del Propósito · Meta: Deseo
+            </p>
+          </div>
+          <div
+            data-signal-fragment
+            data-signal-fragment-register="need"
+            className="signal-fragment engine-node relative"
+          >
+            <span
+              aria-hidden
+              data-signal-fragment-line
+              className="signal-fragment-line"
+            />
+            <span data-signal-fragment-label className="text-mono node-id">
+              Dimensión Producto
+            </span>
+            <p data-signal-fragment-body>
+              El Eje de los Beneficios · Meta: Necesidad
+            </p>
+          </div>
+        </div>
+
         <ul
           data-signal-fragment-list
-          className="engine-grid engine-grid-2 m-0 list-none p-0"
+          className="engine-grid engine-grid-2 engine-grid-cont m-0 list-none p-0"
         >
           {SIGNAL_FRAGMENTS.map((fragment) => (
             <li

@@ -32,7 +32,7 @@ export type ShowcaseReference = {
 };
 
 export const SHOWCASE_EVIDENCE_INTRO =
-  "Grid de resultados basado en la experiencia adquirida en proyectos reales de alto nivel.";
+  "Grid de resultados basado en la experiencia adquirida en proyectos reales de alto nivel (como el reposicionamiento de Sico con “Mi Punto S”, la producción inmersiva de “Chocolate Fountain” o estrategias de retail para marcas globales).";
 
 export const SHOWCASE_REFERENCES: readonly ShowcaseReference[] = [
   {

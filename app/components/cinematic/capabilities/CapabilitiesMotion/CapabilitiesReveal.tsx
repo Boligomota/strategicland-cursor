@@ -265,15 +265,16 @@ export function CapabilitiesReveal({ children }: { children: ReactNode }) {
       const thresholdSection = wrap.querySelector<HTMLElement>(
         '[data-capabilities-scene="threshold"]'
       );
-      const thresholdCue = wrap.querySelector<HTMLElement>(
-        "[data-capabilities-threshold-cue]"
+      const thresholdCues = wrap.querySelectorAll<HTMLElement>(
+        "[data-capabilities-threshold-cue], [data-capabilities-threshold-deep-dive]"
       );
-      if (thresholdSection && thresholdCue) {
-        gsap.set(thresholdCue, { opacity: 0 });
-        gsap.to(thresholdCue, {
+      if (thresholdSection && thresholdCues.length > 0) {
+        gsap.set(thresholdCues, { opacity: 0 });
+        gsap.to(thresholdCues, {
           opacity: 1,
           duration: DUR.cinematic,
           ease: EASE.gsap.drift,
+          stagger: STAGGER.editorial,
           scrollTrigger: {
             trigger: thresholdSection,
             start: "top 85%",

@@ -56,14 +56,6 @@ export function HumanInterpretation() {
             </h3>
           </div>
         </div>
-
-        <p
-          data-signal-interpretation-resolve
-          style={{ gridColumn: "1 / 9", marginTop: "3rem" }}
-        >
-          Nuestra metodología alinea estas dos fuerzas para crear una
-          propuesta de valor inexpugnable.
-        </p>
       </div>
     </section>
   );

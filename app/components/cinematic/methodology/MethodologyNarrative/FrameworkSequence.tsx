@@ -1,11 +1,14 @@
 "use client";
 
+import { EditorialLink } from "@/app/components/interaction/EditorialLink";
+import { KNOWLEDGE_ROUTES } from "@/content/knowledge/routes";
+
 /**
  * FrameworkSequence — HC-02 framework progression (Scene 3, T03).
  *
- * CONTENT SOURCE (immutable law): Strategic Services Portfolio
- * (sitemap §04 ¿QUÉ HACEMOS?). Five numbered service blocks, copy
- * literal.
+ * CONTENT SOURCE (immutable law): Mapa de Sitio Estratégico §04 —
+ * Descriptivo Profundo + Portafolio de Servicios + Enlazamiento
+ * Estratégico literal.
  *
  * PRESENTATION SOURCE: approved HTML reference .engine section —
  * monospace section header over a hairline, then a shared-border
@@ -58,6 +61,28 @@ export function FrameworkSequence() {
           <span>Ecosistemas de Crecimiento Tangible</span>
         </div>
 
+        <div
+          className="manifesto-text"
+          style={{ gridColumn: "1 / -1", marginTop: 0, marginBottom: "3rem" }}
+        >
+          <p
+            data-methodology-framework-deep
+            className="methodology-framework-deep"
+          >
+            Identificamos las fricciones invisibles que los algoritmos
+            estandarizados ignoran por diseño. No entregamos anuncios aislados;
+            construimos infraestructuras de relevancia. Nuestro proceso limpia el
+            ruido mediático, traza el <strong>Storyscape</strong> (universos
+            narrativos persistentes) y activa los canales que realmente impactan
+            la rentabilidad del cliente. Pasamos de la interrupción del
+            Storytelling tradicional a la ejecución de una{" "}
+            <strong>&ldquo;Utilidad Invisible&rdquo;</strong>: sistemas que
+            trabajan en segundo plano para eliminar la carga cognitiva del
+            usuario, convirtiendo la marca en una necesidad vital, orgánica y
+            recurrente.
+          </p>
+        </div>
+
         <ol
           data-methodology-framework-list
           className="engine-grid m-0 list-none p-0"
@@ -86,6 +111,60 @@ export function FrameworkSequence() {
             </li>
           ))}
         </ol>
+
+        <div
+          data-methodology-framework-control
+          className="text-mono system-meta methodology-framework-link"
+          style={{
+            gridColumn: "1 / -1",
+            marginTop: "2rem",
+            display: "flex",
+            flexDirection: "column",
+            gap: "0.75rem",
+          }}
+        >
+          <p data-methodology-control-pill="innovation">
+            Director de Innovación —{" "}
+            <EditorialLink
+              href={KNOWLEDGE_ROUTES["engine-deep-dive"]}
+              className="methodology-framework-link"
+            >
+              Metodología técnica
+            </EditorialLink>
+          </p>
+          <p data-methodology-control-pill="ceo">
+            CEO —{" "}
+            <EditorialLink
+              href={KNOWLEDGE_ROUTES["verticales-impacto"]}
+              className="methodology-framework-link"
+            >
+              Soluciones por Industria
+            </EditorialLink>
+          </p>
+        </div>
+
+        <p
+          data-methodology-framework-link
+          className="text-mono system-meta methodology-framework-link"
+          style={{ gridColumn: "1 / -1", marginTop: "3rem" }}
+        >
+          Conoce el rigor técnico detrás de nuestras soluciones en{" "}
+          <EditorialLink
+            href={KNOWLEDGE_ROUTES["engine-deep-dive"]}
+            className="methodology-framework-link"
+          >
+            [THE ENGINE DEEP-DIVE]
+          </EditorialLink>{" "}
+          o descubre cómo aplicamos este sistema operativo en sectores
+          específicos en{" "}
+          <EditorialLink
+            href={KNOWLEDGE_ROUTES["verticales-impacto"]}
+            className="methodology-framework-link"
+          >
+            [VERTICALES DE IMPACTO]
+          </EditorialLink>
+          .
+        </p>
       </div>
     </section>
   );

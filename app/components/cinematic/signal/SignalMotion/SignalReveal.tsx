@@ -22,6 +22,11 @@ import { useSignal } from "../SignalState/SignalProvider";
  *  prelude (T01)
  *    chapter marker drifts in opacity-only.
  *
+ *  constellation (T04)
+ *    anchor → sub-line (definition, sincronía, desfase, alineación)
+ *    → correlations cascade (stagger 0.04 between correlations,
+ *    longer DUR.cinematic for the anchor).
+ *
  *  fragments (T03)
  *    Each fragment runs its own micro-cognitive cascade:
  *      1. signal line (opacity 0.12 → 0.32, scaleX 0.92 → 1, EASE.drift)
@@ -30,15 +35,11 @@ import { useSignal } from "../SignalState/SignalProvider";
  *    via per-element scrollTriggers — each fragment lifts when it
  *    individually enters the viewport, never as a single burst.
  *
- *  constellation (T04)
- *    anchor → sub-line → correlations cascade (stagger 0.04 between
- *    correlations, longer DUR.cinematic for the anchor).
- *
  *  interpretation (T03)
  *    machine → human dual statement cluster, then resolve sub-line.
  *
  *  compression (T01)
- *    statement opacity drift, then forward cue.
+ *    forward cue opacity drift only (§05 → §06 threshold).
  *
  * Gating:
  *  - Reduced motion: skip entirely; chapter renders fully visible.
@@ -261,49 +262,26 @@ export function SignalReveal({ children }: { children: ReactNode }) {
         }
       }
 
-      // ── Compression — statement drift, forward cue ─────────────
+      // ── Compression — forward cue only (§05 → §06 threshold) ───
       const compressionSection = wrap.querySelector<HTMLElement>(
         '[data-signal-scene="compression"]'
-      );
-      const compressionStatement = wrap.querySelector<HTMLElement>(
-        "[data-signal-compression-statement]"
       );
       const compressionCue = wrap.querySelector<HTMLElement>(
         "[data-signal-compression-cue]"
       );
-      if (compressionSection && compressionStatement) {
-        gsap.set(compressionStatement, { opacity: 0, y: 12 });
-        if (compressionCue) gsap.set(compressionCue, { opacity: 0 });
+      if (compressionSection && compressionCue) {
+        gsap.set(compressionCue, { opacity: 0 });
 
-        const tl = gsap.timeline({
+        gsap.to(compressionCue, {
+          opacity: 1,
+          duration: DUR.cinematic,
+          ease: EASE.gsap.drift,
           scrollTrigger: {
             trigger: compressionSection,
             start: "top 80%",
             once: true,
           },
         });
-
-        tl.to(compressionStatement, {
-          opacity: 1,
-          y: 0,
-          duration: DUR.cinematic,
-          ease: EASE.gsap.cinematic,
-          force3D: true,
-          roundProps: "y",
-          clearProps: "transform",
-        });
-
-        if (compressionCue) {
-          tl.to(
-            compressionCue,
-            {
-              opacity: 1,
-              duration: DUR.cinematic,
-              ease: EASE.gsap.drift,
-            },
-            "-=0.4"
-          );
-        }
       }
     }, wrap);
 

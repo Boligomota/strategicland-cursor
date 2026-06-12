@@ -13,16 +13,17 @@ import { StrategicCompression } from "./SignalNarrative/StrategicCompression";
  *
  * CONTENT SOURCE (immutable law): Mapa de Sitio Estratégico §05
  * INPUT CORE. Scene order mirrors the sitemap's section order:
- * Introducción Metodológica → Dimensión Marca / Dimensión Producto →
- * Resultados de análisis → consecuencia del desfase.
+ * Introducción Metodológica (Premisa → Sincronía → Desfase → Alineación)
+ * → Dimensión Marca / Dimensión Producto → Resultados de análisis
+ * → threshold Input Core → The Engine.
  *
  *  1. Signal prelude            tier T01 silence       (seam from HC-02)
  *  2. Pattern constellation     tier T04 immersive     (Introducción Metodológica)
  *  3. Temporal pause            tier T01 silence       (T04 → T03 bridge)
- *  4. Fragmented signals        tier T03 editorial     (las dos dimensiones)
+ *  4. Fragmented signals        tier T03 editorial     (matriz filas 1–2)
  *  5. Temporal pause            tier T01 silence       (T03 → T03 bridge)
- *  6. Human interpretation      tier T03 editorial     (resultados de análisis)
- *  7. Strategic compression     tier T01 silence       (closing realization)
+ *  6. Human interpretation      tier T03 editorial     (matriz fila 3)
+ *  7. Strategic compression     tier T01 silence       (§05 → §06 threshold)
  *
  * Pacing per narrative-density-system.mdc §5.2 satisfied: no two
  * consecutive scenes share a tier outside sustained T01 silence.

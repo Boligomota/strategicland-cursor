@@ -5,6 +5,7 @@
  * and route transitions. No chapter-scoped logic permitted here.
  */
 export { SystemFrame } from "./SystemFrame";
+export { SystemInstitutionalIndex } from "./SystemInstitutionalIndex";
 export { SystemMetaNav } from "./SystemMetaNav";
 export { SystemCursor } from "./SystemCursor";
 export { SystemLoader } from "./SystemLoader";

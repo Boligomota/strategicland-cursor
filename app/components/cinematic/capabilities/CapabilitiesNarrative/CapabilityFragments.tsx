@@ -4,6 +4,7 @@
  * CapabilityFragments — HC-04 THE ENGINE data-audit sources (Scene 2, T02).
  *
  * CONTENT SOURCE (immutable law): Mapa de Sitio Estratégico §06 —
+ * Lógica intro ("El \"Engine\" es nuestra caja negra…") plus
  * "Fuentes de Auditoría de Data (Business Intelligence)". All copy is
  * literal from the sitemap. No invention.
  *
@@ -52,7 +53,17 @@ export function CapabilityFragments() {
       <div className="grid-12 container-pad">
         <div className="section-header text-mono">
           <span data-capabilities-section-eyebrow>The Engine</span>
-          <span>Fuentes de Auditoría de Data</span>
+          <span>Fuentes de Auditoría de Data (Business Intelligence)</span>
+        </div>
+
+        <div
+          className="manifesto-text"
+          style={{ gridColumn: "1 / -1", marginTop: 0, marginBottom: "3rem" }}
+        >
+          <p data-capability-logic-intro>
+            El &quot;Engine&quot; es nuestra caja negra de Business
+            Intelligence.
+          </p>
         </div>
 
         <ul

@@ -43,17 +43,25 @@ export function MethodologyReveal({ children }: { children: ReactNode }) {
     const wrap = wrapRef.current;
     if (!wrap) return;
     if (!root) return;
+    if (!wrap.isConnected) return;
 
     const ctx = gsap.context(() => {
-      const statementLines = wrap.querySelectorAll<HTMLElement>(
-        ".methodology-statement-line"
+      const statementLines = Array.from(
+        wrap.querySelectorAll<HTMLElement>(".methodology-statement-line")
       );
       const statementSection = wrap.querySelector<HTMLElement>(
         '[data-methodology-scene="statement"]'
       );
       if (statementSection && statementLines.length > 0) {
         gsap.set(statementLines, { opacity: 0, y: 24 });
-        gsap.to(statementLines, {
+        const statementTl = gsap.timeline({
+          scrollTrigger: {
+            trigger: statementSection,
+            start: "top 72%",
+            once: true,
+          },
+        });
+        statementTl.to(statementLines, {
           opacity: 1,
           y: 0,
           duration: DUR.cinematic,
@@ -61,11 +69,6 @@ export function MethodologyReveal({ children }: { children: ReactNode }) {
           stagger: STAGGER.scene,
           force3D: true,
           roundProps: "y",
-          scrollTrigger: {
-            trigger: statementSection,
-            start: "top 72%",
-            once: true,
-          },
         });
       }
 
@@ -130,22 +133,80 @@ export function MethodologyReveal({ children }: { children: ReactNode }) {
             roundProps: "y",
             clearProps: "opacity,transform",
           },
-          0.1
+          line ? 0.1 : 0
         );
       });
 
-      const tensionStatement = wrap.querySelector<HTMLElement>(
-        "[data-methodology-tension-statement]"
-      );
-      const tensionCaption = wrap.querySelector<HTMLElement>(
-        "[data-methodology-tension-caption]"
-      );
       const tensionSection = wrap.querySelector<HTMLElement>(
         '[data-methodology-scene="tension"]'
       );
-      if (tensionSection && tensionStatement && tensionCaption) {
-        gsap.set([tensionStatement, tensionCaption], { opacity: 0, y: 24 });
-        gsap.to([tensionStatement, tensionCaption], {
+      if (tensionSection) {
+        const tensionTargets = [
+          tensionSection.querySelector<HTMLElement>(
+            "[data-methodology-tension-lead]"
+          ),
+          tensionSection.querySelector<HTMLElement>(
+            "[data-methodology-tension-statement] .methodology-tension-line"
+          ),
+          tensionSection.querySelector<HTMLElement>(
+            "[data-methodology-tension-definition]"
+          ),
+          tensionSection.querySelector<HTMLElement>(
+            "[data-methodology-tension-caption]"
+          ),
+        ].filter((el): el is HTMLElement => el != null);
+
+        if (tensionTargets.length > 0) {
+          gsap.set(tensionTargets, { opacity: 0, y: 24 });
+          const tensionTl = gsap.timeline({
+            scrollTrigger: {
+              trigger: tensionSection,
+              start: "top 72%",
+              once: true,
+            },
+          });
+          tensionTl.to(tensionTargets, {
+            opacity: 1,
+            y: 0,
+            duration: DUR.cinematic,
+            ease: EASE.gsap.cinematic,
+            stagger: STAGGER.scene,
+            force3D: true,
+            roundProps: "y",
+          });
+        }
+      }
+
+      const frameworkSection = wrap.querySelector<HTMLElement>(
+        '[data-methodology-scene="framework"]'
+      );
+      const frameworkDeep = wrap.querySelector<HTMLElement>(
+        "[data-methodology-framework-deep]"
+      );
+      const frameworkControl = wrap.querySelector<HTMLElement>(
+        "[data-methodology-framework-control]"
+      );
+      const frameworkLink = wrap.querySelector<HTMLElement>(
+        "[data-methodology-framework-link]"
+      );
+      if (
+        frameworkSection &&
+        (frameworkDeep || frameworkControl || frameworkLink)
+      ) {
+        const frameworkProse = [
+          frameworkDeep,
+          frameworkControl,
+          frameworkLink,
+        ].filter((el): el is HTMLElement => el != null);
+        gsap.set(frameworkProse, { opacity: 0, y: 14 });
+        const frameworkProseTl = gsap.timeline({
+          scrollTrigger: {
+            trigger: frameworkSection,
+            start: "top 78%",
+            once: true,
+          },
+        });
+        frameworkProseTl.to(frameworkProse, {
           opacity: 1,
           y: 0,
           duration: DUR.cinematic,
@@ -153,11 +214,6 @@ export function MethodologyReveal({ children }: { children: ReactNode }) {
           stagger: STAGGER.scene,
           force3D: true,
           roundProps: "y",
-          scrollTrigger: {
-            trigger: tensionSection,
-            start: "top 72%",
-            once: true,
-          },
         });
       }
 
@@ -169,15 +225,17 @@ export function MethodologyReveal({ children }: { children: ReactNode }) {
       );
       if (thresholdCue && thresholdSection) {
         gsap.set(thresholdCue, { opacity: 0 });
-        gsap.to(thresholdCue, {
-          opacity: 1,
-          duration: DUR.cinematic,
-          ease: EASE.gsap.drift,
+        const thresholdTl = gsap.timeline({
           scrollTrigger: {
             trigger: thresholdSection,
             start: "top 80%",
             once: true,
           },
+        });
+        thresholdTl.to(thresholdCue, {
+          opacity: 1,
+          duration: DUR.cinematic,
+          ease: EASE.gsap.drift,
         });
       }
 
@@ -189,22 +247,25 @@ export function MethodologyReveal({ children }: { children: ReactNode }) {
       );
       if (chapterMarker && preludeSection) {
         gsap.set(chapterMarker, { opacity: 0 });
-        gsap.to(chapterMarker, {
-          opacity: 1,
-          duration: DUR.cinematic,
-          ease: EASE.gsap.drift,
+        const preludeTl = gsap.timeline({
           scrollTrigger: {
             trigger: preludeSection,
             start: "top 85%",
             once: true,
           },
         });
+        preludeTl.to(chapterMarker, {
+          opacity: 1,
+          duration: DUR.cinematic,
+          ease: EASE.gsap.drift,
+        });
       }
     }, wrap);
 
+    let disposed = false;
     let fontsRefreshed = false;
     const refreshAfterFonts = () => {
-      if (fontsRefreshed) return;
+      if (fontsRefreshed || disposed) return;
       fontsRefreshed = true;
       ScrollTrigger.refresh();
     };
@@ -214,6 +275,7 @@ export function MethodologyReveal({ children }: { children: ReactNode }) {
     const refreshTimer = window.setTimeout(refreshAfterFonts, 1200);
 
     return () => {
+      disposed = true;
       window.clearTimeout(refreshTimer);
       ctx.revert();
     };
