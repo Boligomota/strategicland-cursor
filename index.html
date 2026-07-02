@@ -1674,11 +1674,13 @@ const SMOOTH_SCROLL = false;
 
 /* ════ SCROLL-FX (GSAP ScrollTrigger) — reconstruido ════ */
 (function(){
- try{
   if (reduceMotion) return;
   if (!window.gsap || !window.ScrollTrigger){ console.warn('GSAP no disponible — scroll-FX inactivos'); return; }
   gsap.registerPlugin(ScrollTrigger);
 
+ /* Efectos decorativos: si alguno falla, NUNCA debe tumbar el rail
+    horizontal de SOLUCIONES (que corre en su propio try más abajo). */
+ try{
   /* — PIN del GAP: fase 1 el titular entra y la frase aparece (se fija);
        fase 2 el fondo se abre a TODO EL ANCHO detrás del texto — */
   gsap.timeline({
@@ -1701,18 +1703,35 @@ const SMOOTH_SCROLL = false;
 
   /* — Works/Impacto: reveal de imagen + ascenso del texto (composite-only) — */
   document.querySelectorAll('.work-card').forEach(card => {
+    const media = card.querySelector('.ph-media');
+    const info = card.querySelectorAll('.work-info > *');
+    if (!media) return;
     const tl = gsap.timeline({ scrollTrigger:{ trigger:card, start:'top 78%', once:true } });
-    tl.from(card.querySelector('.ph-media'), {opacity:0, y:48, duration:.8, ease:'power3.out'})
-      .from(card.querySelectorAll('.work-info > *'), {y:30, opacity:0, duration:.55, stagger:.06, ease:'power2.out'}, '-=.45');
+    tl.from(media, {opacity:0, y:48, duration:.8, ease:'power3.out'});
+    if (info.length) tl.from(info, {y:30, opacity:0, duration:.55, stagger:.06, ease:'power2.out'}, '-=.45');
   });
 
-  /* — Steps y servicios: ascenso suave al entrar — */
-  gsap.utils.toArray('.step, .services-list li, .principle').forEach(el => {
-    gsap.from(el, {y:30, opacity:0, duration:.7, ease:'power2.out',
-      scrollTrigger:{ trigger:el, start:'top 85%', once:true }});
+  /* — Steps y principios: ascenso suave al entrar —
+       (.services-list li eliminado: esa lista ya no existe, la sección
+        es ahora #systemsRail con .sys-card) */
+  gsap.utils.toArray('.step, .principle').filter(Boolean).forEach(el => {
+    try{
+      gsap.from(el, {y:30, opacity:0, duration:.7, ease:'power2.out',
+        scrollTrigger:{ trigger:el, start:'top 85%', once:true }});
+    }catch(err){ console.warn('Reveal omitido en un elemento:', err); }
   });
 
-  /* — ARCHITECTED SYSTEMS: rail horizontal pinneado (scroll vertical → horizontal) — */
+  /* — Grilla de clientes: fade-out al hacer scroll hacia el GAP (efecto monolog) — */
+  const cg = document.querySelector('.clients-grid');
+  if (cg){
+    gsap.to(cg, {opacity:.15, ease:'none',
+      scrollTrigger:{ trigger:cg, start:'center 40%', end:'bottom top', scrub:true }});
+  }
+ }catch(err){ console.warn('Scroll-FX decorativos desactivados por error:', err); }
+
+  /* — ARCHITECTED SYSTEMS: rail horizontal pinneado (scroll vertical → horizontal).
+       Aislado en su PROPIO try: un fallo en los efectos decorativos ya no lo apaga — */
+ try{
   (function(){
     const rail = document.getElementById('systemsRail');
     const section = document.querySelector('.services');
@@ -1730,14 +1749,10 @@ const SMOOTH_SCROLL = false;
       }
     });
   })();
+ }catch(err){ console.warn('Rail horizontal de SOLUCIONES no inicializado:', err); }
 
-  /* — Grilla de clientes: fade-out al hacer scroll hacia el GAP (efecto monolog) — */
-  const cg = document.querySelector('.clients-grid');
-  if (cg){
-    gsap.to(cg, {opacity:.15, ease:'none',
-      scrollTrigger:{ trigger:cg, start:'center 40%', end:'bottom top', scrub:true }});
-  }
- }catch(err){ console.warn('Scroll-FX desactivados por error:', err); }
+  /* Recalcular posiciones una vez creados todos los triggers */
+  ScrollTrigger.refresh();
 })();
 })();   /* cierre del IIFE exterior de Fase 3 (initLenis/loadLenis) */
 </script>
