@@ -1,0 +1,11 @@
+CARPETA DE IMÁGENES — wmn/nd
+
+Coloca aquí las imágenes de los casos de IMPACTO con estos nombres EXACTOS:
+  street-trees.png       → Street Trees by Absolut
+  art-walk.png           → Art Walk
+  chocolate-fountain.png → Chocolate Fountain
+
+Specs recomendadas:
+  - Proporción ~16:10 (ej. 1600 x 1000 px)
+  - Peso por imagen: < 400 KB
+  - Nombres sin espacios ni acentos
