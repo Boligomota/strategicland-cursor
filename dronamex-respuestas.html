@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Espacio de respuesta — Dronamex | wmn/nd</title>
+<meta name="description" content="Diez preguntas al RFP de marketing digital y generación de prospectos.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#080807;
+    --surface:#141413;
+    --line:#393632;
+    --text:#bebbb6;
+    --muted:#938f8a;
+    --dim:#6b645c;
+    --accent:#ff5e00;
+    --footer:#0b0b0a;
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0;padding:0;background:var(--bg);color:var(--text);
+    font-family:'Space Grotesk',Arial,Helvetica,sans-serif;
+    font-size:17px;line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  .f-display{font-family:'Archivo','Arial Narrow',Arial,sans-serif;}
+  .f-mono{font-family:'IBM Plex Mono','Courier New',monospace;}
+  .wrap{max-width:720px;margin:0 auto;padding:0 40px;}
+  a{color:var(--accent);}
+
+  /* Navbar */
+  .nav{border-bottom:1px solid var(--line);}
+  .nav-inner{display:flex;justify-content:space-between;align-items:center;padding:24px 0;}
+  .nav-brand{font-family:'Archivo','Arial Narrow',Arial,sans-serif;font-size:18px;font-weight:800;letter-spacing:-0.5px;color:var(--text);}
+  .nav-tag{font-family:'IBM Plex Mono','Courier New',monospace;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;}
+
+  /* Hero */
+  .hero{padding:72px 0 48px;}
+  .eyebrow{font-family:'IBM Plex Mono','Courier New',monospace;font-size:11px;color:var(--accent);text-transform:uppercase;letter-spacing:3px;margin:0 0 24px;}
+  h1{font-family:'Archivo','Arial Narrow',Arial,sans-serif;font-size:46px;line-height:1.02;font-weight:800;letter-spacing:-1px;text-transform:uppercase;color:var(--text);margin:0 0 28px;}
+  .lede{font-size:18px;line-height:1.55;margin:0;color:var(--text);}
+  .lede span{color:var(--muted);}
+
+  /* Progreso */
+  .progress{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line);padding:14px 0;}
+  .progress-inner{display:flex;justify-content:space-between;align-items:center;gap:16px;}
+  .progress-label{font-family:'IBM Plex Mono','Courier New',monospace;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;}
+  .progress-bar{flex:1;height:2px;background:var(--line);position:relative;}
+  .progress-fill{position:absolute;left:0;top:0;height:2px;background:var(--accent);width:0%;transition:width .25s ease;}
+  .saved{font-family:'IBM Plex Mono','Courier New',monospace;font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:1px;white-space:nowrap;}
+
+  /* Bloques */
+  .block{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:36px 32px;margin:0 0 20px;}
+  .block-label{font-family:'IBM Plex Mono','Courier New',monospace;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin:0 0 14px;}
+  h2{font-family:'Archivo','Arial Narrow',Arial,sans-serif;font-size:24px;line-height:1.15;font-weight:700;color:var(--text);margin:0 0 8px;}
+  .block-note{font-size:15px;line-height:1.6;color:var(--muted);margin:0 0 28px;}
+
+  /* Preguntas */
+  .q{border-top:1px solid var(--line);padding:26px 0 0;margin:0 0 26px;}
+  .q:last-of-type{margin-bottom:0;}
+  .q-meta{font-family:'IBM Plex Mono','Courier New',monospace;font-size:10px;color:var(--accent);text-transform:uppercase;letter-spacing:2px;margin:0 0 10px;}
+  .q-text{font-size:16px;line-height:1.6;color:var(--text);margin:0 0 16px;}
+  textarea{
+    width:100%;min-height:96px;resize:vertical;
+    background:var(--bg);border:1px solid var(--line);border-radius:4px;
+    color:var(--text);font-family:'Space Grotesk',Arial,Helvetica,sans-serif;
+    font-size:16px;line-height:1.6;padding:14px 16px;
+  }
+  textarea:focus{outline:none;border-color:var(--accent);}
+  textarea::placeholder{color:var(--dim);}
+
+  input[type=text],input[type=email]{
+    width:100%;background:var(--bg);border:1px solid var(--line);border-radius:4px;
+    color:var(--text);font-family:'Space Grotesk',Arial,Helvetica,sans-serif;
+    font-size:16px;padding:13px 16px;
+  }
+  input:focus{outline:none;border-color:var(--accent);}
+  input::placeholder{color:var(--dim);}
+  .field-label{font-family:'IBM Plex Mono','Courier New',monospace;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;display:block;margin:0 0 8px;}
+  .who{border-top:1px solid var(--line);padding-top:22px;margin-top:26px;}
+
+  /* Envío */
+  .send{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:36px 32px;margin:8px 0 0;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:0 0 24px;}
+  .btn{
+    display:inline-block;background:var(--accent);color:var(--bg);
+    font-family:'IBM Plex Mono','Courier New',monospace;font-size:12px;
+    text-transform:uppercase;letter-spacing:1px;text-decoration:none;
+    padding:15px 32px;border:0;border-radius:4px;cursor:pointer;
+  }
+  .btn:hover{opacity:.9;}
+  .btn-ghost{
+    display:inline-block;background:transparent;color:var(--accent);
+    border:1px solid var(--accent);border-radius:4px;
+    font-family:'IBM Plex Mono','Courier New',monospace;font-size:11px;
+    text-transform:uppercase;letter-spacing:1px;text-decoration:none;
+    padding:13px 26px;cursor:pointer;
+  }
+  .actions{display:flex;flex-wrap:wrap;gap:14px;align-items:center;}
+  .send-note{font-family:'IBM Plex Mono','Courier New',monospace;font-size:10px;line-height:1.8;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin:22px 0 0;}
+
+  /* Confirmación */
+  .done{display:none;background:var(--surface);border:1px solid var(--accent);border-radius:4px;padding:40px 32px;text-align:left;}
+  .done.on{display:block;}
+
+  /* Footer */
+  footer{background:var(--footer);border-top:1px solid var(--line);margin-top:72px;padding:40px 0;}
+  .f-row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;}
+  .f-brand{font-family:'Archivo','Arial Narrow',Arial,sans-serif;font-size:16px;font-weight:800;color:var(--text);}
+  .f-tag{font-family:'IBM Plex Mono','Courier New',monospace;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+  .f-data{font-family:'IBM Plex Mono','Courier New',monospace;font-size:10px;line-height:1.8;color:var(--dim);text-transform:uppercase;margin:24px 0 0;}
+  .f-data a{color:var(--dim);text-decoration:none;}
+  .f-social{margin:24px 0 0;display:flex;flex-wrap:wrap;gap:18px;}
+  .f-social a{font-family:'IBM Plex Mono','Courier New',monospace;font-size:10px;color:var(--accent);text-decoration:none;text-transform:uppercase;letter-spacing:1px;}
+
+  @media (max-width:640px){
+    .wrap{padding:0 24px;}
+    h1{font-size:34px;line-height:1.05;}
+    h2{font-size:22px;}
+    .hero{padding:48px 0 36px;}
+    .block,.send{padding:28px 22px;}
+    .grid2{grid-template-columns:1fr;}
+    .f-row{flex-direction:column;align-items:flex-start;gap:10px;}
+    .btn,.btn-ghost{width:100%;text-align:center;}
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<div class="nav"><div class="wrap"><div class="nav-inner">
+  <div class="nav-brand">wmn/nd</div>
+  <div class="nav-tag">Dronamex · Ronda de preguntas</div>
+</div></div></div>
+
+<!-- HERO -->
+<div class="wrap">
+  <div class="hero">
+    <p class="eyebrow">Convocatoria · Apartado 14</p>
+    <h1>Espacio de<br>respuesta</h1>
+    <p class="lede">Diez preguntas en tres bloques. <span>Cada bloque puede completarlo una persona distinta del equipo. Lo que escriban se guarda solo, y al enviar se descarga una copia con fecha.</span></p>
+  </div>
+</div>
+
+<!-- PROGRESO -->
+<div class="progress"><div class="wrap"><div class="progress-inner">
+  <span class="progress-label" id="count">0 de 10</span>
+  <span class="progress-bar"><span class="progress-fill" id="fill"></span></span>
+  <span class="saved" id="saved">&nbsp;</span>
+</div></div></div>
+
+<div class="wrap">
+<form id="form" novalidate>
+
+  <!-- BLOQUE 1 -->
+  <div class="block" style="margin-top:36px;">
+    <p class="block-label">Bloque 01</p>
+    <h2>Alcance y volumen</h2>
+    <p class="block-note">Estas tres son las que más determinan el dimensionamiento del equipo y el presupuesto.</p>
+
+    <div class="q">
+      <p class="q-meta">01 · Apartado 4.4</p>
+      <p class="q-text">El RFP indica que la inversión publicitaria se factura por separado de la iguala. ¿Existe un rango o techo mensual de pauta que Dronamex tenga contemplado para las tres unidades?</p>
+      <textarea name="q01" data-q placeholder="Rango, techo o el orden de magnitud que tengan contemplado"></textarea>
+    </div>
+
+    <div class="q">
+      <p class="q-meta">02 · Apartado 4.5</p>
+      <p class="q-text">¿Qué volumen aproximado de mensajes y comentarios reciben hoy, por día o por semana, entre las cinco redes? Si lo tienen medido, ¿cómo se reparte entre consultas de producto, cursos y soporte?</p>
+      <textarea name="q02" data-q placeholder="Un aproximado sirve"></textarea>
+    </div>
+
+    <div class="q">
+      <p class="q-meta">03 · Apartado 4.2</p>
+      <p class="q-text">¿Dronamex cuenta con un banco de material de campo —vuelos, inspecciones, demostraciones, operaciones en sitio— que podamos editar, o cada pieza de video requiere levantamiento nuevo?</p>
+      <textarea name="q03" data-q placeholder="Qué material existe y en qué estado"></textarea>
+    </div>
+
+    <div class="who">
+      <label class="field-label" for="w1">Quién respondió este bloque</label>
+      <input type="text" id="w1" name="responde_bloque_1" data-who placeholder="Nombre y área">
+    </div>
+  </div>
+
+  <!-- BLOQUE 2 -->
+  <div class="block">
+    <p class="block-label">Bloque 02</p>
+    <h2>Producto y mensaje</h2>
+    <p class="block-note">Definen qué se puede prometer en campaña y qué indicadores son alcanzables.</p>
+
+    <div class="q">
+      <p class="q-meta">04 · Apartado 3</p>
+      <p class="q-text">Sobre Dronamex Academy: ¿cuentan con registro vigente como Centro de Instrucción de Aeronáutica Civil ante la AFAC, o con convenio con un centro acreditado? La respuesta define si la comunicación puede referirse a licencia federal de piloto o se orienta a capacitación técnica y empleabilidad.</p>
+      <textarea name="q04" data-q placeholder="Registro propio, convenio, o constancia interna"></textarea>
+    </div>
+
+    <div class="q">
+      <p class="q-meta">05 · Apartados 2 y 7</p>
+      <p class="q-text">Se solicitan indicadores de carrito, abandono y retorno sobre inversión publicitaria. Hoy el flujo de producto en dronamex.com cierra por cotización y WhatsApp. ¿Está previsto habilitar pasarela de pago durante la vigencia del contrato, o los indicadores de esa unidad deben construirse sobre solicitudes de cotización?</p>
+      <textarea name="q05" data-q placeholder="Si hay plan de pasarela y en qué plazo"></textarea>
+    </div>
+
+    <div class="q">
+      <p class="q-meta">06 · Apartados 4.2 y 10</p>
+      <p class="q-text">Vimos en su sitio que la EXPO DRONAMEX se realiza el 12 y 13 de noviembre. Considerando el arranque del 1 de octubre: ¿la campaña de expectativa y prerregistro, y la cobertura presencial del evento, entran en el alcance de la iguala o se manejan como partidas de producción independientes?</p>
+      <textarea name="q06" data-q placeholder="Alcance esperado para la expo"></textarea>
+    </div>
+
+    <div class="who">
+      <label class="field-label" for="w2">Quién respondió este bloque</label>
+      <input type="text" id="w2" name="responde_bloque_2" data-who placeholder="Nombre y área">
+    </div>
+  </div>
+
+  <!-- BLOQUE 3 -->
+  <div class="block">
+    <p class="block-label">Bloque 03</p>
+    <h2>Operación</h2>
+    <p class="block-note">Definen la estructura de trabajo diaria y la fecha real de arranque.</p>
+
+    <div class="q">
+      <p class="q-meta">07 · Apartado 4.3</p>
+      <p class="q-text">¿Las cinco redes se operan de forma unificada bajo la marca Dronamex, o existen —o se contempla abrir— perfiles independientes para Academy y para el e-commerce?</p>
+      <textarea name="q07" data-q placeholder="Estructura actual y si hay intención de separar"></textarea>
+    </div>
+
+    <div class="q">
+      <p class="q-meta">08 · Apartado 4.4</p>
+      <p class="q-text">¿Existen ya cuentas de anuncios activas en Meta, Google, TikTok y LinkedIn a nombre de Dronamex, con verificación de empresa y método de pago configurado? Lo consultamos porque los tiempos de verificación de anunciante condicionan la fecha real de lanzamiento del plan de 90 días.</p>
+      <textarea name="q08" data-q placeholder="Qué cuentas existen y en qué estado"></textarea>
+    </div>
+
+    <div class="q">
+      <p class="q-meta">09 · Apartados 4.5 y 4.6</p>
+      <p class="q-text">Para el escalamiento en 15 minutos: ¿en qué horario opera el equipo comercial que recibirá los prospectos, y a qué sistema o contacto deben entregarse? El apartado 4.6 contempla integración a CRM o entrega en base estructurada; saber cuál usan hoy define el trabajo de conexión.</p>
+      <textarea name="q09" data-q placeholder="Horario, contacto y sistema de destino"></textarea>
+    </div>
+
+    <div class="q">
+      <p class="q-meta">10 · Apartado 9</p>
+      <p class="q-text">Proponemos concentrar la revisión de calendario y piezas en un tablero único, con registro de quién aprobó y en qué momento, en lugar de correo o WhatsApp. ¿Quiénes participarían en ese flujo —aprobación de marca, validación técnica, autorización de temas de gobierno y defensa, y en su caso visto bueno de fabricante— y qué plazo de respuesta consideran realista para cada revisión?</p>
+      <textarea name="q10" data-q placeholder="Quiénes aprueban qué, y en cuántos días hábiles"></textarea>
+    </div>
+
+    <div class="who">
+      <label class="field-label" for="w3">Quién respondió este bloque</label>
+      <input type="text" id="w3" name="responde_bloque_3" data-who placeholder="Nombre y área">
+    </div>
+  </div>
+
+  <!-- ENVÍO -->
+  <div class="send">
+    <p class="block-label">Envío</p>
+    <h2>Enviar respuestas</h2>
+    <p class="block-note">No es necesario responder las diez. Envíen lo que tengan y el resto lo resolvemos en la junta.</p>
+
+    <div class="grid2">
+      <div>
+        <label class="field-label" for="nombre">Nombre de contacto</label>
+        <input type="text" id="nombre" name="nombre" placeholder="Nombre completo">
+      </div>
+      <div>
+        <label class="field-label" for="correo">Correo de contacto</label>
+        <input type="email" id="correo" name="correo" placeholder="nombre@dronamex.com">
+      </div>
+    </div>
+
+    <label style="display:none;" aria-hidden="true">
+      No llenar este campo<input type="checkbox" id="botcheck" name="botcheck" tabindex="-1" autocomplete="off">
+    </label>
+
+    <div class="actions">
+      <button type="submit" class="btn" id="submit">Enviar respuestas &rarr;</button>
+      <button type="button" class="btn-ghost" id="download">Descargar copia</button>
+    </div>
+
+    <p class="send-note">Lo escrito se guarda en este navegador de forma automática.<br>Pueden cerrar y volver más tarde desde el mismo dispositivo.</p>
+  </div>
+
+</form>
+
+<!-- CONFIRMACIÓN -->
+<div class="done" id="done">
+  <p class="block-label">Recibido</p>
+  <h2>Gracias</h2>
+  <p style="color:var(--muted);font-size:16px;line-height:1.6;margin:0 0 24px;">Sus respuestas quedaron registradas con fecha y hora, y la copia se descargó en este dispositivo. Si necesitan corregir o ampliar algo, pueden volver a esta página y enviar de nuevo.</p>
+  <button type="button" class="btn-ghost" id="download2">Descargar copia</button>
+</div>
+
+</div>
+
+<!-- FOOTER -->
+<footer><div class="wrap">
+  <div class="f-row">
+    <span class="f-brand">wmn/nd</span>
+    <span class="f-tag">『 We Make Noise / Not Digital 』</span>
+  </div>
+  <p class="f-data">
+    Calle Isabel La Católica 964 piso 1 · CDMX 03430<br>
+    <a href="tel:5514993121">+52 55 1499 3121</a>
+  </p>
+  <div class="f-social">
+    <a href="https://www.instagram.com/dr_colesterol/" target="_blank" rel="noopener">Instagram</a>
+    <a href="https://www.linkedin.com/in/juanluiscontreras/" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="https://www.facebook.com/juanluis.contreras" target="_blank" rel="noopener">Facebook</a>
+    <a href="https://www.youtube.com/channel/UCDvDPqZ8UzCAtmIKyZ4o02w" target="_blank" rel="noopener">YouTube</a>
+  </div>
+  <p class="f-data"><a href="https://wemakenoisenotdigital.com/" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;">wemakenoisenotdigital.com</a></p>
+</div></footer>
+
+<script>
+/* ─────────────────────────────────────────────────────────────
+   CONFIGURACIÓN — listo, no hay que tocar nada.
+
+   Las respuestas llegan a juanluis.contreras@gmail.com, que es
+   la cuenta con la que se registró la clave en Web3Forms.
+   La clave es pública por diseño y puede ir en el código.
+
+   Para cambiar el correo de destino: crear otra clave en
+   https://web3forms.com y sustituir el valor de ACCESS_KEY.
+   ───────────────────────────────────────────────────────────── */
+var ACCESS_KEY = "36956a5a-c0e0-4539-9759-e273452a3120";
+var ENDPOINT = "https://api.web3forms.com/submit";
+var CORREO_DESTINO = "juanluis.contreras@gmail.com";
+var CLAVE = "dronamex-rfp-2026";
+
+var form = document.getElementById('form');
+var campos = Array.prototype.slice.call(document.querySelectorAll('[data-q],[data-who],#nombre,#correo'));
+var preguntas = Array.prototype.slice.call(document.querySelectorAll('[data-q]'));
+
+/* Guardado local */
+function guardar(){
+  try{
+    var d = {};
+    campos.forEach(function(c){ if(c.value) d[c.name||c.id] = c.value; });
+    localStorage.setItem(CLAVE, JSON.stringify(d));
+    var s = document.getElementById('saved');
+    s.textContent = 'Guardado';
+    clearTimeout(window._t);
+    window._t = setTimeout(function(){ s.innerHTML = '&nbsp;'; }, 1800);
+  }catch(e){}
+}
+function restaurar(){
+  try{
+    var d = JSON.parse(localStorage.getItem(CLAVE) || '{}');
+    campos.forEach(function(c){
+      var k = c.name || c.id;
+      if(d[k]) c.value = d[k];
+    });
+  }catch(e){}
+}
+
+/* Progreso */
+function progreso(){
+  var n = preguntas.filter(function(p){ return p.value.trim().length > 0; }).length;
+  document.getElementById('count').textContent = n + ' de 10';
+  document.getElementById('fill').style.width = (n*10) + '%';
+}
+
+campos.forEach(function(c){
+  c.addEventListener('input', function(){ guardar(); progreso(); });
+});
+
+/* Texto de la copia */
+function componer(){
+  var out = 'DRONAMEX — RESPUESTAS AL RFP\n';
+  out += 'Enviado: ' + new Date().toLocaleString('es-MX') + '\n';
+  out += '─────────────────────────────────────\n\n';
+  var bloques = document.querySelectorAll('.block');
+  bloques.forEach(function(b){
+    out += (b.querySelector('h2').textContent).toUpperCase() + '\n\n';
+    b.querySelectorAll('.q').forEach(function(q){
+      out += q.querySelector('.q-meta').textContent + '\n';
+      out += q.querySelector('.q-text').textContent + '\n';
+      out += '> ' + (q.querySelector('textarea').value.trim() || '(sin respuesta)') + '\n\n';
+    });
+    var w = b.querySelector('[data-who]');
+    if(w && w.value) out += 'Respondió: ' + w.value + '\n';
+    out += '─────────────────────────────────────\n\n';
+  });
+  var n = document.getElementById('nombre').value;
+  var c = document.getElementById('correo').value;
+  if(n) out += 'Contacto: ' + n + '\n';
+  if(c) out += 'Correo: ' + c + '\n';
+  return out;
+}
+
+function descargar(){
+  var texto = componer();
+  var blob = new Blob([texto], {type:'text/plain;charset=utf-8'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'dronamex-respuestas-rfp.txt';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+document.getElementById('download').addEventListener('click', descargar);
+document.getElementById('download2').addEventListener('click', descargar);
+
+/* Envío */
+form.addEventListener('submit', function(e){
+  e.preventDefault();
+  var btn = document.getElementById('submit');
+  btn.disabled = true; btn.textContent = 'Enviando…';
+
+  var datos = {};
+  campos.forEach(function(c){ datos[c.name || c.id] = c.value; });
+  datos.access_key   = ACCESS_KEY;
+  datos.subject      = 'Dronamex — Respuestas al RFP';
+  datos.from_name    = 'Espacio de respuesta Dronamex';
+  datos.replyto      = document.getElementById('correo').value || '';
+  datos.botcheck     = document.getElementById('botcheck').checked ? true : '';
+  datos.enviado_el   = new Date().toLocaleString('es-MX');
+  datos.resumen      = componer();
+
+  if(datos.botcheck){ return; }
+
+  if(ACCESS_KEY.indexOf('PEGA-AQUI') === 0){
+    /* Sin clave configurada: correo normal + descarga */
+    var cuerpo = encodeURIComponent(componer());
+    window.location.href = 'mailto:' + CORREO_DESTINO + '?subject=' + encodeURIComponent('Dronamex — Respuestas al RFP') + '&body=' + cuerpo;
+    setTimeout(function(){ descargar(); mostrarConfirmacion(); }, 800);
+    return;
+  }
+
+  fetch(ENDPOINT, {
+    method:'POST',
+    headers:{'Content-Type':'application/json','Accept':'application/json'},
+    body: JSON.stringify(datos)
+  }).then(function(r){ return r.json(); })
+    .then(function(r){
+      if(r.success === false){ throw new Error(r.message || 'error'); }
+      descargar();
+      mostrarConfirmacion();
+    })
+    .catch(function(){
+      btn.disabled = false; btn.textContent = 'Enviar respuestas →';
+      alert('No se pudo enviar en este momento. Pueden descargar la copia con el botón de abajo y remitirla por correo.');
+    });
+});
+
+function mostrarConfirmacion(){
+  form.style.display = 'none';
+  document.getElementById('done').classList.add('on');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+restaurar(); progreso();
+</script>
+
+</body>
+</html>
