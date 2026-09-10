@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
 <title>Espacio de respuesta — Dronamex | wmn/nd</title>
-<meta name="description" content="Diez preguntas al RFP de marketing digital y generación de prospectos.">
+<meta name="description" content="Quince preguntas al RFP de marketing digital y generación de prospectos.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
@@ -143,13 +143,13 @@
   <div class="hero">
     <p class="eyebrow">Convocatoria · Apartado 14</p>
     <h1>Espacio de<br>respuesta</h1>
-    <p class="lede">Diez preguntas en tres bloques. <span>Cada bloque puede completarlo una persona distinta del equipo. Lo que escriban se guarda solo, y al enviar se descarga una copia con fecha.</span></p>
+    <p class="lede">Quince preguntas en cuatro bloques. <span>Cada bloque puede completarlo una persona distinta del equipo. Lo que escriban se guarda solo, y al enviar se descarga una copia con fecha.</span></p>
   </div>
 </div>
 
 <!-- PROGRESO -->
 <div class="progress"><div class="wrap"><div class="progress-inner">
-  <span class="progress-label" id="count">0 de 10</span>
+  <span class="progress-label" id="count">0 de 15</span>
   <span class="progress-bar"><span class="progress-fill" id="fill"></span></span>
   <span class="saved" id="saved">&nbsp;</span>
 </div></div></div>
@@ -253,11 +253,53 @@
     </div>
   </div>
 
+  <!-- BLOQUE 4 -->
+  <div class="block">
+    <p class="block-label">Bloque 04 · Añadido</p>
+    <h2>Precisiones</h2>
+    <p class="block-note">Cinco puntos que surgieron al revisar el pliego a detalle. Van dentro del plazo del apartado 14.</p>
+
+    <div class="q">
+      <p class="q-meta">11 · Apartado 4.5</p>
+      <p class="q-text">Del volumen de mensajes que reciben hoy, ¿qué proporción se resuelve con información pública —precio, disponibilidad, fechas de curso— y qué proporción exige criterio técnico, como compatibilidad de equipo, normatividad o especificaciones? Lo preguntamos porque el propio apartado 4.5 concede hasta dos horas de primera respuesta en casos no comerciales complejos, y saber qué proporción cae ahí define la estructura del equipo de atención.</p>
+      <textarea name="q11" data-q placeholder="Un reparto aproximado entre consultas simples y técnicas"></textarea>
+    </div>
+
+    <div class="q">
+      <p class="q-meta">12 · Apartados 4.2 y 9</p>
+      <p class="q-text">Sobre el material audiovisual existente: además de que esté disponible, ¿Dronamex cuenta con los derechos de uso publicitario del material que involucre instalaciones de clientes, personal en operación o equipo de terceros? El apartado 9 restringe reutilizar imágenes sensibles, casos y logos sin autorización escrita.</p>
+      <textarea name="q12" data-q placeholder="Qué material se puede usar en campaña y bajo qué condiciones"></textarea>
+    </div>
+
+    <div class="q">
+      <p class="q-meta">13 · Apartados 4.2 y 10</p>
+      <p class="q-text">Para la EXPO DRONAMEX del 12 y 13 de noviembre: ¿existe una bolsa presupuestal específica para su promoción, separada de la pauta mensual ordinaria? Y para poder reordenar el plan de arranque alrededor del evento, ¿nos pueden confirmar programa, mecanismo de registro y responsable interno?</p>
+      <textarea name="q13" data-q placeholder="Presupuesto, programa y quién lo coordina"></textarea>
+    </div>
+
+    <div class="q">
+      <p class="q-meta">14 · Apartado 4.6</p>
+      <p class="q-text">El apartado 4.6 exige cumplimiento de aviso de privacidad, consentimiento y mecanismos de baja. ¿Dronamex tiene hoy aviso de privacidad vigente publicado y registro de consentimiento en los formularios activos? ¿Quién es el responsable jurídico del tratamiento de datos? La reforma de 2025 cambió la autoridad supervisora y conviene revisarlo antes de lanzar captación.</p>
+      <textarea name="q14" data-q placeholder="Estado actual del aviso, los formularios y quién responde por datos"></textarea>
+    </div>
+
+    <div class="q">
+      <p class="q-meta">15 · Apartados 7 y 4.6</p>
+      <p class="q-text">El apartado 7 pide medir ventas influenciadas. Para eso el ciclo tiene que cerrarse de vuelta: ¿el equipo comercial puede devolver el estatus de cada prospecto entregado —contactado, cotizado, cerrado, descartado y motivo del descarte— y en qué plazo? Sin ese retorno, la medición se detiene en la entrega del prospecto y la atribución de ingreso no se puede sostener.</p>
+      <textarea name="q15" data-q placeholder="Si hay retorno de estatus, cómo y cada cuándo"></textarea>
+    </div>
+
+    <div class="who">
+      <label class="field-label" for="w4">Quién respondió este bloque</label>
+      <input type="text" id="w4" name="responde_bloque_4" data-who placeholder="Nombre y área">
+    </div>
+  </div>
+
   <!-- ENVÍO -->
   <div class="send">
     <p class="block-label">Envío</p>
     <h2>Enviar respuestas</h2>
-    <p class="block-note">No es necesario responder las diez. Envíen lo que tengan y el resto lo resolvemos en la junta.</p>
+    <p class="block-note">No es necesario responder las quince. Envíen lo que tengan y el resto lo resolvemos en la junta.</p>
 
     <div class="grid2">
       <div>
@@ -358,8 +400,8 @@ function restaurar(){
 /* Progreso */
 function progreso(){
   var n = preguntas.filter(function(p){ return p.value.trim().length > 0; }).length;
-  document.getElementById('count').textContent = n + ' de 10';
-  document.getElementById('fill').style.width = (n*10) + '%';
+  document.getElementById('count').textContent = n + ' de 15';
+  document.getElementById('fill').style.width = Math.round(n/15*100) + '%';
 }
 
 campos.forEach(function(c){
