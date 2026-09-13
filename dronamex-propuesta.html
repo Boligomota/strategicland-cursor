@@ -1,0 +1,2904 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dronamex · Propuesta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Manrope:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>.sm{display:none;}
+:root{
+  --dark:#050508; --sand:#e3dacc; --amber:#c97c49; --terra:#8f422e;
+  --dim:rgba(227,218,204,.58); --dimmer:rgba(227,218,204,.30);
+  --frame:rgba(255,255,255,.07); --panel:#07070b;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--dark);color:var(--sand);
+  font-family:'Manrope',system-ui,sans-serif;font-weight:300;
+  -webkit-font-smoothing:antialiased;overflow:hidden;}
+#grain{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:60;
+  opacity:.06;mix-blend-mode:screen;}
+#vig{position:fixed;inset:0;pointer-events:none;z-index:2;
+  background:radial-gradient(ellipse at 32% 40%,transparent 30%,rgba(0,0,0,.75) 100%);}
+.orb{position:fixed;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:0;}
+#o1{width:460px;height:460px;background:#8f422e;top:-140px;left:-100px;opacity:.42;}
+#o2{width:400px;height:400px;background:#c97c49;bottom:-160px;right:4%;opacity:.20;}
+
+/* ---------- estructura del deck ---------- */
+#deck{position:fixed;inset:0;z-index:3;overflow-y:scroll;scroll-snap-type:y mandatory;
+  scroll-behavior:smooth;}
+#deck::-webkit-scrollbar{display:none;}
+.s{min-height:100vh;scroll-snap-align:start;scroll-snap-stop:always;
+  display:flex;align-items:center;padding:96px 8vw 132px 8vw;position:relative;}
+.wrap{max-width:980px;width:100%;}
+.kick{font-size:9.5px;letter-spacing:.30em;text-transform:uppercase;color:var(--amber);
+  margin-bottom:20px;font-weight:400;}
+h1{font-family:'Cormorant Garamond',Georgia,serif;font-weight:300;font-size:clamp(30px,4.4vw,54px);
+  line-height:1.06;letter-spacing:-.015em;margin:0 0 30px;max-width:17em;}
+h1 b{font-weight:600;}
+p{font-size:clamp(13.5px,1.16vw,16px);line-height:1.78;margin:0 0 15px;max-width:64ch;color:var(--dim);}
+p b{color:var(--sand);font-weight:500;}
+p i{color:var(--sand);font-style:italic;}
+.lead{font-size:clamp(16px,1.6vw,21px);line-height:1.6;color:var(--sand);font-weight:200;max-width:52ch;}
+.grande{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(20px,2.3vw,30px);
+  line-height:1.34;color:var(--sand);font-weight:300;margin:26px 0;max-width:26em;}
+.grande b{color:var(--amber);font-weight:600;}
+h3{font-family:'Manrope';font-size:11px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--amber);margin:0 0 9px;}
+ul{margin:0 0 14px;padding-left:16px;} li{font-size:13.5px;line-height:1.7;color:var(--dim);margin-bottom:5px;}
+
+table{width:100%;border-collapse:collapse;margin:22px 0;font-size:clamp(11px,.92vw,13px);}
+thead th{text-align:left;font-weight:400;font-size:9px;letter-spacing:.20em;text-transform:uppercase;
+  color:var(--dimmer);border-bottom:1px solid var(--frame);padding:0 18px 9px 0;}
+tbody td{padding:11px 18px 11px 0;border-bottom:1px solid rgba(255,255,255,.035);
+  vertical-align:top;line-height:1.55;color:var(--dim);}
+tbody td b{color:var(--sand);font-weight:500;}
+tr.destaca td{background:rgba(201,124,73,.07);color:var(--sand);}
+tr.destaca td:first-child{box-shadow:inset 2px 0 0 var(--amber);padding-left:14px;}
+table.principios td:first-child{color:var(--amber);width:2em;font-size:10px;padding-top:13px;}
+
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:42px;margin:22px 0;}
+.tres{display:grid;grid-template-columns:repeat(3,1fr);gap:34px;margin:26px 0;}
+.cuatro{display:grid;grid-template-columns:repeat(2,1fr);gap:26px 42px;margin:22px 0;}
+.dos p,.tres p,.cuatro p{max-width:none;font-size:13px;}
+.cuatro.reglas h3{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:400;
+  letter-spacing:0;text-transform:none;color:var(--sand);}
+.ev{font-family:ui-monospace,Menlo,monospace;font-size:9.5px;letter-spacing:.1em;padding:2px 7px;
+  text-transform:uppercase;display:inline-block;margin-bottom:7px;}
+.ev-dato{background:rgba(120,180,140,.14);color:#8fc0a0;}
+.ev-inferencia{background:rgba(120,160,210,.14);color:#8fadd0;}
+.ev-supuesto{background:rgba(201,124,73,.17);color:var(--amber);}
+.ev-pendiente{background:rgba(190,90,90,.16);color:#cc8a8a;}
+
+.cadena{display:flex;flex-wrap:wrap;gap:0;margin:28px 0;align-items:center;}
+.cadena span{font-size:10.5px;letter-spacing:.08em;padding:8px 15px;border:1px solid var(--frame);
+  color:var(--dim);position:relative;}
+.cadena span:last-child{border-color:var(--amber);color:var(--amber);}
+
+.linea{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin:30px 0;border-top:1px solid var(--frame);}
+.linea>div{padding:20px 20px 20px 0;border-right:1px solid var(--frame);}
+.linea>div:last-child{border-right:0;}
+.linea>div:not(:first-child){padding-left:20px;}
+.linea b{display:block;font-size:12px;font-weight:500;letter-spacing:.05em;color:var(--sand);}
+.linea span{display:block;font-size:9px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--dimmer);margin:4px 0 11px;}
+.linea p{font-size:12px;line-height:1.6;margin:0;}
+.linea .pico{background:rgba(201,124,73,.07);}
+.linea .pico b{color:var(--amber);}
+
+.cifra{margin:26px 0;max-width:620px;}
+.linea-costo{display:flex;justify-content:space-between;align-items:baseline;gap:20px;
+  padding:11px 0;border-bottom:1px solid rgba(255,255,255,.05);}
+.linea-costo span{font-size:12.5px;color:var(--dim);letter-spacing:.01em;}
+.linea-costo b{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:var(--sand);}
+.linea-costo.sub b{color:var(--sand);}
+.linea-costo.total{border-bottom:1px solid var(--frame);border-top:1px solid var(--frame);margin-top:6px;}
+.linea-costo.total span{color:var(--sand);font-weight:500;}
+.linea-costo.total b{font-size:30px;color:var(--amber);}
+.linea-costo.ivada b{font-size:38px;}
+.tarifas{font-size:11.5px;color:var(--dimmer);line-height:1.7;}
+
+.portada h1{font-size:clamp(46px,9vw,120px);font-weight:300;letter-spacing:-.03em;text-transform:uppercase;
+  margin-bottom:26px;}
+.portada .firma{font-size:13px;letter-spacing:.28em;text-transform:uppercase;color:var(--amber);margin-top:44px;}
+.portada .hint{font-size:11.5px;color:var(--dimmer);margin-top:14px;max-width:44ch;line-height:1.7;}
+.tesis h1{color:var(--sand);font-size:clamp(28px,4.8vw,58px);}
+.cierre .cierre{font-family:'Cormorant Garamond',serif;font-size:clamp(19px,2.4vw,31px);line-height:1.34;
+  color:var(--amber);max-width:22em;margin:26px 0 0;}
+.cierre .firma{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--dimmer);margin-top:44px;}
+
+.verdoc{display:inline-flex;align-items:center;gap:9px;margin-top:28px;font-size:10px;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--dimmer);text-decoration:none;
+  border-bottom:1px solid transparent;padding-bottom:3px;cursor:pointer;background:none;border-top:0;
+  border-left:0;border-right:0;font-family:'Manrope';}
+.verdoc:hover{color:var(--amber);border-bottom-color:var(--amber);}
+
+/* ---------- esquinas y barra ---------- */
+.meta{position:fixed;z-index:12;font-size:9px;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--dimmer);pointer-events:none;}
+#mTL{top:30px;left:8vw;} #mTR{top:30px;right:8vw;}
+#bar{position:fixed;left:0;right:0;bottom:0;z-index:14;display:flex;align-items:center;gap:18px;
+  padding:18px 8vw 22px;background:linear-gradient(transparent,rgba(5,5,8,.94) 46%);}
+.bt{background:none;border:1px solid var(--frame);color:var(--dim);font-family:'Manrope';
+  font-size:10px;letter-spacing:.18em;text-transform:uppercase;padding:9px 16px;cursor:pointer;
+  transition:.2s;}
+.bt:hover{color:var(--sand);border-color:rgba(255,255,255,.24);}
+.bt:disabled{opacity:.25;cursor:default;}
+#cuenta{font-size:10px;letter-spacing:.2em;color:var(--dimmer);min-width:72px;}
+#prog{flex:1;height:1px;background:rgba(255,255,255,.07);position:relative;}
+#prog i{position:absolute;left:0;top:0;bottom:0;background:var(--amber);width:0;transition:width .3s;}
+
+/* ---------- índice ---------- */
+#idx{position:fixed;inset:0;z-index:30;background:rgba(5,5,8,.97);backdrop-filter:blur(14px);
+  display:none;padding:80px 8vw;overflow-y:auto;}
+#idx.on{display:block;}
+#idx h2{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:30px;margin:0 0 30px;}
+#idxL{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:2px 40px;}
+.ix{display:flex;gap:14px;align-items:baseline;text-align:left;background:none;border:0;
+  border-bottom:1px solid rgba(255,255,255,.04);padding:11px 0;cursor:pointer;font-family:'Manrope';
+  color:var(--dim);font-size:13px;font-weight:300;width:100%;transition:.16s;}
+.ix:hover{color:var(--amber);}
+.ix u{text-decoration:none;font-size:9.5px;letter-spacing:.14em;color:var(--dimmer);min-width:24px;}
+
+/* ---------- documento ---------- */
+#doc{position:fixed;inset:0;z-index:40;background:var(--panel);display:none;overflow:hidden;}
+#doc.on~#grain,#doc.on{}
+#doc.on{display:flex;}
+#docNav{width:310px;flex:0 0 310px;height:100vh;overflow-y:auto;padding:80px 20px 60px 8vw;
+  border-right:1px solid var(--frame);}
+#docNav a{display:block;color:var(--dim);text-decoration:none;font-size:11.5px;line-height:1.45;
+  padding:5px 0;border-left:1px solid transparent;padding-left:10px;margin-left:-10px;}
+#docNav a:hover{color:var(--amber);}
+#docNav a.l1{color:var(--sand);font-size:12.5px;letter-spacing:.02em;margin-top:16px;font-weight:500;}
+#docNav a.l3{padding-left:22px;font-size:10.5px;color:var(--dimmer);}
+#docBody{flex:1;height:100vh;overflow-y:auto;padding:80px 8vw 120px 60px;}
+#docBody h1{font-family:'Cormorant Garamond',serif;font-size:34px;margin:56px 0 18px;
+  padding-top:22px;border-top:1px solid var(--frame);text-transform:uppercase;letter-spacing:-.01em;}
+#docBody h2{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:400;margin:34px 0 12px;color:var(--sand);}
+#docBody h3{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;margin:24px 0 8px;
+  color:var(--amber);letter-spacing:0;text-transform:none;}
+#docBody h4{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--dimmer);margin:18px 0 6px;}
+#docBody p{max-width:76ch;font-size:13.5px;}
+#docBody table{max-width:100%;display:block;overflow-x:auto;}
+#docBody blockquote{margin:16px 0;padding:4px 0 4px 16px;border-left:1px solid var(--terra);
+  color:var(--dim);font-style:italic;}
+#docBody code{font-family:ui-monospace,Menlo,monospace;font-size:11px;background:rgba(255,255,255,.05);padding:1px 5px;}
+#docBody hr{border:0;border-top:1px solid rgba(255,255,255,.05);margin:26px 0;}
+#docX{position:fixed;top:26px;right:8vw;z-index:42;background:var(--panel);}
+
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-thumb{background:rgba(227,218,204,.16);}
+
+@media(max-width:900px){
+  .dos,.tres,.cuatro{grid-template-columns:1fr;gap:22px;}
+  .linea{grid-template-columns:1fr;}
+  .linea>div{border-right:0;border-bottom:1px solid var(--frame);padding-left:0!important;}
+  .s{padding:76px 7vw 120px;align-items:flex-start;padding-top:96px;}
+  #mTR{display:none;}
+  #docNav{display:none;} #docBody{padding:70px 7vw 90px;}
+  table{font-size:11px;} thead th,tbody td{padding-right:10px;}
+  #bar{gap:8px;padding:14px 5vw 18px;} .bt{padding:9px 11px;font-size:9px;white-space:nowrap;}
+  #prog,#cuenta{display:none;}
+  .lg{display:none;} .sm{display:inline;}
+  #bIdx,#bDoc{margin-left:auto;}
+}
+</style>
+
+</head><body><svg id="grain"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="4"/></filter><rect width="100%" height="100%" filter="url(#n)"/></svg>
+<div id="o1" class="orb"></div><div id="o2" class="orb"></div>
+
+<div id="deck"><section class="s portada" id="p00" data-i="0">
+  <div class="wrap"><div class="kick">00 &middot; Propuesta técnica y económica · Septiembre de 2026</div>
+  <h1>Dronamex</h1>
+<p class="lead">Dronamex &middot; Dronamex Academy &middot; Tienda<br>Marketing digital y generación de prospectos</p>
+<p class="firma">wmn/nd</p>
+<p class="hint">Veintiocho pantallas. Se avanza con la flecha del teclado, con el scroll, o con los botones de abajo.
+Cada pantalla enlaza a su sección completa en el documento.</p>
+</div></section><section class="s " id="p01" data-i="1">
+  <div class="wrap"><div class="kick">01 &middot; Cómo leer esto</div>
+  <h1>Cuatro niveles de evidencia, sostenidos hasta la última página</h1>
+<div class="cuatro">
+  <div><span class="ev ev-dato">dato</span><p>Verificable en el RFP, en dronamex.com o en una fuente citable</p></div>
+  <div><span class="ev ev-inferencia">inferencia</span><p>Conclusión derivada de dos o más hechos verificados</p></div>
+  <div><span class="ev ev-supuesto">supuesto</span><p>Propuesta o condición que aún no se confirma</p></div>
+  <div><span class="ev ev-pendiente">pendiente</span><p>Información que Dronamex todavía no ha entregado</p></div>
+</div>
+<p><b>Ninguna cifra de desempeño de terceros aparece en este documento.</b> No usamos resultados de otras
+marcas, de otros mercados ni de otras agencias para sostener lo que proponemos.</p>
+<p><b>Ningún campo pendiente se rellena con una estimación.</b> Donde falta información, dice que falta.
+Un supuesto declarado es defensa; un supuesto callado es exposición.</p>
+<button class="verdoc" data-a="sec-criterios-de-lectura">Ver Criterios de lectura en el documento completo →</button></div></section><section class="s " id="p02" data-i="2">
+  <div class="wrap"><div class="kick">02 &middot; El diagnóstico</div>
+  <h1>El volumen es el síntoma. No el problema.</h1>
+<p>El pliego pide nueve publicaciones semanales, treinta y nueve al mes, treinta y nueve secuencias de
+historias, dos videos largos, cinco redes, tres unidades de negocio, doscientas diecisiete horas de
+atención, primera respuesta en treinta minutos.</p>
+<p class="grande">El problema es que <b>Dronamex sabe algo que no está publicado.</b></p>
+<p>Distribuye nueve marcas —DJI, Chasing, Dahua, Alpha, Skyfend, Aerosentinelle, Hycomms, Petorius,
+Elistair— que cubren aire, agua, tierra, espectro y enlace. Capacita a más de mil quinientos operadores y
+a ciento veinte empresas. Opera equipo todos los días en sitios reales. Y nada de eso se convierte en
+material público.</p>
+<p>Mientras tanto, cada fabricante de la categoría publica que su equipo es el mejor, y todo comprador
+técnico sabe que esa afirmación no vale nada porque proviene de quien la vende.</p>
+<button class="verdoc" data-a="sec-01">Ver §01 en el documento completo →</button></div></section><section class="s tesis" id="p03" data-i="3">
+  <div class="wrap"><div class="kick">03 &middot; La tesis</div>
+  <h1>Dronamex no tiene que decir que sabe. Tiene que probarlo en público.</h1>
+<p>Un fabricante no puede publicar una comparativa honesta: siempre gana la suya. Un distribuidor con
+nueve marcas puede montar dos equipos en la misma misión, medir, y publicar quién ganó
+<b>incluso cuando gana el que deja menos margen</b>.</p>
+<p>Esa posibilidad no es una idea de campaña. Es una posición que existe únicamente por la estructura del
+negocio, y ningún competidor con una sola marca puede copiarla aunque quiera.</p>
+<p>De ahí sale todo lo demás: el contenido deja de inventarse en una junta y empieza a producirse
+documentando lo que ya ocurre en la operación. El posicionamiento en buscadores deja de depender de
+artículos genéricos y se apoya en información propia que nadie más tiene. Y la conversación comercial
+deja de empezar con una promesa y empieza con un archivo.</p>
+<button class="verdoc" data-a="sec-01">Ver §01 en el documento completo →</button></div></section><section class="s " id="p04" data-i="4">
+  <div class="wrap"><div class="kick">04 &middot; Estructura</div>
+  <h1>Tres unidades, separadas desde el primer día</h1>
+<table>
+<thead><tr><th>Unidad</th><th>Comprador</th><th>Ciclo</th><th>Qué se mide</th></tr></thead>
+<tbody>
+<tr><td><b>Dronamex</b></td><td>Empresa e institución</td><td>Lento, técnico, por comité</td><td>Prospecto calificado, demostración, oportunidad aceptada</td></tr>
+<tr><td><b>Academy</b></td><td>Persona y área de capacitación</td><td>Corto</td><td>Inscripción confirmada, capacitación empresarial</td></tr>
+<tr><td><b>Tienda</b></td><td>Comprador profesional</td><td>Inmediato</td><td>Consulta y cotización calificada</td></tr>
+</tbody></table>
+<p>Tratarlas como una cuenta con tres carpetas es el error que produce ochenta piezas al mes que no le
+hablan a nadie. Cada unidad tiene presupuesto, recorrido y medición propios; la dirección editorial y la
+infraestructura se comparten y el costo compartido se distribuye por dedicación registrada, sin cobrarse
+dos veces.</p>
+<button class="verdoc" data-a="sec-01">Ver §01 en el documento completo →</button></div></section><section class="s " id="p05" data-i="5">
+  <div class="wrap"><div class="kick">05 &middot; Lo que hay que decir antes de firmar</div>
+  <h1>Tres cosas que el pliego pide y su infraestructura todavía no puede producir</h1>
+<p>No se señalan para descalificar el documento: se señalan porque un proveedor que los acepta en silencio
+va a incumplirlos en el mes tres.</p>
+<div class="tres">
+  <div><h3>Retorno sobre inversión en la tienda</h3>
+  <p>Hoy cada producto de dronamex.com termina en una solicitud de cotización por WhatsApp; el botón
+  «PAGAR&nbsp;$5,250» del curso básico redirige a WhatsApp. Sin transacción en línea no hay ingreso que
+  atribuir. Esa unidad se mide por <b>solicitud de cotización calificada</b> hasta que exista pasarela.</p></div>
+  <div><h3>Prospectos de gobierno por redes</h3>
+  <p>Las dependencias adquieren mediante procedimiento formal. Una publicación no origina una adjudicación.
+  Lo que el trabajo digital sí construye es la <b>reputación técnica que sobrevive la revisión previa de un
+  comité</b> — que es donde se decide.</p></div>
+  <div><h3>Licencias de Academy</h3>
+  <p>El sitio promete en un lugar «Constancia digital avalada por Dronamex» y en otro «Constancia oficial».
+  No son lo mismo. La comunicación se limita a lo que Dronamex documente.</p></div>
+</div>
+<button class="verdoc" data-a="sec-01">Ver §01 en el documento completo →</button></div></section><section class="s hito" id="p06" data-i="6">
+  <div class="wrap"><div class="kick">06 &middot; El hito</div>
+  <h1>La Expo cae en el día 43 del contrato</h1>
+<p class="grande">La EXPO DRONAMEX se realiza el <b>12 y 13 de noviembre</b> y está anunciada en la portada
+del propio sitio. <b>El RFP no la menciona en ninguna parte.</b></p>
+<p>Con arranque el 1 de octubre, la expo cae en el día 43. El Anexo B sugiere que los días 31 a 60 sean de
+«optimización por CPL y calidad» — una fase de ajuste tranquilo, exactamente donde hay un evento propio
+que exige campaña de expectativa, prerregistro, cobertura presencial y seguimiento.</p>
+<p><b>Nuestro plan de noventa días está construido alrededor de ella.</b> No como añadido: como el eje del
+segundo mes.</p>
+<button class="verdoc" data-a="sec-01">Ver §01 en el documento completo →</button></div></section><section class="s " id="p07" data-i="7">
+  <div class="wrap"><div class="kick">07 &middot; El sistema</div>
+  <h1>El Campo de Prueba</h1>
+<p class="lead">No es una campaña. Es una forma de producir.</p>
+<div class="cuatro reglas">
+  <div><h3>Nada se afirma que no se haya probado</h3><p>Ninguna pieza usa un dato de desempeño que no
+  provenga de una prueba propia documentada.</p></div>
+  <div><h3>Se publica lo que falla</h3><p>Un banco de pruebas que sólo publica éxitos es un catálogo con
+  otro nombre. La primera prueba donde el equipo recomendado pierde es la que da credibilidad a las veinte
+  siguientes.</p></div>
+  <div><h3>El archivo se entrega</h3><p>Video sin comprimir, nube de puntos, reporte íntegro. Lo que se
+  comparte no es contenido: es la prueba de que no hay nada que esconder.</p></div>
+  <div><h3>Toda prueba lleva protocolo visible</h3><p>Fecha, sitio, condiciones, equipo, operador, criterio
+  de medición. Una prueba sin protocolo es una demostración, y una demostración es publicidad.</p></div>
+</div>
+<button class="verdoc" data-a="sec-2-3">Ver §2.3 en el documento completo →</button></div></section><section class="s " id="p08" data-i="8">
+  <div class="wrap"><div class="kick">08 &middot; El sistema</div>
+  <h1>Los cinco formatos</h1>
+<table class="formatos">
+<thead><tr><th>Formato</th><th>Qué es</th><th>Cadencia</th></tr></thead>
+<tbody>
+<tr><td><b>01 · El Careo</b></td><td>Dos marcas. Misma misión. Un ganador publicado.</td><td>Mensual</td></tr>
+<tr><td><b>02 · El Archivo</b></td><td>El levantamiento completo. Sin recorte. Descargable.</td><td>Bimestral</td></tr>
+<tr><td><b>03 · Hasta dónde aguanta</b></td><td>El límite declarado por la ficha técnica, verificado.</td><td>Quincenal</td></tr>
+<tr><td><b>04 · El Turno</b></td><td>Una operación completa, de principio a fin, con sus tiempos muertos.</td><td>Mensual</td></tr>
+<tr><td><b>05 · El Reporte Abierto</b></td><td>Lo que el cliente recibe, publicado con su autorización.</td><td>Trimestral</td></tr>
+</tbody></table>
+<p>Dieciséis de las veinte piezas del calendario de muestra <b>se producen sin salir a grabar en
+locación</b>. Es la consecuencia directa del sistema: el Campo de Prueba produce contenido con equipo que
+ya está en bodega.</p>
+<button class="verdoc" data-a="sec-2-3">Ver §2.3 en el documento completo →</button></div></section><section class="s careo" id="p09" data-i="9">
+  <div class="wrap"><div class="kick">09 &middot; La pieza ancla</div>
+  <h1>El Careo</h1>
+<p class="lead">Dos equipos del catálogo resuelven la misma tarea, en el mismo sitio, el mismo día. Se
+declara de antemano la variable que se mide. Se publica el resultado y el archivo completo.</p>
+<p><b>Apertura:</b> las dos cajas cerradas sobre una mesa, etiquetadas. Una mano las abre al mismo tiempo.</p>
+<p><b>Pares posibles:</b> DJI contra Alpha en levantamiento · Chasing contra cámara fija en cárcamo ·
+Dahua fijo contra dron en perímetro nocturno.</p>
+<p class="grande">Por qué es irrepetible: <b>un fabricante no puede publicar que perdió.</b></p>
+<p><b>Función de búsqueda:</b> cada careo genera una página permanente que responde a la consulta
+<i>[marca A] vs [marca B]</i> — la de mayor intención comercial de toda la categoría, y hoy sin respuesta
+imparcial en el mercado mexicano.</p>
+<button class="verdoc" data-a="sec-2-3">Ver §2.3 en el documento completo →</button></div></section><section class="s " id="p10" data-i="10">
+  <div class="wrap"><div class="kick">10 &middot; La pieza de descarga</div>
+  <h1>El Archivo</h1>
+<p class="lead">Una misión real ejecutada y publicada entera: el video sin cortes, la nube de puntos, el
+reporte tal como lo recibe un cliente. No hay versión editada.</p>
+<p><b>Estructura invertida:</b> el reporte primero, íntegro. El video después, como respaldo. Al revés de
+como se hace en la categoría.</p>
+<p class="grande">Es el activo que un motor generativo <b>no puede entregar en texto</b>. Cuando la
+respuesta sintética ya resolvió la duda, el único motivo para llegar al sitio es descargar algo que no
+cabe en un párrafo.</p>
+<p><b>Qué filtra:</b> descargas con correo corporativo. Es el mejor indicador de intención del sistema.</p>
+<button class="verdoc" data-a="sec-2-3">Ver §2.3 en el documento completo →</button></div></section><section class="s " id="p11" data-i="11">
+  <div class="wrap"><div class="kick">11 &middot; Distribución</div>
+  <h1>Cómo se reparte el sistema</h1>
+<div class="dos">
+<div>
+<table><thead><tr><th>Unidad</th><th>Formatos</th></tr></thead><tbody>
+<tr><td>Dronamex</td><td>01 · 02 · 03 · 05</td></tr>
+<tr><td>Academy</td><td>04 · 03</td></tr>
+<tr><td>Tienda</td><td>01 · 03</td></tr>
+</tbody></table>
+</div>
+<div>
+<table><thead><tr><th>Canal</th><th>Formatos</th><th>Función</th></tr></thead><tbody>
+<tr><td>LinkedIn</td><td>01 · 02 · 05</td><td>Evidencia institucional</td></tr>
+<tr><td>YouTube</td><td>04 · 02</td><td>Repositorio técnico</td></tr>
+<tr><td>Instagram</td><td>03 · 01</td><td>Descubrimiento y producto</td></tr>
+<tr><td>Facebook</td><td>03 · 04</td><td>Comunidad y cursos</td></tr>
+<tr><td>TikTok</td><td>03</td><td>El límite verificado</td></tr>
+</tbody></table>
+</div></div>
+<p><b>La línea de gobierno y defensa no entra en redes de consumo.</b> Las políticas de Meta y TikTok
+restringen ese contenido. Esa línea se comunica como protección de instalaciones e inspección de activos,
+y circula por LinkedIn, buscador y presencial.</p>
+<button class="verdoc" data-a="sec-2-3">Ver §2.3 en el documento completo →</button></div></section><section class="s " id="p12" data-i="12">
+  <div class="wrap"><div class="kick">12 &middot; Búsqueda</div>
+  <h1>Buscar dejó de ser un solo comportamiento</h1>
+<p>Hoy una consulta se resuelve de cuatro maneras distintas: por lista de enlaces, por respuesta generada
+que cita fuentes sin enviar clic, por asistente conversacional sin índice visible, o dentro de una red
+social que opera como motor de búsqueda.</p>
+<p class="grande">El clic hacia el sitio sólo ocurre cuando la página ofrece <b>algo que una respuesta
+generada no puede entregar en texto.</b></p>
+<p>Una comparación con datos propios. Un archivo técnico descargable. Disponibilidad real de inventario.
+Una herramienta que calcula. Es exactamente lo que produce el Campo de Prueba. No hay que inventar
+contenido para posicionar: hay que publicar bien lo que el sistema ya genera.</p>
+<p><b>El objetivo del programa no es tráfico. Es que Dronamex sea encontrado cuando existe una necesidad
+técnica, elegido cuando existe una decisión entre alternativas, y recordado cuando la compra pasa a
+comité.</b></p>
+<button class="verdoc" data-a="sec-2-4-1">Ver §2.4.1 en el documento completo →</button></div></section><section class="s " id="p13" data-i="13">
+  <div class="wrap"><div class="kick">13 &middot; Búsqueda</div>
+  <h1>Las ocho reglas del programa</h1>
+<table class="principios">
+<tbody>
+<tr><td>1</td><td><b>Negocio antes que posición</b></td><td>El indicador final es el avance comercial verificable, no una posición aislada</td></tr>
+<tr><td>2</td><td><b>Una intención por página</b></td><td>Dos intenciones en una página no posicionan ninguna</td></tr>
+<tr><td>3</td><td><b>Evidencia antes que volumen</b></td><td>Pruebas, protocolos y reportes son el contenido que nadie más puede escribir</td></tr>
+<tr><td>4</td><td><b>Prueba pública, incluso cuando falla</b></td><td>La credibilidad depende de publicar resultados incómodos</td></tr>
+<tr><td>5</td><td><b>La conversación no es una caja negra</b></td><td>Un clic no es una conversación; una conversación no es una venta</td></tr>
+<tr><td>6</td><td><b>La capa generativa se prepara, no se promete</b></td><td>Los modelos no son deterministas</td></tr>
+<tr><td>7</td><td><b>Sin páginas por combinatoria</b></td><td>No se crean cientos de URLs cruzando servicio y ciudad</td></tr>
+<tr><td>8</td><td><b>México y B2B primero</b></td><td>Ciclos técnicos e institucionales, no supuestos de comercio de consumo</td></tr>
+</tbody></table>
+<button class="verdoc" data-a="sec-2-4-2">Ver §2.4.2 en el documento completo →</button></div></section><section class="s " id="p14" data-i="14">
+  <div class="wrap"><div class="kick">14 &middot; Búsqueda</div>
+  <h1>La consulta más valiosa del mercado no tiene dueño</h1>
+<p>Nueve intenciones distintas mueven esta categoría. Una de ellas vale más que todas las demás juntas.</p>
+<table>
+<thead><tr><th>Intención</th><th>Patrón de consulta</th><th>Destino</th></tr></thead>
+<tbody>
+<tr><td>Investigación técnica</td><td><i>radar de vigilancia contramedidas de drones</i></td><td>Aplicación o evidencia</td></tr>
+<tr class="destaca"><td><b>Comparación</b></td><td><i>[equipo A] vs [equipo B] para [misión]</i></td><td><b>Careo publicado</b></td></tr>
+<tr><td>Verificación de especificación</td><td><i>[modelo] autonomía real</i></td><td>Hasta dónde aguanta</td></tr>
+<tr><td>Formación</td><td><i>curso de piloto de dron profesional CDMX</i></td><td>Curso</td></tr>
+</tbody></table>
+<p><b>La fila de comparación es la más valiosa del mapa.</b> Es donde el comprador ya decidió que necesita
+un equipo y sólo le falta elegir cuál — el momento de mayor intención comercial de todo el recorrido. Hoy
+nadie la atiende sin sesgo en el mercado mexicano, porque sólo un distribuidor con catálogo múltiple puede
+hacerlo. El Careo la resuelve produciendo una página nueva cada mes.</p>
+<p><b>Terminología de campo.</b> Las páginas se escriben con el vocabulario real del operador que teclea la
+consulta: cárcamo, presa, patio de maniobras, línea de conducción, subestación, avalúo, deslinde, azolve.</p>
+<button class="verdoc" data-a="sec-2-4-4">Ver §2.4.4 en el documento completo →</button></div></section><section class="s " id="p15" data-i="15">
+  <div class="wrap"><div class="kick">15 &middot; Búsqueda</div>
+  <h1>La decisión que casi nadie toma</h1>
+<p>Los sistemas de respuesta generativa acceden al contenido mediante rastreadores identificables que
+pueden permitirse o bloquearse. <b>Es una decisión estratégica, no una configuración técnica, y hoy
+Dronamex no la ha tomado.</b></p>
+<table>
+<thead><tr><th>Opción</th><th>Qué gana</th><th>Qué pierde</th></tr></thead>
+<tbody>
+<tr><td><b>Permitir</b></td><td>El contenido queda disponible para ser citado. Sin acceso no hay citación posible</td><td>El contenido puede resumirse sin enviar visita</td></tr>
+<tr><td><b>Bloquear</b></td><td>Protege el contenido de uso por terceros</td><td>Los competidores capturan la recomendación por omisión</td></tr>
+<tr class="destaca"><td><b>Mixto</b></td><td>Acceso a evidencia, fichas y guías; se restringe lo que deba protegerse</td><td>Exige mantenimiento y criterio por sección</td></tr>
+</tbody></table>
+<p><b>Recomendación: mixto, con acceso abierto por defecto.</b> El activo de Dronamex no es el texto: es la
+operación que lo produce. Que un modelo cite una prueba de Dronamex en una respuesta sobre inspección
+industrial es exactamente el resultado buscado.</p>
+<button class="verdoc" data-a="sec-2-4-9">Ver §2.4.9 en el documento completo →</button></div></section><section class="s " id="p16" data-i="16">
+  <div class="wrap"><div class="kick">16 &middot; Medición</div>
+  <h1>Búsqueda → conversación → CRM</h1>
+<p>El SEO sólo es defendible si puede entregar contexto al área comercial. El recorrido es explícito,
+estado por estado.</p>
+<div class="cadena">
+<span>Visita</span><span>Interacción</span><span>Contacto</span><span>Contacto válido</span>
+<span>Prospecto calificado</span><span>Oportunidad</span><span>Cotización</span><span>Venta</span>
+</div>
+<p><b>El botón de conversación transporta origen y página.</b> El evento <i>clic</i> se reporta separado del
+evento <i>conversación</i> y del estado comercial. Esa separación es la que impide el error más común del
+canal: contar clics como ventas.</p>
+<p><b>Y una consecuencia que hay que declarar:</b> si hay clics y no hay ventas, la falla puede estar en la
+velocidad de respuesta comercial y no en el tráfico.</p>
+<button class="verdoc" data-a="sec-2-4-11">Ver §2.4.11 en el documento completo →</button></div></section><section class="s " id="p17" data-i="17">
+  <div class="wrap"><div class="kick">17 &middot; Medición</div>
+  <h1>Lo que se puede medir y lo que no</h1>
+<div class="dos">
+<div><h3>Se mide</h3>
+<ul><li>Ventas conciliadas atribuidas · CRM o ERP</li>
+<li>Oportunidades y prospectos calificados · CRM</li>
+<li>Conversaciones por página de origen · Analítica + CRM</li>
+<li>Tiempo de primera respuesta · Bitácora</li>
+<li>Impresiones y clics, separando marca de genérico · Search Console</li>
+<li>Descargas de archivos técnicos · Analítica</li></ul></div>
+<div><h3>No se mide, y se dice</h3>
+<p>Las consultas resueltas dentro de interfaces conversacionales privadas son <b>estructuralmente
+invisibles</b>: no entregan datos de sesión y ninguna herramienta los recupera. Se reconoce como límite, no
+se disfraza con un indicador aproximado.</p>
+<p>Las herramientas que estiman presencia en modelos de lenguaje ejecutan muestras sobre sistemas no
+deterministas. Se reportan como señal exploratoria, <b>nunca como compromiso</b>.</p></div>
+</div>
+<p><b>No se fijan metas numéricas en este documento.</b> El expediente no aporta línea base, histórico ni
+presupuesto de pauta. Las metas se proponen al cierre del primer corte de treinta días, con la línea base
+medida — mecanismo que el propio §7 del pliego contempla.</p>
+<button class="verdoc" data-a="sec-2-4-15">Ver §2.4.15 en el documento completo →</button></div></section><section class="s plan" id="p18" data-i="18">
+  <div class="wrap"><div class="kick">18 &middot; Ejecución</div>
+  <h1>Noventa días, construidos alrededor de la Expo</h1>
+<div class="linea">
+  <div><b>Días 1–15</b><span>1 al 15 de octubre</span><p>Base, línea cero y primer acto. Accesos,
+  auditoría técnica, mapa de URLs, protocolo de medición. <b>Grabación del primer Careo</b> — no se publica
+  todavía.</p></div>
+  <div><b>Días 16–30</b><span>16 al 31 de octubre</span><p>Publicación del primer Careo. Correcciones de
+  prioridad cero. <b>Arranca la campaña de expectativa y prerregistro de la Expo.</b></p></div>
+  <div class="pico"><b>Días 31–45</b><span>1 al 14 de noviembre</span><p>Pico de expo. Cobertura del evento
+  el 12 y 13. <b>El Careo del mes se ejecuta en la expo, con público</b>, y se publica esa misma semana con
+  el archivo completo.</p></div>
+  <div><b>Días 46–60</b><span>15 al 30 de noviembre</span><p>Cosecha. Seguimiento de cada contacto del
+  evento, clasificado y entregado con contexto. Primer Archivo completo.</p></div>
+  <div><b>Días 61–90</b><span>1 al 29 de diciembre</span><p>Consolidación. Primer Reporte Abierto. Reporte
+  de noventa días y plan del siguiente trimestre con la evidencia de este.</p></div>
+</div>
+<button class="verdoc" data-a="sec-2-5">Ver §2.5 en el documento completo →</button></div></section><section class="s " id="p19" data-i="19">
+  <div class="wrap"><div class="kick">19 &middot; Alcance</div>
+  <h1>Qué cuenta como una pieza</h1>
+<p>El pliego cuenta <b>publicaciones</b>, no piezas de diseño. Un carrusel de ocho láminas es una
+publicación y ocho artes. Si la equivalencia no se define por escrito, la define el cliente sobre la marcha
+y siempre hacia arriba. Queda declarada:</p>
+<table>
+<thead><tr><th>Formato</th><th>Equivale a</th></tr></thead>
+<tbody>
+<tr><td>Publicación simple</td><td>1 pieza</td></tr>
+<tr><td>Carrusel</td><td>Hasta 8 láminas · 1 publicación</td></tr>
+<tr><td>Secuencia de historias</td><td>Hasta 5 pantallas · 1 secuencia</td></tr>
+<tr><td>Video corto</td><td>Hasta 60 segundos · 1 pieza</td></tr>
+<tr><td>Video largo</td><td>Sin límite de duración · 2 al mes</td></tr>
+<tr><td>Adaptación entre canales</td><td>No constituye pieza adicional</td></tr>
+</tbody></table>
+<p>Nueve publicaciones semanales · nueve secuencias de historias semanales · dos videos largos al mes ·
+hasta dos rondas de ajuste por pieza · <b>dos páginas de destino incluidas al mes</b>.</p>
+<button class="verdoc" data-a="sec-3-2">Ver §3.2 en el documento completo →</button></div></section><section class="s " id="p20" data-i="20">
+  <div class="wrap"><div class="kick">20 &middot; Operación</div>
+  <h1>Doscientas cuarenta revisiones al mes</h1>
+<p>Nada se publica sin aprobación del cliente. Con ochenta piezas al mes y dos rondas por pieza, el techo
+es de alrededor de <b>doscientas cuarenta revisiones mensuales</b> — doce por día hábil. Sobre correo o
+mensajería ese flujo se pierde.</p>
+<div class="dos">
+<div><h3>Tablero de aprobación</h3><p>Vista semanal, previsualización, estado, comentario ligado a la pieza
+y registro descargable con nombre y hora.</p>
+<h3>Carriles separados</h3><p>Aprobación de marca · validación técnica · autorización de gobierno y
+defensa. Es improbable que las tres recaigan en la misma persona. Se separan para que una pieza no espere
+al revisor de otra.</p></div>
+<div><h3>Cómo se destraba el calendario sin romper la regla</h3>
+<p>El §9 prohíbe expresamente la aprobación automática por vencimiento de plazo. Se propone entonces la
+excepción que el propio pliego concede: una <b>biblioteca de contenido atemporal aprobada por
+adelantado</b> —marca, seguridad operacional, preguntas frecuentes, testimonios autorizados— revisada en
+bloque una sola vez y disponible para sostener la cadencia cuando una pieza fechada se atore en revisión.</p></div>
+</div>
+<button class="verdoc" data-a="sec-3-3">Ver §3.3 en el documento completo →</button></div></section><section class="s " id="p21" data-i="21">
+  <div class="wrap"><div class="kick">21 &middot; Equipo</div>
+  <h1>Diez posiciones, en exclusiva para esta cuenta</h1>
+<table class="equipo">
+<thead><tr><th>Persona o perfil</th><th>Función</th><th>Dedicación</th><th>Sustitución</th></tr></thead>
+<tbody>
+<tr><td>Juan Luis Contreras</td><td>Estrategia y dirección creativa</td><td>Completa</td><td>Roberto Soto</td></tr>
+<tr><td>Roberto Soto</td><td>Planeación digital</td><td>Completa</td><td>Juan Luis Contreras</td></tr>
+<tr><td>Pamela González</td><td>Responsable de cuenta</td><td>Completa</td><td>Roberto Soto</td></tr>
+<tr><td>José Pablo Ramírez</td><td>Creación y edición audiovisual</td><td>Completa</td><td>Isabel Vargas</td></tr>
+<tr><td>Isabel Vargas</td><td>Diseño</td><td>Completa</td><td>José Pablo Ramírez</td></tr>
+<tr><td>Producción 1 y 2</td><td>Producción y adaptación</td><td>Completa</td><td>Entre sí</td></tr>
+<tr><td>Especialista Paid Media B2B</td><td>Operación de medios</td><td>Medio tiempo</td><td>Al contratar</td></tr>
+<tr><td>Atención y Social Care</td><td>Atención y calificación</td><td>Completa + relevo</td><td>Relevo incluido</td></tr>
+<tr><td>MarTech Engineer</td><td>Analítica e integración</td><td>Medio tiempo</td><td>Al contratar</td></tr>
+</tbody></table>
+<p><b>El equipo trabaja en exclusiva para esta cuenta.</b> No es una declaración de intención: es la base
+del modelo de costo. El §4.5 exige 217 horas mensuales con primera respuesta en treinta minutos; una sola
+persona no las cubre con vacaciones, incapacidades y picos. Por eso la atención se dimensiona en
+<b>tiempo completo más relevo</b>, y el relevo está dentro del costo.</p>
+<button class="verdoc" data-a="sec-04">Ver §04 en el documento completo →</button></div></section><section class="s " id="p22" data-i="22">
+  <div class="wrap"><div class="kick">22 &middot; Servicio</div>
+  <h1>El tiempo de respuesta es un indicador de conversión</h1>
+<table>
+<thead><tr><th>Compromiso del pliego</th><th>Aplicación propuesta</th></tr></thead>
+<tbody>
+<tr><td>Lunes a viernes, 09:00 a 19:00</td><td>Monitoreo de bandejas y comentarios en las cinco redes, con bitácora diaria</td></tr>
+<tr><td>Primera respuesta en 30 minutos</td><td>Medición desde la recepción dentro de la ventana hasta la respuesta pertinente</td></tr>
+<tr class="destaca"><td>Hasta 2 horas en casos no comerciales complejos</td><td>Dos filas: resolución inmediata para lo comercial, cola técnica para lo que requiere consulta. <b>No se extiende a consultas comerciales</b></td></tr>
+<tr><td>Alta intención entregada en 15 minutos</td><td>Registro del momento de identificación y de la entrega técnica</td></tr>
+</tbody></table>
+<p>La mayoría de los proveedores va a cotizar contra los treinta minutos y a dimensionar de más. Esa
+segunda banda se aprovecha, se declara y se refleja en el costo.</p>
+<p><b>La demora comercial del cliente no borra la obligación de entregar el prospecto a tiempo.</b></p>
+<button class="verdoc" data-a="sec-07">Ver §07 en el documento completo →</button></div></section><section class="s economia" id="p23" data-i="23">
+  <div class="wrap"><div class="kick">23 &middot; Economía</div>
+  <h1>La iguala</h1>
+<div class="cifra">
+  <div class="linea-costo"><span>Costo directo — equipo, perfiles a incorporar y herramientas</span><b>$251,031</b></div>
+  <div class="linea-costo"><span>Gastos generales · 12%</span><b>$30,124</b></div>
+  <div class="linea-costo sub"><span>Costo total</span><b>$281,155</b></div>
+  <div class="linea-costo"><span>Margen</span><b>$150,000</b></div>
+  <div class="linea-costo total"><span>Iguala mensual sin IVA</span><b>$431,155</b></div>
+  <div class="linea-costo"><span>IVA 16%</span><b>$68,985</b></div>
+  <div class="linea-costo total ivada"><span>Iguala mensual con IVA</span><b>$500,140</b></div>
+</div>
+<p><b>El margen es la utilidad de la firma. No se suma un fee de agencia adicional</b>: cobrar la utilidad
+dos veces con distinto nombre es lo primero que se detecta al desglosar, y el §13 pondera transparencia al
+25%.</p>
+<p>Base de cálculo por persona: bruto mensual × factor de integración × (1 + carga patronal). Factor de
+integración salarial 2026 = 1.0493. Carga patronal aplicada: 30%, punto medio del rango verificado de 25%
+a 35%. Vigencia de la oferta: 45 días naturales.</p>
+<button class="verdoc" data-a="sec-8-2">Ver §8.2 en el documento completo →</button></div></section><section class="s " id="p24" data-i="24">
+  <div class="wrap"><div class="kick">24 &middot; Economía</div>
+  <h1>Qué está incluido y qué no</h1>
+<div class="dos">
+<div><h3>Incluido en la iguala</h3>
+<p>Estrategia y plan editorial por unidad · nueve publicaciones y nueve secuencias de historias semanales ·
+dos videos largos al mes · dos rondas de ajuste por pieza · configuración y operación de pauta ·
+atención en cinco canales de lunes a viernes · <b>dos páginas de destino al mes</b> · medición, CRM y
+tablero · reporte mensual y reuniones.</p></div>
+<div><h3>Se cotiza por separado</h3>
+<p>Inversión publicitaria · producción presencial · locación · talento · viáticos · creadores externos ·
+licencias de terceros · CRM · impresión · atención fuera de horario. Y tres partidas propias de este plan:
+<b>cobertura de la Expo</b>, páginas de destino adicionales, y el desarrollo del tablero de aprobación.</p></div>
+</div>
+<p><b>Administración de medios: comisión del 10% sobre la inversión administrada</b>, facturada
+mensualmente y separada de la iguala. La inversión la contrata y factura Dronamex directamente; las
+cuentas son de su propiedad.</p>
+<p class="tarifas">Camarógrafo $8,500 por jornada · grabación con dron $3,400 por jornada · edición
+$1,436 por minuto final · dos cámaras con crew $22,546 por jornada · video institucional $40,000 a
+$120,000 según alcance.</p>
+<button class="verdoc" data-a="sec-8-5">Ver §8.5 en el documento completo →</button></div></section><section class="s " id="p25" data-i="25">
+  <div class="wrap"><div class="kick">25 &middot; Contrato</div>
+  <h1>Penalizaciones simétricas</h1>
+<p>El pliego no impone penalizaciones: <b>solicita que el proveedor proponga cuáles aplican</b>. Se
+proponen acotadas, medibles y simétricas. Un esquema que sólo penaliza al proveedor por incumplimientos
+que dependen de la aprobación del cliente es inaplicable en la práctica.</p>
+<table>
+<thead><tr><th>Supuesto</th><th>Consecuencia propuesta</th></tr></thead>
+<tbody>
+<tr><td>Primera respuesta fuera de plazo en más del 10% de los casos del mes</td><td>Nota de crédito del 5% de la iguala</td></tr>
+<tr><td>Entrega de alta intención fuera de los 15 minutos en más del 10% de los casos</td><td>Nota de crédito del 5% de la iguala</td></tr>
+<tr><td>Pieza del mínimo mensual no entregada por causa del proveedor</td><td>Reposición o acreditación proporcional</td></tr>
+<tr><td>Reporte mensual fuera de los 5 días hábiles</td><td>Nota de crédito del 2% de la iguala</td></tr>
+<tr class="destaca"><td><b>Contrapartida:</b> aprobación del cliente fuera del plazo acordado</td><td><b>El calendario se recorre sin penalización al proveedor y sin reducción de la iguala</b></td></tr>
+</tbody></table>
+<p><b>Ninguna penalización opera sin evidencia registrada.</b></p>
+<button class="verdoc" data-a="sec-8-7">Ver §8.7 en el documento completo →</button></div></section><section class="s " id="p26" data-i="26">
+  <div class="wrap"><div class="kick">26 &middot; Muestra</div>
+  <h1>Dos semanas, veinte piezas</h1>
+<p>Diez días hábiles. <b>Dieciocho publicaciones y dieciocho secuencias de historias</b> —tres por semana
+por unidad— más <b>dos videos largos</b>. Cada pieza declara de qué insumo sale. Esa columna es lo que
+separa un plan ejecutable de una lista de deseos.</p>
+<table>
+<thead><tr><th>Pieza</th><th>Indicador principal</th></tr></thead>
+<tbody>
+<tr><td>Careo 01</td><td>Descargas del archivo con correo corporativo · solicitudes de comparativa</td></tr>
+<tr><td>Hasta dónde aguanta</td><td>Retención a 3 y 15 segundos · alcance</td></tr>
+<tr><td>El Turno</td><td>Duración media de reproducción · consultas de capacitación</td></tr>
+<tr><td>Fichas y disponibilidad</td><td>Conversaciones iniciadas con contexto de producto</td></tr>
+<tr><td>Curso</td><td>Solicitudes de inscripción · costo por solicitud</td></tr>
+</tbody></table>
+<p><b>Dieciséis de las veinte piezas se producen sin salir a grabar en locación.</b> Dos requieren grabación
+en sede o bodega. Una exige jornada de producción y se cotiza aparte. Una depende de material que el
+cliente debe autorizar.</p>
+<button class="verdoc" data-a="sec-10">Ver §10 en el documento completo →</button></div></section><section class="s " id="p27" data-i="27">
+  <div class="wrap"><div class="kick">27 &middot; Honestidad</div>
+  <h1>Lo que este documento no promete y lo que todavía le falta</h1>
+<div class="dos">
+<div><h3>No se promete</h3>
+<p>Ni posiciones de búsqueda, ni citación en modelos de lenguaje, ni volumen de prospectos, ni venta, en
+ninguna de las cuatro etapas del plan. <b>Esas promesas son la forma más rápida de perder un contrato en el
+mes cuatro.</b></p>
+<p>No se reportará retorno sobre ventas sin ingresos conciliados y sin una regla de atribución acordada.</p></div>
+<div><h3>Lo que falta, declarado</h3>
+<p>Los tres casos con métricas verificables que exige el §8 <b>no están en esta versión</b> y se declara
+como tal, en lugar de sustituirse con resultados hipotéticos. Faltan también los datos legales, el plazo
+mínimo, la forma de pago, las tarifas de las partidas abiertas, las trayectorias de los tres perfiles a
+incorporar y el texto definitivo de la declaración de uso de inteligencia artificial.</p>
+<p>Ninguno de esos campos se ha completado con estimaciones ni se ha convertido en acuerdo por este
+documento.</p></div>
+</div>
+<button class="verdoc" data-a="sec-supuestos-declarados">Ver Supuestos declarados en el documento completo →</button></div></section><section class="s cierre" id="p28" data-i="28">
+  <div class="wrap"><div class="kick">28 &middot; Cierre</div>
+  <h1>Lo que se compromete</h1>
+<p class="grande">Un sistema de demanda auditable. Cada contenido con validación registrada. Cada contacto
+con origen y estado. Cada entrega a ventas con contexto y marca temporal. Cada peso con una función y una
+unidad.</p>
+<p>Y un diferencial que ninguna otra propuesta puede ofrecer, porque no depende de talento sino de
+estructura:</p>
+<p class="cierre"><b>Dronamex es el único actor de su categoría en México que puede publicar una comparación
+imparcial entre las marcas que vende.</b></p>
+<p class="firma">wmn/nd &middot; septiembre de 2026</p>
+<button class="verdoc" data-a="sec-01">Ver §01 en el documento completo →</button></div></section></div>
+<div id="vig"></div>
+
+<div class="meta" id="mTL">wmn/nd &nbsp;·&nbsp; propuesta técnica y económica</div>
+<div class="meta" id="mTR">Dronamex &nbsp;·&nbsp; septiembre de 2026</div>
+
+<div id="bar">
+  <button class="bt" id="ant"><span class="lg">&larr; Anterior</span><span class="sm">&larr;</span></button>
+  <button class="bt" id="sig"><span class="lg">Siguiente &rarr;</span><span class="sm">&rarr;</span></button>
+  <span id="cuenta">01 / 29</span>
+  <div id="prog"><i></i></div>
+  <button class="bt" id="bIdx">Índice</button>
+  <button class="bt" id="bDoc"><span class="lg">Documento completo</span><span class="sm">Documento</span></button>
+</div>
+
+<div id="idx"><h2>Índice</h2><div id="idxL"><button class="ix" data-i="0"><u>00</u>Dronamex</button><button class="ix" data-i="1"><u>01</u>Cuatro niveles de evidencia, sostenidos hasta la última página</button><button class="ix" data-i="2"><u>02</u>El volumen es el síntoma. No el problema.</button><button class="ix" data-i="3"><u>03</u>Dronamex no tiene que decir que sabe. Tiene que probarlo en público.</button><button class="ix" data-i="4"><u>04</u>Tres unidades, separadas desde el primer día</button><button class="ix" data-i="5"><u>05</u>Tres cosas que el pliego pide y su infraestructura todavía no puede producir</button><button class="ix" data-i="6"><u>06</u>La Expo cae en el día 43 del contrato</button><button class="ix" data-i="7"><u>07</u>El Campo de Prueba</button><button class="ix" data-i="8"><u>08</u>Los cinco formatos</button><button class="ix" data-i="9"><u>09</u>El Careo</button><button class="ix" data-i="10"><u>10</u>El Archivo</button><button class="ix" data-i="11"><u>11</u>Cómo se reparte el sistema</button><button class="ix" data-i="12"><u>12</u>Buscar dejó de ser un solo comportamiento</button><button class="ix" data-i="13"><u>13</u>Las ocho reglas del programa</button><button class="ix" data-i="14"><u>14</u>La consulta más valiosa del mercado no tiene dueño</button><button class="ix" data-i="15"><u>15</u>La decisión que casi nadie toma</button><button class="ix" data-i="16"><u>16</u>Búsqueda → conversación → CRM</button><button class="ix" data-i="17"><u>17</u>Lo que se puede medir y lo que no</button><button class="ix" data-i="18"><u>18</u>Noventa días, construidos alrededor de la Expo</button><button class="ix" data-i="19"><u>19</u>Qué cuenta como una pieza</button><button class="ix" data-i="20"><u>20</u>Doscientas cuarenta revisiones al mes</button><button class="ix" data-i="21"><u>21</u>Diez posiciones, en exclusiva para esta cuenta</button><button class="ix" data-i="22"><u>22</u>El tiempo de respuesta es un indicador de conversión</button><button class="ix" data-i="23"><u>23</u>La iguala</button><button class="ix" data-i="24"><u>24</u>Qué está incluido y qué no</button><button class="ix" data-i="25"><u>25</u>Penalizaciones simétricas</button><button class="ix" data-i="26"><u>26</u>Dos semanas, veinte piezas</button><button class="ix" data-i="27"><u>27</u>Lo que este documento no promete y lo que todavía le falta</button><button class="ix" data-i="28"><u>28</u>Lo que se compromete</button></div>
+  <button class="bt" id="idxX" style="margin-top:34px">Cerrar</button></div>
+
+<div id="doc">
+  <div id="docNav"><a class="l1" href="#sec-dronamex">DRONAMEX</a><a class="l2" href="#sec-propuesta-t-cnica-y-econ-mica">Propuesta técnica y económica</a><a class="l2" href="#sec-criterios-de-lectura">Criterios de lectura</a><a class="l1" href="#sec-01">01 · Resumen ejecutivo</a><a class="l3" href="#sec-lo-que-compramos-entender-antes-de-propo">Lo que compramos entender antes de proponer</a><a class="l3" href="#sec-la-tesis">La tesis</a><a class="l3" href="#sec-las-tres-unidades-separadas-desde-el-pri">Las tres unidades, separadas desde el primer día</a><a class="l3" href="#sec-lo-que-el-pliego-pide-y-su-propia-infrae">Lo que el pliego pide y su propia infraestructura todavía no puede producir</a><a class="l3" href="#sec-el-hito-que-el-pliego-no-contempla">El hito que el pliego no contempla</a><a class="l3" href="#sec-lo-que-se-compromete">Lo que se compromete</a><a class="l1" href="#sec-02">02 · Estrategia</a><a class="l2" href="#sec-2-1">2.1 · Diagnóstico</a><a class="l3" href="#sec-lo-que-hay-hoy">Lo que hay hoy</a><a class="l3" href="#sec-lo-que-eso-significa">Lo que eso significa</a><a class="l2" href="#sec-2-2">2.2 · Arquitectura por unidad</a><a class="l3" href="#sec-dronamex-referencia-t-cnica">Dronamex — referencia técnica</a><a class="l3" href="#sec-dronamex-academy-formaci-n-que-alimenta-">Dronamex Academy — formación que alimenta el negocio</a><a class="l3" href="#sec-tienda-cat-logo-consultivo">Tienda — catálogo consultivo</a><a class="l2" href="#sec-2-3">2.3 · El Campo de Prueba</a><a class="l3" href="#sec-la-regla-que-lo-sostiene">La regla que lo sostiene</a><a class="l3" href="#sec-los-cinco-formatos">Los cinco formatos</a><a class="l3" href="#sec-c-mo-se-reparte">Cómo se reparte</a><a class="l2" href="#sec-2-4">2.4 · Estrategia SEO</a><a class="l3" href="#sec-2-4-1">2.4.1 · La premisa</a><a class="l3" href="#sec-2-4-2">2.4.2 · Los ocho principios</a><a class="l3" href="#sec-2-4-3">2.4.3 · Arquitectura SEO por unidad</a><a class="l3" href="#sec-2-4-4">2.4.4 · Mapa de intención de búsqueda</a><a class="l3" href="#sec-2-4-5">2.4.5 · Arquitectura de páginas</a><a class="l3" href="#sec-2-4-6">2.4.6 · Estructura del contenido para lectura humana y extracción generativa</a><a class="l3" href="#sec-2-4-7">2.4.7 · Modelo semántico y enlazado interno</a><a class="l3" href="#sec-2-4-8">2.4.8 · SEO técnico</a><a class="l3" href="#sec-2-4-9">2.4.9 · Rastreadores generativos: la decisión que casi nadie toma</a><a class="l3" href="#sec-2-4-10">2.4.10 · SEO local</a><a class="l3" href="#sec-2-4-11">2.4.11 · La cadena: búsqueda → conversación → CRM</a><a class="l3" href="#sec-2-4-12">2.4.12 · Visibilidad en búsqueda generativa</a><a class="l3" href="#sec-2-4-13">2.4.13 · Autoridad y relaciones públicas digitales</a><a class="l3" href="#sec-2-4-14">2.4.14 · El cruce con la pauta</a><a class="l3" href="#sec-2-4-15">2.4.15 · Sistema de indicadores</a><a class="l3" href="#sec-2-4-16">2.4.16 · Modelo de atribución</a><a class="l3" href="#sec-2-4-17">2.4.17 · Matriz de prioridad</a><a class="l3" href="#sec-2-4-18">2.4.18 · Qué produce el equipo</a><a class="l3" href="#sec-2-4-19">2.4.19 · Qué no se hace</a><a class="l2" href="#sec-2-5">2.5 · Plan de noventa días</a><a class="l3" href="#sec-d-as-1-15-1-al-15-de-octubre">Días 1–15 · 1 al 15 de octubre</a><a class="l3" href="#sec-d-as-16-30-16-al-31-de-octubre">Días 16–30 · 16 al 31 de octubre</a><a class="l3" href="#sec-d-as-31-45-1-al-14-de-noviembre">Días 31–45 · 1 al 14 de noviembre</a><a class="l3" href="#sec-d-as-46-60-15-al-30-de-noviembre">Días 46–60 · 15 al 30 de noviembre</a><a class="l3" href="#sec-d-as-61-90-1-al-29-de-diciembre">Días 61–90 · 1 al 29 de diciembre</a><a class="l3" href="#sec-lo-que-este-plan-no-promete">Lo que este plan no promete</a><a class="l1" href="#sec-03">03 · Alcance</a><a class="l2" href="#sec-3-1">3.1 · Volumen</a><a class="l2" href="#sec-3-2">3.2 · La definición que el pliego no hace y nosotros sí</a><a class="l2" href="#sec-3-3">3.3 · Aprobación</a><a class="l2" href="#sec-3-4">3.4 · Lo que se cotiza por separado</a><a class="l1" href="#sec-04">04 · Equipo</a><a class="l2" href="#sec-4-1">4.1 · Asignación</a><a class="l2" href="#sec-4-2">4.2 · El relevo de atención</a><a class="l2" href="#sec-4-3">4.3 · Lo que este documento no acredita</a><a class="l1" href="#sec-05">05 · Casos</a><a class="l1" href="#sec-06">06 · Tecnología</a><a class="l2" href="#sec-6-1">6.1 · Arquitectura de la implementación</a><a class="l2" href="#sec-6-2">6.2 · SEO técnico: ejecución</a><a class="l2" href="#sec-6-3">6.3 · Rastreadores generativos</a><a class="l2" href="#sec-6-4">6.4 · Indexación de la línea de gobierno y defensa</a><a class="l2" href="#sec-6-5">6.5 · Automatización y uso de inteligencia artificial</a><a class="l1" href="#sec-07">07 · Niveles de servicio</a><a class="l2" href="#sec-7-1">7.1 · La excepción que cambia el dimensionamiento</a><a class="l2" href="#sec-7-2">7.2 · El tiempo de respuesta como indicador de conversión</a><a class="l2" href="#sec-7-3">7.3 · Ausencias, picos y crisis</a><a class="l2" href="#sec-7-4">7.4 · Qué cuenta y qué no</a><a class="l1" href="#sec-08">08 · Economía</a><a class="l2" href="#sec-8-1">8.1 · Naturaleza de la oferta</a><a class="l2" href="#sec-8-2">8.2 · Estructura del precio</a><a class="l2" href="#sec-8-3">8.3 · Formato del §12</a><a class="l2" href="#sec-8-4">8.4 · Administración de medios</a><a class="l2" href="#sec-8-5">8.5 · Partidas que se cotizan por separado</a><a class="l2" href="#sec-8-6">8.6 · Condiciones comerciales</a><a class="l2" href="#sec-8-7">8.7 · Penalizaciones propuestas</a><a class="l2" href="#sec-8-8">8.8 · Piso de rentabilidad</a><a class="l1" href="#sec-09">09 · Legal</a><a class="l1" href="#sec-10">10 · Muestra</a><a class="l2" href="#sec-10-1">10.1 · Alcance de la muestra</a><a class="l2" href="#sec-10-2">10.2 · Semana A — instalar el método</a><a class="l3" href="#sec-dronamex-2">Dronamex</a><a class="l3" href="#sec-academy">Academy</a><a class="l3" href="#sec-tienda">Tienda</a><a class="l2" href="#sec-10-3">10.3 · Semana B — la prueba y su consecuencia</a><a class="l3" href="#sec-dronamex-3">Dronamex</a><a class="l3" href="#sec-academy-2">Academy</a><a class="l3" href="#sec-tienda-2">Tienda</a><a class="l2" href="#sec-10-4">10.4 · Resumen de insumos</a><a class="l2" href="#sec-10-5">10.5 · Qué mide esta muestra</a><a class="l1" href="#anexo-a">Anexo A · Matriz de cumplimiento</a><a class="l1" href="#anexo-c">Anexo C · Respuestas al proponente</a><a class="l1" href="#sec-supuestos-declarados">Supuestos declarados</a></div>
+  <div id="docBody"><h1 id="sec-dronamex">DRONAMEX</h1><h2 id="sec-propuesta-t-cnica-y-econ-mica">Propuesta técnica y económica</h2><p>Dronamex · Dronamex Academy · Tienda
+wmn/nd · septiembre de 2026</p>
+<hr /><h2 id="sec-criterios-de-lectura">Criterios de lectura</h2><p>Este documento distingue cuatro niveles de evidencia y los sostiene hasta la última página.</p>
+<table>
+<thead>
+<tr>
+<th>Nivel</th>
+<th>Qué significa</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="ev ev-dato">dato</span></td>
+<td>Verificable en el RFP, en dronamex.com o en una fuente citable</td>
+</tr>
+<tr>
+<td><span class="ev ev-inferencia">inferencia</span></td>
+<td>Conclusión derivada de dos o más hechos verificados</td>
+</tr>
+<tr>
+<td><span class="ev ev-supuesto">supuesto</span></td>
+<td>Propuesta o condición que aún no se confirma</td>
+</tr>
+<tr>
+<td><span class="ev ev-pendiente">pendiente</span></td>
+<td>Información que Dronamex todavía no ha entregado</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Ninguna cifra de desempeño de terceros aparece en este documento.</strong> No usamos resultados de otras marcas, de otros mercados ni de otras agencias para sostener lo que proponemos. Lo que se afirma, se afirma sobre evidencia propia o se declara como supuesto.</p>
+<p><strong>Ningún campo pendiente se rellena con una estimación.</strong> Donde falta información, dice que falta. Un supuesto declarado es defensa; un supuesto callado es exposición.</p>
+<p><strong>No se promete retorno sobre venta sin ingresos conciliados</strong>, ni posiciones de búsqueda, ni citación en modelos de lenguaje, ni resultados garantizados a 30, 60 o 90 días. Esas promesas son la forma más rápida de perder un contrato en el mes cuatro.</p>
+<p>Fuentes: RFP de Marketing Digital y Generación de Leads, versión 1.0, emitido el 04/09/2026, con sus anexos A, B y C · dronamex.com, compilado el 08/09/2026 · las quince preguntas enviadas el 09/09/2026.</p>
+<hr /><h1 id="sec-01">01 · Resumen ejecutivo</h1><h3 id="sec-lo-que-compramos-entender-antes-de-propo">Lo que compramos entender antes de proponer</h3><p>El pliego pide volumen: nueve publicaciones semanales, treinta y nueve al mes, treinta y nueve secuencias de historias, dos videos largos, cinco redes, tres unidades de negocio, doscientas diecisiete horas de atención, primera respuesta en treinta minutos <span class="ev ev-dato">dato, §4.2 y §4.5</span>.</p>
+<p>Ese volumen es el síntoma, no el problema. El problema es que <strong>Dronamex sabe algo que no está publicado.</strong></p>
+<p>Distribuye nueve marcas —DJI, Chasing, Dahua, Alpha, Skyfend, Aerosentinelle, Hycomms, Petorius, Elistair <span class="ev ev-dato">dato</span>— que cubren aire, agua, tierra, espectro y enlace. Capacita a más de mil quinientos operadores y a ciento veinte empresas <span class="ev ev-dato">dato</span>. Opera equipo todos los días en sitios reales. Y nada de eso se convierte en material público.</p>
+<p>Mientras tanto, cada fabricante de la categoría publica que su equipo es el mejor, y todo comprador técnico sabe que esa afirmación no vale nada porque proviene de quien la vende.</p><h3 id="sec-la-tesis">La tesis</h3><p><strong>Dronamex no tiene que decir que sabe. Tiene que probarlo en público.</strong></p>
+<p>Un fabricante no puede publicar una comparativa honesta: siempre gana la suya. Un distribuidor con nueve marcas puede montar dos equipos en la misma misión, medir, y publicar quién ganó <strong>incluso cuando gana el que deja menos margen</strong>.</p>
+<p>Esa posibilidad no es una idea de campaña. Es una posición que existe únicamente por la estructura del negocio, y ningún competidor con una sola marca puede copiarla aunque quiera <span class="ev ev-inferencia">inferencia</span>.</p>
+<p>De ahí sale todo lo demás: el contenido deja de inventarse en una junta y empieza a producirse documentando lo que ya ocurre en la operación. El posicionamiento en buscadores deja de depender de artículos genéricos y se apoya en información propia que nadie más tiene. Y la conversación comercial deja de empezar con una promesa y empieza con un archivo.</p><h3 id="sec-las-tres-unidades-separadas-desde-el-pri">Las tres unidades, separadas desde el primer día</h3><table>
+<thead>
+<tr>
+<th>Unidad</th>
+<th>Comprador</th>
+<th>Ciclo</th>
+<th>Qué se mide</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Dronamex</strong></td>
+<td>Empresa e institución</td>
+<td>Lento, técnico, por comité</td>
+<td>Prospecto calificado, demostración, oportunidad aceptada</td>
+</tr>
+<tr>
+<td><strong>Academy</strong></td>
+<td>Persona y área de capacitación</td>
+<td>Corto</td>
+<td>Inscripción confirmada, capacitación empresarial</td>
+</tr>
+<tr>
+<td><strong>Tienda</strong></td>
+<td>Comprador profesional</td>
+<td>Inmediato</td>
+<td>Consulta y cotización calificada</td>
+</tr>
+</tbody>
+</table>
+<p>Tratarlas como una cuenta con tres carpetas es el error que produce ochenta piezas al mes que no le hablan a nadie. Cada unidad tiene presupuesto, recorrido y medición propios; la dirección editorial y la infraestructura se comparten y el costo compartido se distribuye por dedicación registrada, sin cobrarse dos veces.</p><h3 id="sec-lo-que-el-pliego-pide-y-su-propia-infrae">Lo que el pliego pide y su propia infraestructura todavía no puede producir</h3><p>Tres puntos. No se señalan para descalificar el documento: se señalan porque un proveedor que los acepta en silencio va a incumplirlos en el mes tres.</p>
+<p><strong>Retorno sobre inversión publicitaria en la tienda.</strong> El pliego solicita indicadores de carrito, abandono y ROAS <span class="ev ev-dato">dato, §§2 y 7</span>. Hoy cada producto de dronamex.com termina en una solicitud de cotización por WhatsApp; el botón "PAGAR $5,250" del curso básico redirige a WhatsApp <span class="ev ev-dato">dato</span>. Sin transacción en línea no hay ingreso que atribuir. Esa unidad se mide por <strong>solicitud de cotización calificada</strong> hasta que exista pasarela, y así queda declarado en el contrato.</p>
+<p><strong>Captación de prospectos de gobierno por redes sociales.</strong> Las dependencias adquieren mediante procedimiento formal de contratación. Una publicación no origina una adjudicación. Lo que el trabajo digital sí construye es la <strong>reputación técnica que sobrevive la revisión previa de un comité</strong> — que es donde efectivamente se decide. Se plantea así, con esa distinción explícita, y se mide por reuniones y solicitudes institucionales, no por formularios.</p>
+<p><strong>Comunicación de Academy sobre licencias.</strong> El sitio promete en un lugar <em>"Constancia digital avalada por Dronamex"</em> y en otro <em>"Constancia oficial"</em> <span class="ev ev-dato">dato</span>. No son lo mismo. La comunicación se limitará a competencias y constancias cuyo alcance documente Dronamex, sin afirmar ni negar acreditación que no conste. <span class="ev ev-pendiente">pendiente: folio, convenios y alcance autorizado</span></p><h3 id="sec-el-hito-que-el-pliego-no-contempla">El hito que el pliego no contempla</h3><p><strong>La EXPO DRONAMEX se realiza el 12 y 13 de noviembre</strong> y está anunciada en la portada del propio sitio, con eje declarado en defensa y seguridad <span class="ev ev-dato">dato</span>. El RFP no la menciona en ninguna parte.</p>
+<p>Con arranque el 1 de octubre, la expo cae en el día 43 del contrato. El Anexo B sugiere que los días 31 a 60 sean de <em>"optimización por CPL y calidad"</em> <span class="ev ev-dato">dato</span> — una fase de ajuste tranquilo, exactamente donde hay un evento propio que exige campaña de expectativa, prerregistro, cobertura presencial y seguimiento.</p>
+<p><strong>Nuestro plan de noventa días está construido alrededor de ella.</strong> No como añadido: como el eje del segundo mes.</p><h3 id="sec-lo-que-se-compromete">Lo que se compromete</h3><p>Un sistema de demanda auditable. Cada contenido con validación registrada. Cada contacto con origen y estado. Cada entrega a ventas con contexto y marca temporal. Cada peso con una función y una unidad.</p>
+<p>Y un diferencial que ninguna otra propuesta puede ofrecer, porque no depende de talento sino de estructura: <strong>Dronamex es el único actor de su categoría en México que puede publicar una comparación imparcial entre las marcas que vende.</strong></p>
+<hr /><h1 id="sec-02">02 · Estrategia</h1><h2 id="sec-2-1">2.1 · Diagnóstico</h2><h3 id="sec-lo-que-hay-hoy">Lo que hay hoy</h3><p><strong>Tres nombres para un mismo negocio.</strong> La navegación dice <em>Capacitación</em>; una segunda página dice <em>Academy</em>; y un archivo alojado en el servidor se llama <code>curso_drone_pilot_dronamex_university.pdf</code>, introduciendo <em>Dronamex University</em>, que no aparece en ningún menú <span class="ev ev-dato">dato</span>. Tres denominaciones dispersan el reconocimiento que ya existe. La primera decisión operativa es cuál se conserva.</p>
+<p><strong>Un catálogo sin arquitectura de decisión.</strong> Nueve marcas, once líneas de gobierno, cinco de enterprise <span class="ev ev-dato">dato</span>. Están organizadas por marca y por producto, que es como piensa un almacén. El comprador no piensa así: piensa por misión — inspeccionar una torre, vigilar un perímetro, levantar una obra, revisar el interior de un tanque.</p>
+<p><strong>Cero información propia publicada.</strong> No hay una sola prueba documentada, comparación medida ni reporte abierto en todo el sitio <span class="ev ev-dato">dato</span>. Toda la información técnica disponible proviene de fichas de fabricante. En una categoría donde el comprador desconfía por defecto de quien vende, eso es el activo más grande sin explotar del expediente.</p>
+<p><strong>Tráfico que aterriza en la portada y conversación que empieza sin contexto.</strong> Los botones de compra redirigen a WhatsApp sin parámetros de origen <span class="ev ev-dato">dato</span>. Cada conversación comercial comienza preguntando lo que el sitio ya sabía.</p><h3 id="sec-lo-que-eso-significa">Lo que eso significa</h3><p>El problema de Dronamex no es de alcance. Es de <strong>asimetría de información</strong>: sabe más de lo que publica, y el comprador decide con menos información de la que Dronamex podría darle.</p>
+<p>Un programa que agregue ochenta piezas mensuales a esa estructura produce ochenta piezas de ruido. Lo que corresponde es convertir el conocimiento operativo en material público y ordenar el sitio para que ese material se encuentre, se descargue y termine en una conversación con contexto.</p>
+<hr /><h2 id="sec-2-2">2.2 · Arquitectura por unidad</h2><h3 id="sec-dronamex-referencia-t-cnica">Dronamex — referencia técnica</h3><p><strong>Recorrido:</strong> problema o caso de uso → tecnología aplicable → evidencia → comparación → consulta → diagnóstico o demostración → oportunidad comercial.</p>
+<p><strong>Prioridad de contenido:</strong> páginas por aplicación e industria antes que por producto. Un comprador que busca <em>"inspección de cárcamo"</em> no está buscando un modelo: está buscando saber si existe forma de hacerlo sin vaciar el cárcamo.</p>
+<p><strong>Activo diferencial:</strong> El Careo y El Archivo — las dos piezas que resuelven una decisión en lugar de describir un producto.</p>
+<p><strong>Conversión:</strong> solicitud de diagnóstico, comparativa, demostración o cotización.</p>
+<p><strong>Canales:</strong> LinkedIn y buscador como eje. YouTube como repositorio técnico.</p><h3 id="sec-dronamex-academy-formaci-n-que-alimenta-">Dronamex Academy — formación que alimenta el negocio</h3><p>Academy no se opera como un sitio paralelo. Es la <strong>puerta de entrada de menor fricción a toda la relación comercial</strong>: ticket bajo, decisión rápida, y un alumno que sale sabiendo operar equipo que Dronamex vende.</p>
+<p>El dato que lo confirma está en su propio sitio y nadie lo está usando: <strong>ciento veinte empresas capacitadas</strong> <span class="ev ev-dato">dato</span>. No son alumnos sueltos — son organizaciones con presupuesto, necesidad operativa declarada y un contacto abierto. Es una cartera, no una cifra de portada.</p>
+<p><strong>Recorrido:</strong> habilidad requerida → temario y requisitos → consulta → inscripción confirmada → operación → necesidad de equipo detectada.</p>
+<p><strong>Prioridad:</strong> páginas de curso con fecha, temario, requisitos, modalidad y preguntas frecuentes. Rutas corporativas para capacitación in-company.</p>
+<p><strong>Mecánica comercial propuesta:</strong> que el costo del curso se acredite contra la compra de equipo dentro de un plazo declarado. Convierte a Academy en el embudo natural de la unidad de ticket alto y da una razón concreta para tomar el curso antes de comprar. <span class="ev ev-supuesto">supuesto — requiere aprobación de Dronamex</span></p>
+<p><strong>Límite:</strong> toda comunicación se restringe a competencias y constancias documentadas. Ninguna afirmación sobre licencia federal sin folio exhibido.</p><h3 id="sec-tienda-cat-logo-consultivo">Tienda — catálogo consultivo</h3><p>Mientras el cierre ocurra por conversación, la arquitectura debe privilegiar la <strong>decisión asistida</strong> y no simular un comercio electrónico completo.</p>
+<p><strong>Recorrido:</strong> necesidad → producto compatible → disponibilidad → cotización → seguimiento comercial.</p>
+<p><strong>Prioridad:</strong> ficha de producto con compatibilidad, casos de uso y documentos. Comparativa por misión, no por especificación.</p>
+<p><strong>Conversión:</strong> consulta y cotización calificada, con el contexto del producto viajando dentro del mensaje.</p>
+<hr /><h2 id="sec-2-3">2.3 · El Campo de Prueba</h2><blockquote>
+<p>El sistema de contenido. No es una campaña: es una forma de producir.</p>
+</blockquote><h3 id="sec-la-regla-que-lo-sostiene">La regla que lo sostiene</h3><p><strong>Nada se afirma que no se haya probado.</strong> Ninguna pieza usa un dato de desempeño que no provenga de una prueba propia documentada.</p>
+<p><strong>Se publica lo que falla.</strong> Un banco de pruebas que sólo publica éxitos es un catálogo con otro nombre. La primera prueba donde el equipo recomendado pierde es la que da credibilidad a las veinte siguientes.</p>
+<p><strong>El archivo se entrega.</strong> Video sin comprimir, nube de puntos, reporte íntegro. Lo que se comparte no es contenido: es la prueba de que no hay nada que esconder.</p>
+<p><strong>Toda prueba lleva protocolo visible.</strong> Fecha, sitio, condiciones, equipo, operador, criterio de medición. Una prueba sin protocolo es una demostración, y una demostración es publicidad.</p><h3 id="sec-los-cinco-formatos">Los cinco formatos</h3><hr />
+<h4>▣ 01 · EL CAREO</h4>
+<p><strong>Dos marcas. Misma misión. Un ganador publicado.</strong></p>
+<p>Dos equipos del catálogo resuelven la misma tarea, en el mismo sitio, el mismo día. Se declara de antemano la variable que se mide. Se publica el resultado y el archivo completo.</p>
+<p><strong>Estructura:</strong> protocolo → la misión → ejecución en pantalla partida, una marca por lado → la medición en pantalla → el ganador, nombrado.</p>
+<p><strong>Apertura:</strong> las dos cajas cerradas sobre una mesa, etiquetadas. Una mano las abre al mismo tiempo.</p>
+<p><strong>Cadencia:</strong> uno al mes. Es la pieza ancla del sistema.</p>
+<p><strong>Pares posibles:</strong> DJI contra Alpha en levantamiento · Chasing contra cámara fija en cárcamo · Dahua fijo contra dron en perímetro nocturno.</p>
+<p><strong>Por qué es irrepetible:</strong> un fabricante no puede publicar que perdió.</p>
+<p><strong>Función de búsqueda:</strong> cada careo genera una página permanente que responde a la consulta <code>[marca A] vs [marca B]</code> — la de mayor intención comercial de toda la categoría, y hoy sin respuesta imparcial en el mercado mexicano.</p>
+<hr />
+<h4>▣ 02 · EL ARCHIVO</h4>
+<p><strong>El levantamiento completo. Sin recorte. Descargable.</strong></p>
+<p>Una misión real ejecutada y publicada entera: el video sin cortes, la nube de puntos, el reporte tal como lo recibe un cliente. No hay versión editada.</p>
+<p><strong>Estructura invertida:</strong> el reporte primero, íntegro. El video después, como respaldo. Al revés de como se hace en la categoría.</p>
+<p><strong>Cadencia:</strong> uno cada dos meses.</p>
+<p><strong>Función de búsqueda:</strong> es el activo que un motor generativo no puede entregar en texto. Cuando la respuesta sintética ya resolvió la duda, el único motivo para llegar al sitio es descargar algo que no cabe en un párrafo.</p>
+<p><strong>Qué filtra:</strong> descargas con correo corporativo. Es el mejor indicador de intención del sistema.</p>
+<hr />
+<h4>▣ 03 · HASTA DÓNDE AGUANTA</h4>
+<p><strong>El límite declarado, verificado.</strong></p>
+<p>La ficha técnica declara cuarenta y cinco minutos de vuelo, resistencia a cierto viento, cierto grado de protección. Se prueba hasta donde el fabricante declara —nunca más allá, no se arriesga garantía— y se publica si cumplió.</p>
+<p><strong>Apertura:</strong> la línea de la ficha técnica en grande. Corte a la prueba ya corriendo.</p>
+<p><strong>Cadencia:</strong> quincenal. Es el formato más barato del sistema: no requiere locación ni equipo de producción.</p>
+<p><strong>Función de búsqueda:</strong> convierte especificaciones en hechos verificables. Es información propia, que es lo único que evita ser ignorado por los sistemas de extracción.</p>
+<p><strong>Advertencia:</strong> si un equipo no cumple su ficha, se publica igual. Esa es la regla que sostiene el sistema completo.</p>
+<hr />
+<h4>▣ 04 · EL TURNO</h4>
+<p><strong>Una operación completa, de principio a fin.</strong></p>
+<p>Un turno real documentado sin cortes narrativos: llegada, armado, briefing, vuelo, contratiempo, cierre, entrega. Incluye los tiempos muertos, porque la operación real los tiene.</p>
+<p><strong>Cadencia:</strong> mensual. Es una de las dos piezas de video largo que exige el §4.2.</p>
+<p><strong>Doble función:</strong> vende equipo y vende Academy en la misma pieza, sin nombrar a ninguno de los dos. Quien ve el turno entiende por qué hace falta saber operarlo.</p>
+<hr />
+<h4>▣ 05 · EL REPORTE ABIERTO</h4>
+<p><strong>Lo que el cliente recibe, publicado con su autorización.</strong></p>
+<p>El entregable real —el documento que se factura— publicado íntegro. Sin el nombre del cliente si no autoriza; con el nombre si autoriza.</p>
+<p><strong>Cadencia:</strong> trimestral.</p>
+<p><strong>Por qué importa:</strong> es la pieza que mueve el negocio institucional. Un comité no decide por un video. Decide porque ya vio el entregable.</p>
+<hr /><h3 id="sec-c-mo-se-reparte">Cómo se reparte</h3><table>
+<thead>
+<tr>
+<th>Unidad</th>
+<th>Formatos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dronamex</td>
+<td>01 · 02 · 03 · 05</td>
+</tr>
+<tr>
+<td>Academy</td>
+<td>04 · 03</td>
+</tr>
+<tr>
+<td>Tienda</td>
+<td>01 · 03</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Canal</th>
+<th>Formatos</th>
+<th>Función</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LinkedIn</td>
+<td>01 · 02 · 05</td>
+<td>Evidencia institucional</td>
+</tr>
+<tr>
+<td>YouTube</td>
+<td>04 · 02</td>
+<td>Repositorio técnico</td>
+</tr>
+<tr>
+<td>Instagram</td>
+<td>03 · 01</td>
+<td>Descubrimiento y producto</td>
+</tr>
+<tr>
+<td>Facebook</td>
+<td>03 · 04</td>
+<td>Comunidad y cursos</td>
+</tr>
+<tr>
+<td>TikTok</td>
+<td>03</td>
+<td>El límite verificado es el formato nativo de la plataforma</td>
+</tr>
+</tbody>
+</table>
+<p><strong>La línea de gobierno y defensa no entra en redes de consumo.</strong> El sitio publica textualmente <em>"respuesta táctica en tiempo real"</em>, cámaras EO/IR y casos de uso en <em>"fronteras y áreas militares"</em> <span class="ev ev-dato">dato</span>. Las políticas de Meta y TikTok restringen ese contenido. Esa línea se comunica como protección de instalaciones e inspección de activos, y circula por LinkedIn, buscador y presencial. Toda pieza pasa revisión de admisibilidad antes de pautarse.</p>
+<hr /><h2 id="sec-2-4">2.4 · Estrategia SEO</h2><blockquote>
+<p>El Campo de Prueba produce evidencia. La estrategia SEO la convierte en demanda capturada. Son la misma estrategia vista desde dos lados, y por eso esta sección es la más extensa del documento.</p>
+</blockquote><h3 id="sec-2-4-1">2.4.1 · La premisa</h3><p>Buscar dejó de ser un solo comportamiento. Hoy una consulta se resuelve de cuatro maneras distintas: por lista de enlaces, por respuesta generada que cita fuentes sin enviar clic, por asistente conversacional sin índice visible, o dentro de una red social que opera como motor de búsqueda.</p>
+<p>Eso tiene una consecuencia operativa que reordena todo el programa: <strong>el clic hacia el sitio sólo ocurre cuando la página ofrece algo que una respuesta generada no puede entregar en texto.</strong> Una comparación con datos propios. Un archivo técnico descargable. Disponibilidad real de inventario. Una herramienta que calcula.</p>
+<p>Es exactamente lo que produce el Campo de Prueba. No hay que inventar contenido para posicionar: hay que publicar bien lo que el sistema ya genera. Un programa que produzca artículos informativos genéricos en 2026 está alimentando la respuesta del buscador y no su propio negocio.</p>
+<p><strong>El objetivo del programa no es tráfico. Es que Dronamex sea encontrado cuando existe una necesidad técnica, elegido cuando existe una decisión entre alternativas, y recordado cuando la compra pasa a comité.</strong></p><h3 id="sec-2-4-2">2.4.2 · Los ocho principios</h3><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Principio</th>
+<th>Aplicación operativa</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Negocio antes que posición</strong></td>
+<td>El indicador final es el avance comercial verificable, no una posición aislada en una consulta</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Una intención por página</strong></td>
+<td>Cada URL tiene una función comercial y una sola intención principal. Dos intenciones en una página no posicionan ninguna</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Evidencia antes que volumen</strong></td>
+<td>Pruebas, protocolos, comparativas y reportes son el diferencial. Son el contenido que nadie más puede escribir</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Prueba pública, incluso cuando falla</strong></td>
+<td>La credibilidad del sistema depende de publicar resultados incómodos cuando el protocolo y los acuerdos lo permitan</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>La conversación no es una caja negra</strong></td>
+<td>Un clic no es una conversación; una conversación no es una venta. La instrumentación debe distinguir los estados</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>La capa generativa se prepara, no se promete</strong></td>
+<td>Se monitorea y se facilita la extracción. No se garantiza citación: los modelos no son deterministas</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>Sin páginas por combinatoria</strong></td>
+<td>No se crean cientos de URLs cruzando servicio y ciudad si no hay demanda real, diferencia de contenido o función comercial</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>México y B2B primero</strong></td>
+<td>La estrategia se ajusta a ciclos técnicos, corporativos e institucionales, no a supuestos de comercio electrónico de consumo</td>
+</tr>
+</tbody>
+</table><h3 id="sec-2-4-3">2.4.3 · Arquitectura SEO por unidad</h3><h4>Dronamex — referencia técnica</h4>
+<p>El recorrido de búsqueda debe acompañar la investigación que ocurre <strong>antes</strong> de una compra corporativa: problema o caso de uso → tecnología aplicable → evidencia → comparación → consulta → diagnóstico o demostración → oportunidad.</p>
+<ul>
+<li><strong>Prioridad:</strong> páginas por aplicación, industria, producto y evidencia técnica. Un comprador que busca <em>"inspección de cárcamo sin vaciarlo"</em> no busca un modelo: busca saber si existe la forma.</li>
+<li><strong>Activo diferencial:</strong> El Careo y El Archivo como pruebas de decisión, no como contenido de marca.</li>
+<li><strong>Conversión:</strong> solicitud de diagnóstico, comparativa, demostración o cotización.</li>
+</ul>
+<h4>Dronamex Academy — formación que alimenta el negocio</h4>
+<p>Academy no se trata como un micrositio desconectado. Es demanda propia de ciclo corto y, con la mecánica de acreditación del curso contra la compra de equipo, se convierte en el puente de menor fricción hacia la unidad de ticket alto.</p>
+<ul>
+<li><strong>Prioridad:</strong> páginas de curso con temario, requisitos, fechas, modalidad y preguntas frecuentes. Rutas corporativas para capacitación in-company.</li>
+<li><strong>Activos:</strong> El Turno y Hasta Dónde Aguanta.</li>
+<li><strong>Conversión:</strong> inscripción, solicitud de capacitación empresarial, diagnóstico de necesidad de formación.</li>
+</ul>
+<h4>Tienda — catálogo consultivo</h4>
+<p>Mientras el cierre sea conversacional, la arquitectura privilegia la decisión asistida y no simula un comercio electrónico transaccional completo.</p>
+<ul>
+<li><strong>Prioridad:</strong> fichas de producto con compatibilidad y casos de uso, comparativas por misión, disponibilidad visible.</li>
+<li><strong>Activos:</strong> El Careo entre accesorios y los límites verificados.</li>
+<li><strong>Conversión:</strong> consulta y cotización calificada, con el contexto del producto viajando dentro del mensaje.</li>
+</ul><h3 id="sec-2-4-4">2.4.4 · Mapa de intención de búsqueda</h3><p>Las consultas siguientes son patrones de ejemplo, no volúmenes ni promesas de posición. <strong>La investigación de palabras clave se ejecuta después de fijar la arquitectura</strong>, nunca antes: investigar primero produce una lista de deseos; fijar arquitectura primero produce un sistema.</p>
+<table>
+<thead>
+<tr>
+<th>Intención</th>
+<th>Patrón</th>
+<th>Destino</th>
+<th>Acción</th>
+<th>Unidad</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Investigación técnica</td>
+<td><em>radar de vigilancia contramedidas de drones</em></td>
+<td>Aplicación o evidencia</td>
+<td>Solicitar diagnóstico</td>
+<td>Dronamex</td>
+</tr>
+<tr>
+<td>Aplicación industrial</td>
+<td><em>robótica submarina inspección de cárcamo</em></td>
+<td>Aplicación + prueba</td>
+<td>Consultar solución</td>
+<td>Dronamex</td>
+</tr>
+<tr>
+<td><strong>Comparación</strong></td>
+<td><em>[equipo A] vs [equipo B] para [misión]</em></td>
+<td><strong>Careo publicado</strong></td>
+<td>Solicitar comparativa</td>
+<td>Dronamex · Tienda</td>
+</tr>
+<tr>
+<td>Verificación de especificación</td>
+<td><em>[modelo] autonomía real</em></td>
+<td>Hasta Dónde Aguanta</td>
+<td>Consultar disponibilidad</td>
+<td>Tienda</td>
+</tr>
+<tr>
+<td>Formación</td>
+<td><em>curso de piloto de dron profesional CDMX</em></td>
+<td>Curso</td>
+<td>Inscribirse</td>
+<td>Academy</td>
+</tr>
+<tr>
+<td>Certificación</td>
+<td><em>capacitación en termografía con dron</em></td>
+<td>Curso o programa</td>
+<td>Solicitar información</td>
+<td>Academy</td>
+</tr>
+<tr>
+<td>Producto</td>
+<td><em>[marca] + [modelo] + [uso]</em></td>
+<td>Ficha</td>
+<td>Solicitar disponibilidad</td>
+<td>Tienda</td>
+</tr>
+<tr>
+<td>Local</td>
+<td><em>[servicio] + [ciudad]</em></td>
+<td>Página local o ficha de negocio</td>
+<td>Llamar o escribir</td>
+<td>Dronamex · Academy</td>
+</tr>
+<tr>
+<td>Marca</td>
+<td><em>Dronamex + producto o servicio</em></td>
+<td>Entidad o producto</td>
+<td>Contactar</td>
+<td>Todas</td>
+</tr>
+</tbody>
+</table>
+<p><strong>La fila de comparación es la más valiosa del mapa.</strong> Es donde el comprador ya decidió que necesita un equipo y sólo le falta elegir cuál — el momento de mayor intención comercial de todo el recorrido. Hoy nadie la atiende sin sesgo en el mercado mexicano, porque sólo un distribuidor con catálogo múltiple puede hacerlo. El Careo la resuelve produciendo una página nueva cada mes.</p>
+<p><strong>Terminología de campo.</strong> El vocabulario real de las consultas en México no es el de los manuales: cárcamo, presa, patio de maniobras, fumigación, línea de conducción, subestación, avalúo, deslinde, azolve. Las páginas se escriben con el lenguaje del operador que va a teclear la consulta, no con el del catálogo del fabricante.</p>
+<p><strong>Regla de publicación:</strong> no se crea una página sólo para capturar una combinación lingüística. Debe existir una diferencia real de intención, de evidencia o de función comercial.</p><h3 id="sec-2-4-5">2.4.5 · Arquitectura de páginas</h3><table>
+<thead>
+<tr>
+<th>Tipo</th>
+<th>Objetivo</th>
+<th>Contenido mínimo</th>
+<th>Señal de conversión</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Entidad</strong></td>
+<td>Resolver quién es Dronamex y qué puede probar</td>
+<td>Unidades, marcas, pruebas, credenciales, rutas</td>
+<td>Entrar a unidad o contactar</td>
+</tr>
+<tr>
+<td><strong>Producto</strong></td>
+<td>Capturar demanda por equipo</td>
+<td>Uso, especificaciones verificadas, compatibilidad, archivo técnico, evidencia</td>
+<td>Cotización o disponibilidad</td>
+</tr>
+<tr>
+<td><strong>Aplicación</strong></td>
+<td>Capturar el problema de negocio</td>
+<td>Problema, entorno, solución, protocolo, resultados</td>
+<td>Diagnóstico o demostración</td>
+</tr>
+<tr>
+<td><strong>Industria</strong></td>
+<td>Organizar demanda por contexto</td>
+<td>Necesidad sectorial, riesgos, casos, tecnologías aplicables</td>
+<td>Consultar solución</td>
+</tr>
+<tr>
+<td><strong>Careo</strong></td>
+<td>Resolver <em>"cuál de estos dos"</em></td>
+<td>Misma misión, variable declarada, protocolo, resultado, archivo</td>
+<td>Solicitar comparativa</td>
+</tr>
+<tr>
+<td><strong>Evidencia</strong></td>
+<td>Ser fuente de consulta técnica</td>
+<td>Fecha, sitio, condiciones, equipos, criterio, resultado, archivos</td>
+<td>Descarga o visita comercial</td>
+</tr>
+<tr>
+<td><strong>Curso</strong></td>
+<td>Capturar demanda de formación</td>
+<td>Objetivo, temario, requisitos, fechas, modalidad, preguntas frecuentes</td>
+<td>Inscripción o conversación</td>
+</tr>
+<tr>
+<td><strong>Local</strong></td>
+<td>Capturar intención geográfica</td>
+<td>Oferta real, zona, evidencia local, contacto</td>
+<td>Llamada o conversación</td>
+</tr>
+<tr>
+<td><strong>Guía técnica</strong></td>
+<td>Resolver la subconsulta útil</td>
+<td>Respuesta directa, evidencia, enlaces a página comercial</td>
+<td>Ir a solución o producto</td>
+</tr>
+</tbody>
+</table><h3 id="sec-2-4-6">2.4.6 · Estructura del contenido para lectura humana y extracción generativa</h3><p>El mismo texto tiene que servir a dos lectores con exigencias distintas: una persona que escanea y un sistema que segmenta el documento en bloques y evalúa su similitud con la consulta.</p>
+<p>La estructura que sirve a los dos:</p>
+<ol>
+<li><strong>Encabezados formulados como preguntas completas</strong>, idénticas a como el usuario las teclea. No <em>"Autonomía"</em>, sino <em>"¿Cuánto vuela realmente este equipo en condiciones de campo?"</em>.</li>
+<li><strong>Respuesta directa en las primeras cincuenta a ochenta palabras</strong> debajo del encabezado. Definición o solución primero; desarrollo después. Pirámide invertida, no construcción narrativa.</li>
+<li><strong>Bloques autónomos</strong> que se entiendan fuera de su contexto, porque van a ser leídos fuera de su contexto.</li>
+<li><strong>HTML semántico limpio</strong> —<code>article</code>, <code>main</code>, <code>section</code>, tablas reales, listas reales— sin maquetación recargada que entierre el texto en capas de contenedores.</li>
+<li><strong>Información propia en cada bloque.</strong> Un fragmento que repite lo que ya dicen otros veinte sitios no tiene motivo para ser elegido. La prueba, el dato medido, la cifra de una operación propia: eso es lo que hace que un bloque valga más que su equivalente.</li>
+</ol>
+<p>El punto 5 es el que conecta con el Campo de Prueba, y es la razón por la que este programa puede aspirar a extracción generativa mientras la mayoría no: <strong>el contenido que produce es información que no existe en ningún otro lado.</strong></p><h3 id="sec-2-4-7">2.4.7 · Modelo semántico y enlazado interno</h3><table>
+<thead>
+<tr>
+<th>Nodo</th>
+<th>Enlaza hacia</th>
+<th>Razón</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Producto</td>
+<td>Aplicaciones + industrias + pruebas + comparativas</td>
+<td>Transforma una ficha aislada en un sistema de evidencia</td>
+</tr>
+<tr>
+<td>Aplicación</td>
+<td>Productos + pruebas + casos + contacto</td>
+<td>Conecta el problema con la solución real</td>
+</tr>
+<tr>
+<td>Industria</td>
+<td>Aplicaciones + productos + evidencia</td>
+<td>Organiza la decisión por contexto empresarial</td>
+</tr>
+<tr>
+<td>Prueba</td>
+<td>Producto + aplicación + comparativa + archivo</td>
+<td>Convierte un acto en un activo indexable y navegable</td>
+</tr>
+<tr>
+<td>Careo</td>
+<td>Productos comparados + prueba + consulta</td>
+<td>Resuelve la decisión de compra</td>
+</tr>
+<tr>
+<td>Curso</td>
+<td>Temario + requisitos + El Turno + equipo relacionado</td>
+<td>Hace de Academy una puerta de entrada</td>
+</tr>
+</tbody>
+</table>
+<p>La arquitectura evita páginas huérfanas y contenidos equivalentes compitiendo entre sí. <strong>La prioridad es densidad de relaciones útiles, no densidad de URLs.</strong></p><h3 id="sec-2-4-8">2.4.8 · SEO técnico</h3><p>El trabajo técnico se ejecuta antes de escalar contenido. El orden de las capas es: técnica → contenido → autoridad → conversión. Lo que está arriba tiene que estar resuelto para que lo de abajo tenga efecto.</p>
+<table>
+<thead>
+<tr>
+<th>Bloque</th>
+<th>Qué se revisa</th>
+<th>Entregable</th>
+<th>Prioridad</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rastreo</td>
+<td><code>robots.txt</code>, respuestas HTTP, parámetros, sitemap</td>
+<td>Diagnóstico y lista de correcciones</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>Indexación</td>
+<td>URLs indexables y no indexables, duplicados, canónicas</td>
+<td>Mapa de indexación con decisiones</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>Canibalización</td>
+<td>Intenciones repetidas entre URLs</td>
+<td>Mapa consulta → URL única</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>Arquitectura</td>
+<td>Jerarquía, profundidad de clic, centros de contenido</td>
+<td>Mapa de URLs y enlaces</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>HTML semántico</td>
+<td>Jerarquía de encabezados, respuestas directas, tablas, atributos</td>
+<td>Plantillas de página</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>Datos estructurados</td>
+<td><code>Organization</code>, <code>LocalBusiness</code>, <code>Product</code>, <code>Person</code>, <code>FAQPage</code> según aplique</td>
+<td>Especificación JSON-LD</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>Rendimiento</td>
+<td>Métricas de carga y activos críticos</td>
+<td>Backlog técnico priorizado</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>Registros de servidor</td>
+<td>Actividad de rastreadores, sólo cuando exista acceso</td>
+<td>Lectura de rastreo generativo</td>
+<td>P2</td>
+</tr>
+</tbody>
+</table>
+<p><strong>No se asume ningún problema técnico concreto sin auditoría y sin acceso.</strong> Esta tabla define el trabajo que deberá verificarse en los primeros quince días, no una lista de fallas presupuestas.</p>
+<p><strong>Datos estructurados con una condición:</strong> las propiedades declaradas en el marcado deben coincidir exactamente con lo visible en pantalla. Declarar en el código algo que la página no muestra es una violación de directrices, no una optimización.</p><h3 id="sec-2-4-9">2.4.9 · Rastreadores generativos: la decisión que casi nadie toma</h3><p>Los sistemas de respuesta generativa acceden al contenido mediante rastreadores identificables que pueden permitirse o bloquearse en <code>robots.txt</code>. <strong>Es una decisión estratégica, no una configuración técnica, y hoy Dronamex no la ha tomado</strong> <span class="ev ev-pendiente">pendiente</span>.</p>
+<table>
+<thead>
+<tr>
+<th>Opción</th>
+<th>Qué gana</th>
+<th>Qué pierde</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Permitir</strong></td>
+<td>El contenido queda disponible para ser citado en respuestas generadas. Sin acceso no hay citación posible</td>
+<td>El contenido puede resumirse sin enviar visita. Parte del valor se consume fuera del sitio</td>
+</tr>
+<tr>
+<td><strong>Bloquear</strong></td>
+<td>Protege el contenido de uso por terceros</td>
+<td>Desaparición progresiva de la capa generativa. Los competidores capturan la recomendación por omisión</td>
+</tr>
+<tr>
+<td><strong>Mixto</strong></td>
+<td>Se permite el acceso a evidencia, fichas y guías; se restringe lo que deba protegerse</td>
+<td>Exige mantenimiento y criterio por sección</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Recomendación: mixto, con acceso abierto por defecto.</strong> El activo de Dronamex no es el texto: es la operación que lo produce. Que un modelo cite una prueba de Dronamex en una respuesta sobre inspección industrial es exactamente el resultado buscado. Lo que se restringe es lo que tenga implicación de seguridad, y eso se trata en §06.</p>
+<p>Una vez tomada la decisión, se audita la actividad real de esos rastreadores en los registros del servidor —cuando exista acceso— para saber si el contenido se está leyendo y con qué frecuencia. Esa lectura es la única evidencia directa disponible; todo lo demás en esta capa es aproximación.</p><h3 id="sec-2-4-10">2.4.10 · SEO local</h3><p>La ficha de negocio y las páginas geolocalizadas se utilizan <strong>sólo donde exista presencia física o área de servicio real</strong>. No se fabrica una red de páginas ciudad por ciudad.</p>
+<ul>
+<li>Verificación de nombre, dirección y teléfono consistentes entre la ficha y el sitio.</li>
+<li>Categorización precisa y descripción con el vocabulario del servicio.</li>
+<li>La ficha enlaza a la URL local o comercial correspondiente, no a la portada.</li>
+<li>Se crean páginas locales sólo cuando haya oferta, demanda, contenido diferenciado y una razón comercial real.</li>
+<li>Se mide impresiones y clics locales y, sobre todo, llamadas y conversaciones originadas.</li>
+</ul>
+<p>El sitio declara dos sedes operativas <span class="ev ev-dato">dato</span>. Ninguna está optimizada hoy. Es trabajo de bajo esfuerzo y retorno inmediato, y por eso entra en los primeros quince días.</p><h3 id="sec-2-4-11">2.4.11 · La cadena: búsqueda → conversación → CRM</h3><p>En el modelo de Dronamex el SEO sólo es defendible si puede entregar contexto al área comercial. El recorrido de atribución debe ser explícito, estado por estado.</p>
+<table>
+<thead>
+<tr>
+<th>Estado</th>
+<th>Definición</th>
+<th>Evento o dato</th>
+<th>Responsable</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Visita</td>
+<td>Entrada desde búsqueda o referencia</td>
+<td>Origen, medio, página de aterrizaje</td>
+<td>Marketing</td>
+</tr>
+<tr>
+<td>Interacción</td>
+<td>Acción con intención: descarga, comparativa, formulario</td>
+<td>Evento registrado</td>
+<td>Marketing</td>
+</tr>
+<tr>
+<td>Contacto</td>
+<td>Mensaje, llamada o formulario recibido</td>
+<td>Identificador de contacto con origen</td>
+<td>Atención</td>
+</tr>
+<tr>
+<td>Contacto válido</td>
+<td>Datos suficientes y necesidad identificada</td>
+<td>Etapa de CRM</td>
+<td>Comercial</td>
+</tr>
+<tr>
+<td>Prospecto calificado</td>
+<td>Perfil, necesidad y potencial confirmados</td>
+<td>Etapa de CRM</td>
+<td>Comercial</td>
+</tr>
+<tr>
+<td>Oportunidad</td>
+<td>Proceso comercial abierto</td>
+<td>Oportunidad en CRM</td>
+<td>Comercial</td>
+</tr>
+<tr>
+<td>Cotización</td>
+<td>Propuesta comercial emitida</td>
+<td>CRM o ERP</td>
+<td>Comercial</td>
+</tr>
+<tr>
+<td>Venta</td>
+<td>Ingreso conciliado</td>
+<td>ERP o CRM</td>
+<td>Dirección</td>
+</tr>
+</tbody>
+</table>
+<p><strong>El botón de conversación transporta origen y página.</strong> El evento <em>clic</em> se reporta separado del evento <em>conversación</em> y del estado comercial. Esa separación es la que impide el error más común del canal: contar clics como ventas.</p>
+<p><strong>Y una consecuencia que hay que declarar:</strong> si hay clics y no hay ventas, la falla puede estar en la velocidad de respuesta comercial y no en el tráfico. Por eso el tiempo de primera respuesta se trata en §07 como indicador de conversión y no sólo como compromiso de servicio.</p><h3 id="sec-2-4-12">2.4.12 · Visibilidad en búsqueda generativa</h3><p>La capa generativa se construye sobre la misma infraestructura. No sustituye la búsqueda tradicional ni autoriza promesas de citación.</p>
+<table>
+<thead>
+<tr>
+<th>Frente</th>
+<th>Qué se hace</th>
+<th>Cómo se mide</th>
+<th>Límite declarado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Claridad de entidad</td>
+<td>Nombre, unidades, expertos, productos y datos consistentes en todas las superficies</td>
+<td>Presencia en consultas de entidad</td>
+<td>No garantiza respuesta generativa</td>
+</tr>
+<tr>
+<td>Contenido extraíble</td>
+<td>Preguntas y respuestas, tablas, protocolos, definiciones claras</td>
+<td>Páginas elegibles y aparición observada</td>
+<td>Las respuestas no son deterministas</td>
+</tr>
+<tr>
+<td>Autoridad externa</td>
+<td>Menciones sectoriales contextuales</td>
+<td>Menciones observadas</td>
+<td>No equivale a venta atribuida</td>
+</tr>
+<tr>
+<td>Accesibilidad de rastreo</td>
+<td>Permitir el acceso y auditarlo</td>
+<td>Registros de servidor</td>
+<td>No todos los sistemas exponen la misma señal</td>
+</tr>
+<tr>
+<td>Monitoreo</td>
+<td>Muestra recurrente de consultas comparativas y de categoría</td>
+<td>Panel exploratorio</td>
+<td>Es un indicador, no una medición</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Esto último se declara sin ambigüedad en la propuesta y en el contrato:</strong> las herramientas que estiman presencia en modelos de lenguaje ejecutan muestras sobre sistemas no deterministas. Usarlas como métrica principal sería guiar el programa con estimaciones. Se reportan como señal exploratoria, nunca como compromiso.</p><h3 id="sec-2-4-13">2.4.13 · Autoridad y relaciones públicas digitales</h3><p>La autoridad se construye alrededor de evidencia, especialistas y contexto sectorial. <strong>No se recomienda compra masiva de enlaces</strong>: en medios generalistas sin afinidad temática no aporta y expone.</p>
+<table>
+<thead>
+<tr>
+<th>Activo</th>
+<th>Objetivo</th>
+<th>Mecanismo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Careos publicados</td>
+<td>Asociar a Dronamex con comparación imparcial</td>
+<td>Citas y referencias sectoriales</td>
+</tr>
+<tr>
+<td>Reportes abiertos</td>
+<td>Demostrar capacidad técnica</td>
+<td>Menciones y enlaces contextuales</td>
+</tr>
+<tr>
+<td>Especialistas con firma</td>
+<td>Reforzar entidad y experiencia</td>
+<td>Perfiles, autoría, entrevistas</td>
+</tr>
+<tr>
+<td>Medios técnicos e industriales</td>
+<td>Validación externa</td>
+<td>Relaciones públicas con contexto</td>
+</tr>
+<tr>
+<td>Red de egresados</td>
+<td>Prueba social técnica</td>
+<td>Casos y creadores con enlace rastreable</td>
+</tr>
+</tbody>
+</table>
+<p>El sistema tiene una ventaja poco común: <strong>el Campo de Prueba genera material que los medios técnicos quieren publicar sin que haya que pagarles.</strong> Una comparación imparcial entre marcas es noticia en un medio industrial. Un reporte abierto también. Es relaciones públicas que se alimenta sola del trabajo operativo.</p>
+<p>La red de más de mil quinientos egresados es un activo potencial para creadores técnicos <span class="ev ev-dato">dato</span>. Requiere validación antes de convertirse en promesa operativa <span class="ev ev-pendiente">pendiente</span>.</p><h3 id="sec-2-4-14">2.4.14 · El cruce con la pauta</h3><p>La pauta en buscador <strong>valida qué consultas convierten antes de construir arquitectura orgánica</strong>. Es la única forma de saberlo en semanas en lugar de meses.</p>
+<p>Secuencia:</p>
+<ol>
+<li>Se pautan quince a veinte consultas candidatas por unidad, con presupuesto acotado y duración declarada.</li>
+<li>Se mide cuáles producen conversación calificada, no cuáles producen clics baratos.</li>
+<li>Sólo las que convirtieron reciben página permanente.</li>
+<li>Cuando la página orgánica domina esa consulta, la pauta de esa consulta se retira y el presupuesto migra a la siguiente tanda.</li>
+</ol>
+<p>Esto cambia la naturaleza del gasto: <strong>la inversión publicitaria deja de ser un canal paralelo y se convierte en el instrumento de investigación que evita construir cuarenta páginas que nadie busca.</strong></p>
+<p>Dos reglas de higiene: no se pauta por consultas de marca propia cuando el sitio ya domina esa posición sin competencia —canibaliza clics gratuitos—, y la optimización de campañas se entrena contra estados comerciales del CRM, no contra volumen de clics.</p><h3 id="sec-2-4-15">2.4.15 · Sistema de indicadores</h3><table>
+<thead>
+<tr>
+<th>Nivel</th>
+<th>Indicador</th>
+<th>Uso</th>
+<th>Fuente</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Negocio</td>
+<td>Ventas conciliadas atribuidas</td>
+<td>Resultado financiero</td>
+<td>CRM o ERP</td>
+</tr>
+<tr>
+<td>Negocio</td>
+<td>Oportunidades y prospectos calificados</td>
+<td>Eficiencia comercial</td>
+<td>CRM</td>
+</tr>
+<tr>
+<td>Conversión</td>
+<td>Conversaciones por página de origen</td>
+<td>Calidad del tráfico</td>
+<td>Analítica + CRM</td>
+</tr>
+<tr>
+<td>Conversión</td>
+<td>Cotizaciones calificadas</td>
+<td>Valor comercial</td>
+<td>CRM</td>
+</tr>
+<tr>
+<td>Conversión</td>
+<td>Tiempo de primera respuesta</td>
+<td>Fuga de intención</td>
+<td>Bitácora de atención</td>
+</tr>
+<tr>
+<td>Búsqueda</td>
+<td>Impresiones y clics, separando marca de genérico</td>
+<td>Demanda capturada</td>
+<td>Search Console</td>
+</tr>
+<tr>
+<td>Búsqueda</td>
+<td>URLs con impresiones sobre URLs indexadas</td>
+<td>Eficiencia de arquitectura</td>
+<td>Search Console + rastreo</td>
+</tr>
+<tr>
+<td>Autoridad</td>
+<td>Cuota de búsqueda de marca</td>
+<td>Demanda de marca real</td>
+<td>Search Console + inteligencia competitiva</td>
+</tr>
+<tr>
+<td>Generativo</td>
+<td>Menciones observadas</td>
+<td>Presencia exploratoria</td>
+<td>Monitoreo</td>
+</tr>
+<tr>
+<td>Contenido</td>
+<td>Descargas de archivos técnicos</td>
+<td>Intención avanzada</td>
+<td>Analítica + plataforma de archivos</td>
+</tr>
+</tbody>
+</table>
+<p><strong>No se fijan metas numéricas en este documento.</strong> El expediente no aporta línea base, histórico, presupuesto de pauta ni capacidad comercial confirmada. Las metas se proponen al cierre del primer corte de treinta días, con la línea base medida — mecanismo que el propio §7 del pliego contempla <span class="ev ev-dato">dato</span>.</p><h3 id="sec-2-4-16">2.4.16 · Modelo de atribución</h3><table>
+<thead>
+<tr>
+<th>Categoría</th>
+<th>Definición operativa</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Atribuida</strong></td>
+<td>La regla definida asigna la conversión a una interacción y una fuente concreta</td>
+</tr>
+<tr>
+<td><strong>Influenciada</strong></td>
+<td>La fuente participó en el recorrido, pero no existe evidencia suficiente para atribuirle el cierre</td>
+</tr>
+<tr>
+<td><strong>No atribuible</strong></td>
+<td>El proceso ocurre en una superficie privada o sin identificador conciliable</td>
+</tr>
+<tr>
+<td><strong>Indicador aproximado</strong></td>
+<td>Útil para orientar la estrategia, no equivalente a ingreso</td>
+</tr>
+</tbody>
+</table>
+<p>Ventanas de atribución, reglas de deduplicación y campos de CRM son decisión de implementación conjunta <span class="ev ev-pendiente">pendiente</span>.</p>
+<p>Lo que sí queda declarado desde ahora: <strong>no se reportará retorno sobre ventas sin ingresos conciliados y sin una regla de atribución acordada.</strong> Y las consultas resueltas dentro de interfaces conversacionales privadas son estructuralmente invisibles: no entregan datos de sesión y ninguna herramienta los recupera. Se reconoce como límite, no se disfraza con un indicador aproximado.</p><h3 id="sec-2-4-17">2.4.17 · Matriz de prioridad</h3><table>
+<thead>
+<tr>
+<th>Prioridad</th>
+<th>Iniciativa</th>
+<th>Impacto</th>
+<th>Dependencia</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P0</td>
+<td>Auditoría técnica, indexación y arquitectura</td>
+<td>Alto</td>
+<td>Accesos</td>
+</tr>
+<tr>
+<td>P0</td>
+<td>Medición de conversaciones y estados comerciales</td>
+<td>Alto</td>
+<td>Analítica, CRM, atención</td>
+</tr>
+<tr>
+<td>P0</td>
+<td>Mapa de URLs por intención</td>
+<td>Alto</td>
+<td>Inventario y prioridades de negocio</td>
+</tr>
+<tr>
+<td>P0</td>
+<td>Fichas y aplicaciones comerciales prioritarias</td>
+<td>Alto</td>
+<td>Contenido técnico</td>
+</tr>
+<tr>
+<td>P0</td>
+<td>Aprobación del sistema de pruebas</td>
+<td>Alto</td>
+<td>Dirección y acuerdos con fabricantes</td>
+</tr>
+<tr>
+<td>P1</td>
+<td>Careos y páginas comparativas</td>
+<td>Muy alto</td>
+<td>Equipo demo y permisos</td>
+</tr>
+<tr>
+<td>P1</td>
+<td>El Archivo y el Reporte Abierto</td>
+<td>Alto</td>
+<td>Datos y autorizaciones</td>
+</tr>
+<tr>
+<td>P1</td>
+<td>Arquitectura SEO de Academy</td>
+<td>Alto</td>
+<td>Oferta y alcance documentado</td>
+</tr>
+<tr>
+<td>P1</td>
+<td>SEO local y ficha de negocio</td>
+<td>Medio-alto</td>
+<td>Sede verificable</td>
+</tr>
+<tr>
+<td>P2</td>
+<td>Relaciones públicas digitales</td>
+<td>Medio-alto</td>
+<td>Autoridad acumulada y presupuesto</td>
+</tr>
+<tr>
+<td>P2</td>
+<td>Monitoreo generativo</td>
+<td>Medio</td>
+<td>Herramienta y metodología</td>
+</tr>
+<tr>
+<td>P2</td>
+<td>Páginas locales ampliadas</td>
+<td>Condicionado</td>
+<td>Demanda y contenido real</td>
+</tr>
+<tr>
+<td>P3</td>
+<td>Contenido informativo genérico</td>
+<td>Bajo</td>
+<td>No se prioriza</td>
+</tr>
+</tbody>
+</table><h3 id="sec-2-4-18">2.4.18 · Qué produce el equipo</h3><table>
+<thead>
+<tr>
+<th>Entregable</th>
+<th>Formato</th>
+<th>Criterio de aceptación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Auditoría SEO</td>
+<td>Documento + backlog</td>
+<td>Cada hallazgo con evidencia, impacto, responsable y prioridad</td>
+</tr>
+<tr>
+<td>Mapa de URLs</td>
+<td>Hoja de arquitectura</td>
+<td>Cada URL con intención, unidad, acción y relaciones</td>
+</tr>
+<tr>
+<td>Brief de página</td>
+<td>Plantilla</td>
+<td>Conjunto de consultas, evidencia, estructura de preguntas, acción y enlaces</td>
+</tr>
+<tr>
+<td>Protocolo de evidencia</td>
+<td>Plantilla</td>
+<td>Fecha, sitio, condiciones, equipos, operador, criterio, resultado</td>
+</tr>
+<tr>
+<td>Brief de Careo</td>
+<td>Plantilla</td>
+<td>Misma misión, una variable, resultado publicable, archivo</td>
+</tr>
+<tr>
+<td>Especificación de datos estructurados</td>
+<td>Documento técnico</td>
+<td>Tipo de entidad, propiedades, identificadores y validación</td>
+</tr>
+<tr>
+<td>Especificación de conversión</td>
+<td>Analítica + CRM</td>
+<td>Eventos, parámetros de origen, campos y estados conciliados</td>
+</tr>
+<tr>
+<td>Muestra de monitoreo generativo</td>
+<td>Conjunto de consultas</td>
+<td>Consultas recurrentes, fecha, sistema, resultado y evidencia</td>
+</tr>
+<tr>
+<td>Reporte de noventa días</td>
+<td>Tablero + lectura</td>
+<td>Búsqueda, negocio, autoridad y decisiones</td>
+</tr>
+</tbody>
+</table><h3 id="sec-2-4-19">2.4.19 · Qué no se hace</h3><ul>
+<li>No se convierte el programa en una fábrica de artículos genéricos.</li>
+<li>No se crean páginas geográficas duplicadas sin una diferencia real.</li>
+<li>No se miden clics a la conversación como ventas.</li>
+<li>No se reporta retorno sobre ventas sin ingresos conciliados.</li>
+<li>No se prometen posiciones, citaciones en sistemas generativos ni resultados garantizados a 30, 60 o 90 días.</li>
+<li>No se publican afirmaciones técnicas que no estén sustentadas por evidencia propia o por información autorizada por el cliente.</li>
+<li>No se usan comparativas públicas si los acuerdos de distribución las restringen.</li>
+<li>No se dispersa la inversión en todas las plataformas sólo por figurar en el plan.</li>
+</ul>
+<hr /><h2 id="sec-2-5">2.5 · Plan de noventa días</h2><blockquote>
+<p>Reconstruido alrededor de la Expo del 12 y 13 de noviembre.</p>
+</blockquote>
+<p>Con arranque el 1 de octubre, la expo cae en el <strong>día 43</strong>. El Anexo B del pliego propone que los días 31 a 60 sean de optimización tranquila <span class="ev ev-dato">dato</span>. No pueden serlo: ahí está el evento propio de Dronamex.</p>
+<p>Las fechas siguientes dependen del inicio efectivo del contrato y de la entrega de accesos.</p>
+<hr /><h3 id="sec-d-as-1-15-1-al-15-de-octubre">Días 1–15 · 1 al 15 de octubre</h3><p><strong>Base, línea cero y primer acto</strong></p>
+<table>
+<thead>
+<tr>
+<th>Frente</th>
+<th>Trabajo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Accesos</td>
+<td>Recepción de cuentas, Search Console, Analytics, ficha de negocio, CRM o base acordada</td>
+</tr>
+<tr>
+<td>Diagnóstico</td>
+<td>Auditoría técnica del sitio: rastreo, indexación, canibalizaciones, arquitectura</td>
+</tr>
+<tr>
+<td>Medición</td>
+<td>Eventos de conversión, parámetros de origen en todos los botones de conversación, tablero inicial</td>
+</tr>
+<tr>
+<td>Arquitectura</td>
+<td>Mapa de URLs por intención y unidad, con responsable y prioridad</td>
+</tr>
+<tr>
+<td>Contenido</td>
+<td>Definición del nombre único de la academia. Protocolo del Campo de Prueba</td>
+</tr>
+<tr>
+<td>Producción</td>
+<td><strong>Grabación del primer Careo.</strong> No se publica todavía</td>
+</tr>
+<tr>
+<td>Pauta</td>
+<td>Primera tanda de consultas candidatas en buscador, presupuesto acotado, sólo para validar intención</td>
+</tr>
+<tr>
+<td>Expo</td>
+<td>Inventario de lo que existe del evento: programa, registro, responsable, presupuesto</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Evidencia de salida:</strong> diagnóstico con backlog priorizado · mapa de URLs · protocolo de medición · línea base documentada.</p>
+<hr /><h3 id="sec-d-as-16-30-16-al-31-de-octubre">Días 16–30 · 16 al 31 de octubre</h3><p><strong>Primeras superficies y arranque de expectativa</strong></p>
+<table>
+<thead>
+<tr>
+<th>Frente</th>
+<th>Trabajo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Contenido</td>
+<td>Publicación del primer Careo y del primer <em>Hasta dónde aguanta</em>. Primeras fichas y páginas de aplicación</td>
+</tr>
+<tr>
+<td>Técnico</td>
+<td>Correcciones de prioridad cero, marcado estructurado, plantillas</td>
+</tr>
+<tr>
+<td>Atención</td>
+<td>Protocolo operando con bitácora y clasificación</td>
+</tr>
+<tr>
+<td><strong>Expo</strong></td>
+<td><strong>Arranca la campaña de expectativa y prerregistro.</strong> Es el trabajo que domina la segunda quincena</td>
+</tr>
+<tr>
+<td>Pauta</td>
+<td>Se cierra la primera tanda de validación. Las consultas que convirtieron pasan a página permanente</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Evidencia de salida:</strong> primeras URLs prioritarias publicadas · eventos funcionando · primera evidencia pública · registro de prerregistro corriendo.</p>
+<hr /><h3 id="sec-d-as-31-45-1-al-14-de-noviembre">Días 31–45 · 1 al 14 de noviembre</h3><p><strong>Pico de expo</strong></p>
+<p>Es la quincena de mayor carga del contrato. No se programa nada que compita con ella.</p>
+<table>
+<thead>
+<tr>
+<th>Frente</th>
+<th>Trabajo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pre-evento</td>
+<td>Cierre de prerregistro, recordatorios, contenido de expectativa por unidad</td>
+</tr>
+<tr>
+<td><strong>12 y 13 de noviembre</strong></td>
+<td><strong>Cobertura del evento.</strong> Producción presencial, registro de asistencia, captura de contactos con consentimiento</td>
+</tr>
+<tr>
+<td>Contenido en vivo</td>
+<td>El Careo del mes se ejecuta <strong>en la expo, con público</strong>. Una comparación medida frente a quienes van a comprar</td>
+</tr>
+<tr>
+<td>Atención</td>
+<td>Capacidad reforzada: un evento propio genera pico de mensajes concentrado</td>
+</tr>
+</tbody>
+</table>
+<p><strong>La decisión que lo hace distinto:</strong> el Careo mensual de noviembre no se graba en bodega. Se ejecuta en el piso de la expo, delante de los asistentes, y se publica esa misma semana con el archivo completo. Convierte el evento en contenido y el contenido en evidencia.</p>
+<p><strong>Evidencia de salida:</strong> bitácora del evento · contactos segmentados por origen · materiales de cobertura · Careo ejecutado en público.</p>
+<hr /><h3 id="sec-d-as-46-60-15-al-30-de-noviembre">Días 46–60 · 15 al 30 de noviembre</h3><p><strong>Cosecha</strong></p>
+<table>
+<thead>
+<tr>
+<th>Frente</th>
+<th>Trabajo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Comercial</td>
+<td>Seguimiento de cada contacto del evento, clasificado y entregado con contexto</td>
+</tr>
+<tr>
+<td>Contenido</td>
+<td>Publicación de la cobertura y del Careo de la expo. Primer Archivo completo</td>
+</tr>
+<tr>
+<td>Medición</td>
+<td>Primera evaluación de calidad: qué origen produjo qué tipo de contacto</td>
+</tr>
+<tr>
+<td>Pauta</td>
+<td>Segunda tanda de validación, alimentada por las consultas que aparecieron durante el evento</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Evidencia de salida:</strong> contactos con estado comercial · primera lectura de calidad por origen · segundo cohorte de contenido.</p>
+<hr /><h3 id="sec-d-as-61-90-1-al-29-de-diciembre">Días 61–90 · 1 al 29 de diciembre</h3><p><strong>Consolidación y decisión</strong></p>
+<table>
+<thead>
+<tr>
+<th>Frente</th>
+<th>Trabajo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Contenido</td>
+<td>Cadencia normalizada. Primer Reporte Abierto</td>
+</tr>
+<tr>
+<td>Búsqueda</td>
+<td>Optimización de las páginas con impresiones y sin conversión. Consolidación de canibalizaciones</td>
+</tr>
+<tr>
+<td>Autoridad</td>
+<td>Arranque de menciones sectoriales apoyadas en las pruebas ya publicadas</td>
+</tr>
+<tr>
+<td>Medición</td>
+<td>Reporte de noventa días: qué demanda se capturó, qué evidencia la movió, qué conversaciones generó, qué oportunidades llegaron a ventas</td>
+</tr>
+<tr>
+<td>Decisión</td>
+<td>Plan del siguiente trimestre con la evidencia de este</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Evidencia de salida:</strong> reporte de noventa días · decisiones de inversión · backlog del siguiente periodo.</p>
+<hr /><h3 id="sec-lo-que-este-plan-no-promete">Lo que este plan no promete</h3><p>No promete posiciones de búsqueda, ni citación en modelos de lenguaje, ni volumen de prospectos, ni venta, en ninguna de las cuatro etapas. Al primer corte hay medición, protocolo y línea base. Al segundo, operación de expo y primeras evaluaciones de calidad. Al tercero, seguimiento de oportunidades y revisión de costos.</p>
+<p>Si faltan accesos o aprobaciones, se documenta el efecto sobre los hitos afectados en lugar de trasladar el retraso al periodo siguiente.</p>
+<hr /><h1 id="sec-03">03 · Alcance</h1><h2 id="sec-3-1">3.1 · Volumen</h2><table>
+<thead>
+<tr>
+<th>Componente</th>
+<th>Alcance</th>
+<th>Plazo, exclusión o dependencia</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Planeación</td>
+<td>Estrategia por unidad, plan editorial, plan de medios, revisión de resultados</td>
+<td>Calendario con al menos siete días naturales de anticipación <span class="ev ev-dato">dato, §4.1</span></td>
+</tr>
+<tr>
+<td>Publicaciones</td>
+<td>Mínimo tres por semana por unidad; nueve semanales <span class="ev ev-dato">dato, §4.2</span>. Incluye concepto, texto, diseño o edición, adaptación y publicación</td>
+<td>Se controla el mínimo semanal; el equivalente mensual es aproximado y depende del calendario</td>
+</tr>
+<tr>
+<td>Historias</td>
+<td>Mínimo tres secuencias por semana por unidad <span class="ev ev-dato">dato, §4.2</span></td>
+<td>Extensión declarada abajo</td>
+</tr>
+<tr>
+<td>Video largo</td>
+<td>Mínimo dos al mes con guion, edición, miniatura, descripción, capítulos y optimización de búsqueda <span class="ev ev-dato">dato, §4.2</span></td>
+<td>Uno de los dos es El Turno</td>
+</tr>
+<tr>
+<td>Ajustes</td>
+<td>Hasta dos rondas razonables por pieza <span class="ev ev-dato">dato, §9</span></td>
+<td>Un cambio de objetivo posterior a la aprobación se documenta como cambio de alcance</td>
+</tr>
+<tr>
+<td>Adaptaciones</td>
+<td>Adecuación narrativa por canal</td>
+<td>El cambio de tamaño no constituye pieza independiente <span class="ev ev-dato">dato, §4.2</span></td>
+</tr>
+<tr>
+<td>Pauta</td>
+<td>Configuración, operación, pruebas y seguimiento por unidad</td>
+<td>Optimización al menos dos veces por semana; inversión facturada por separado <span class="ev ev-dato">dato, §4.4</span></td>
+</tr>
+<tr>
+<td>Atención</td>
+<td>Recepción, clasificación, calificación, entrega y bitácora en los cinco canales</td>
+<td>Lunes a viernes, 09:00 a 19:00, tiempo del centro de México <span class="ev ev-dato">dato, §4.5</span></td>
+</tr>
+<tr>
+<td>Páginas</td>
+<td><strong>Dos páginas de destino incluidas al mes</strong></td>
+<td>La adicional se cotiza aparte. Ver §08</td>
+</tr>
+<tr>
+<td>Medición y CRM</td>
+<td>Eventos, parámetros de origen, deduplicación, entrega estructurada y tablero</td>
+<td>Sujeto a CRM disponible y licencias</td>
+</tr>
+<tr>
+<td>Reportes</td>
+<td>Reporte en los primeros cinco días hábiles del mes siguiente, reunión mensual y reunión semanal de treinta minutos <span class="ev ev-dato">dato, §§4.1 y 6</span></td>
+<td>Incluye análisis de calidad, costo, incidencias y plan siguiente</td>
+</tr>
+<tr>
+<td>Respaldo</td>
+<td>Respaldo mensual y entrega de accesos, fuentes e históricos al cierre en máximo cinco días hábiles <span class="ev ev-dato">dato, §§6 y 9</span></td>
+<td></td>
+</tr>
+</tbody>
+</table><h2 id="sec-3-2">3.2 · La definición que el pliego no hace y nosotros sí</h2><p>El pliego cuenta <strong>publicaciones</strong>, no piezas de diseño <span class="ev ev-dato">dato, §4.2</span>. Un carrusel de ocho láminas es una publicación y ocho artes. Una secuencia de historias son cuatro o cinco pantallas.</p>
+<p>Si la equivalencia no se define por escrito, la define el cliente sobre la marcha y siempre hacia arriba. Queda declarada:</p>
+<table>
+<thead>
+<tr>
+<th>Formato</th>
+<th>Equivale a</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Publicación simple</td>
+<td>1 pieza</td>
+</tr>
+<tr>
+<td>Carrusel</td>
+<td>Hasta 8 láminas, 1 publicación</td>
+</tr>
+<tr>
+<td>Secuencia de historias</td>
+<td>Hasta 5 pantallas, 1 secuencia</td>
+</tr>
+<tr>
+<td>Video corto</td>
+<td>Hasta 60 segundos, 1 pieza</td>
+</tr>
+<tr>
+<td>Video largo</td>
+<td>Sin límite declarado de duración; 2 al mes</td>
+</tr>
+<tr>
+<td>Adaptación entre canales</td>
+<td>No constituye pieza adicional</td>
+</tr>
+</tbody>
+</table><h2 id="sec-3-3">3.3 · Aprobación</h2><p>Nada se publica sin aprobación del cliente <span class="ev ev-dato">dato, §9</span>. Con ochenta piezas al mes y dos rondas por pieza, el techo es de alrededor de <strong>doscientas cuarenta revisiones mensuales</strong> — doce por día hábil <span class="ev ev-inferencia">inferencia; es un techo modelado, no una carga observada</span>.</p>
+<p>Sobre correo o mensajería ese flujo se pierde: no queda constancia de quién aprobó qué ni cuándo, los hilos se mezclan y el calendario se recorre.</p>
+<p><strong>Se propone un tablero de aprobación</strong> con vista semanal, previsualización, estado, comentario ligado a la pieza y registro descargable con nombre y hora.</p>
+<p>Y <strong>carriles separados</strong>. El pliego pide que Dronamex designe un responsable de aprobación <span class="ev ev-dato">dato, §9</span>, pero el trabajo real tiene tres naturalezas distintas: aprobación de marca, validación técnica del contenido especializado, y autorización de temas de gobierno y defensa. Es improbable que las tres recaigan en la misma persona <span class="ev ev-inferencia">inferencia</span>. Se propone separarlas para que una pieza no espere al revisor de otra.</p>
+<p><strong>Sobre el destrabe del calendario.</strong> La salida fácil sería una cláusula de aprobación automática por vencimiento de plazo. El §9 lo prohíbe expresamente: <em>"Ninguna publicación o campaña se liberará sin aprobación, salvo biblioteca evergreen expresamente preaprobada"</em> <span class="ev ev-dato">dato</span>.</p>
+<p>Se propone entonces la excepción que el propio pliego concede: una <strong>biblioteca de contenido atemporal aprobada por adelantado</strong> —marca, seguridad operacional, preguntas frecuentes, testimonios autorizados— revisada en bloque una sola vez y disponible para sostener la cadencia cuando una pieza fechada se atore en revisión. Resuelve el mismo riesgo sin pedir que se rompa la regla.</p><h2 id="sec-3-4">3.4 · Lo que se cotiza por separado</h2><p>Inversión publicitaria · producción presencial · estudio o locación · talento · viajes y viáticos · creadores externos · licencias de terceros · desarrollo complejo · CRM · fotografía · traducciones · impresión · atención fuera de horario <span class="ev ev-dato">dato, §10</span>.</p>
+<p>Y tres partidas propias de este plan: <strong>cobertura de la Expo del 12 y 13 de noviembre</strong>, páginas de destino adicionales a las dos incluidas, y el desarrollo del tablero de aprobación.</p>
+<p>La edición ordinaria incluida no se vuelve a facturar como adicional.</p>
+<hr /><h1 id="sec-04">04 · Equipo</h1><p>El pliego exige seis funciones nombradas con dedicación declarada y plan de sustitución <span class="ev ev-dato">dato, §8 y §11.4</span>.</p><h2 id="sec-4-1">4.1 · Asignación</h2><table>
+<thead>
+<tr>
+<th>Persona o perfil</th>
+<th>Función en el §8</th>
+<th>Dedicación</th>
+<th>Sustitución</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Juan Luis Contreras</strong></td>
+<td>Estrategia y dirección creativa</td>
+<td>Completa</td>
+<td>Roberto Soto</td>
+</tr>
+<tr>
+<td><strong>Roberto Soto</strong></td>
+<td>Planeación digital</td>
+<td>Completa</td>
+<td>Juan Luis Contreras</td>
+</tr>
+<tr>
+<td><strong>Pamela González</strong></td>
+<td>Responsable de cuenta</td>
+<td>Completa</td>
+<td>Roberto Soto</td>
+</tr>
+<tr>
+<td><strong>José Pablo Ramírez</strong></td>
+<td>Creación y edición audiovisual</td>
+<td>Completa</td>
+<td>Isabel Vargas + producción</td>
+</tr>
+<tr>
+<td><strong>Isabel Vargas</strong></td>
+<td>Diseño</td>
+<td>Completa</td>
+<td>José Pablo Ramírez</td>
+</tr>
+<tr>
+<td><strong>Producción 1</strong> <span class="ev ev-pendiente">pendiente: nombre</span></td>
+<td>Producción y adaptación</td>
+<td>Completa</td>
+<td>Producción 2</td>
+</tr>
+<tr>
+<td><strong>Producción 2</strong> <span class="ev ev-pendiente">pendiente: nombre</span></td>
+<td>Producción y adaptación</td>
+<td>Completa</td>
+<td>Producción 1</td>
+</tr>
+<tr>
+<td><strong>Especialista Paid Media B2B</strong> <span class="ev ev-pendiente">pendiente: nombre</span></td>
+<td>Operación de medios</td>
+<td>Medio tiempo</td>
+<td>Declarada al contratar</td>
+</tr>
+<tr>
+<td><strong>Atención y Social Care</strong> <span class="ev ev-pendiente">pendiente: nombres</span></td>
+<td>Atención y calificación</td>
+<td>Tiempo completo más relevo</td>
+<td>Relevo designado, incluido</td>
+</tr>
+<tr>
+<td><strong>MarTech Engineer</strong> <span class="ev ev-pendiente">pendiente: nombre</span></td>
+<td>Analítica e integración</td>
+<td>Medio tiempo</td>
+<td>Declarada al contratar</td>
+</tr>
+</tbody>
+</table>
+<p><strong>El equipo trabaja en exclusiva para esta cuenta.</strong> No es una declaración de intención: es la base del modelo de costo del §08.</p>
+<p><strong>La función de analítica que exige el §8 la cubre el MarTech Engineer.</strong> Adrián Valdés participa únicamente como proveedor externo del tablero de aprobación, y sólo si Dronamex lo contrata. No forma parte del equipo recurrente ni cubre analítica.</p><h2 id="sec-4-2">4.2 · El relevo de atención</h2><p>El §4.5 exige cobertura de lunes a viernes de 09:00 a 19:00 con primera respuesta en treinta minutos <span class="ev ev-dato">dato</span>. Una sola persona no cubre 217 horas al mes con vacaciones, incapacidades y picos.</p>
+<p>Por eso el perfil de atención se dimensiona en <strong>tiempo completo más relevo</strong>: el relevo no es una contingencia, es parte de la plantilla y está dentro del costo.</p>
+<p>El dimensionamiento final depende del volumen y la complejidad real de los mensajes <span class="ev ev-pendiente">pendiente</span>. Se revisa al cierre de los primeros treinta días con la bitácora en la mano.</p><h2 id="sec-4-3">4.3 · Lo que este documento no acredita</h2><p>El §8 exige experiencia comprobable mínima de tres años <span class="ev ev-dato">dato</span>. Las trayectorias individuales, la modalidad de contratación de los tres perfiles a incorporar y la evidencia documental de experiencia <strong>no se incluyen en esta versión</strong> <span class="ev ev-pendiente">pendiente</span>.</p>
+<p>Se declara como faltante en lugar de sustituirse con afirmaciones no verificables.</p>
+<hr /><h1 id="sec-05">05 · Casos</h1><p>El §8 requiere al menos tres casos con métricas verificables y el §13 los pondera al 10% <span class="ev ev-dato">dato</span>.</p>
+<table>
+<thead>
+<tr>
+<th>Caso</th>
+<th>Cliente y periodo</th>
+<th>Objetivo y acciones</th>
+<th>Resultado, fuente y autorización</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><span class="ev ev-pendiente">pendiente</span></td>
+<td><span class="ev ev-pendiente">pendiente</span></td>
+<td><span class="ev ev-pendiente">pendiente</span></td>
+</tr>
+<tr>
+<td>2</td>
+<td><span class="ev ev-pendiente">pendiente</span></td>
+<td><span class="ev ev-pendiente">pendiente</span></td>
+<td><span class="ev ev-pendiente">pendiente</span></td>
+</tr>
+<tr>
+<td>3</td>
+<td><span class="ev ev-pendiente">pendiente</span></td>
+<td><span class="ev ev-pendiente">pendiente</span></td>
+<td><span class="ev ev-pendiente">pendiente</span></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Esta sección está incompleta y se declara como tal.</strong> No se sustituyen los casos con resultados hipotéticos ni con descripciones de alcance sin cifra.</p>
+<p>Cuando se completen, cada caso separará inversión, periodo, definición de conversión, intervención del equipo y resultado verificable con su fuente. Si un trabajo sólo acredita comunicación o producción, se declarará ese alcance sin atribuirle captación ni ventas.</p>
+<hr /><h1 id="sec-06">06 · Tecnología</h1><h2 id="sec-6-1">6.1 · Arquitectura de la implementación</h2><table>
+<thead>
+<tr>
+<th>Función</th>
+<th>Implementación</th>
+<th>Evidencia de funcionamiento</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Captura</td>
+<td>Formularios y eventos por unidad; parámetros de origen consistentes; consentimiento registrado</td>
+<td>Pruebas de envío, recepción y origen</td>
+</tr>
+<tr>
+<td>Clasificación</td>
+<td>Necesidad, organización, ubicación, uso, presupuesto orientativo y plazo</td>
+<td>Historial del contacto, campos faltantes y motivo</td>
+</tr>
+<tr>
+<td>Entrega</td>
+<td>CRM existente o base estructurada acordada; deduplicación y asignación al responsable comercial</td>
+<td>Marca temporal de envío, recepción técnica y aceptación comercial</td>
+</tr>
+<tr>
+<td>Atribución</td>
+<td>Origen inicial, campaña y contactos posteriores; reglas y ventana declaradas</td>
+<td>Separación entre atribuida e influenciada</td>
+</tr>
+<tr>
+<td>Reporte</td>
+<td>Resultados por unidad, canal, campaña, contenido y etapa</td>
+<td>Acceso continuo, exportación y diccionario de indicadores</td>
+</tr>
+<tr>
+<td>Seguridad</td>
+<td>Cuentas nominativas, permisos mínimos, autenticación multifactor, retiro de accesos a la salida</td>
+<td>Inventario de permisos e incidencias</td>
+</tr>
+<tr>
+<td>Continuidad</td>
+<td>Respaldo y procedimiento alterno de entrega si falla una integración</td>
+<td>Pruebas y bitácora con responsable de relevo</td>
+</tr>
+</tbody>
+</table><h2 id="sec-6-2">6.2 · SEO técnico: ejecución</h2><p>Lo definido en §2.4.8 se ejecuta en este orden y con estos entregables:</p>
+<p><strong>Primeros quince días.</strong> Auditoría de rastreo e indexación; mapa de URLs indexables y no indexables; detección de canibalizaciones; diagnóstico de arquitectura y profundidad de clic; lista priorizada de correcciones.</p>
+<p><strong>Días 16 a 30.</strong> Correcciones de prioridad cero; plantillas de página con jerarquía de encabezados y respuestas directas; marcado de datos estructurados en portada, contacto, fichas y cursos.</p>
+<p><strong>Días 31 en adelante.</strong> Rendimiento y activos críticos; consolidación de duplicados; lectura de registros de servidor cuando exista acceso.</p>
+<p><strong>Condición del marcado estructurado:</strong> las propiedades declaradas en el código deben coincidir exactamente con lo visible en pantalla. Declarar lo que la página no muestra es violación de directrices.</p><h2 id="sec-6-3">6.3 · Rastreadores generativos</h2><p>La decisión propuesta en §2.4.9 se implementa así:</p>
+<ol>
+<li>Inventario de rastreadores identificables y su estado actual en <code>robots.txt</code>.</li>
+<li>Decisión por sección: acceso abierto a evidencia, fichas, aplicaciones, cursos y guías; restricción sobre lo que tenga implicación de seguridad según §6.5.</li>
+<li>Publicación del archivo de política de acceso.</li>
+<li>Auditoría de actividad real en registros de servidor, cuando exista acceso <span class="ev ev-pendiente">pendiente</span>.</li>
+</ol>
+<p>Sin el paso 4 no hay evidencia directa de lectura; todo lo demás en esta capa es aproximación y así se reporta.</p><h2 id="sec-6-4">6.4 · Indexación de la línea de gobierno y defensa</h2><p>El sitio publica hoy, de forma pública e indexable, contenido que declara <em>"respuesta táctica en tiempo real"</em>, cámaras EO/IR, sirena integrada, integración con sistemas de mando, y casos de uso en <em>"fronteras y áreas militares"</em> <span class="ev ev-dato">dato</span>.</p>
+<p>Eso plantea una pregunta que ninguna propuesta de marketing suele hacer y que conviene resolver antes de amplificar ese contenido: <strong>¿cuánta de esa información debe ser pública, indexable y extraíble por sistemas de terceros?</strong></p>
+<p>Se propone un criterio de tres niveles, a definir con Dronamex <span class="ev ev-supuesto">supuesto</span>:</p>
+<table>
+<thead>
+<tr>
+<th>Nivel</th>
+<th>Qué incluye</th>
+<th>Acceso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Público</td>
+<td>Capacidad general, aplicaciones civiles, protección de instalaciones</td>
+<td>Indexable y abierto</td>
+</tr>
+<tr>
+<td>Registrado</td>
+<td>Especificaciones detalladas, configuraciones, alcances operativos</td>
+<td>Detrás de identificación</td>
+</tr>
+<tr>
+<td>Restringido</td>
+<td>Cliente, sitio, configuración desplegada, datos de misión</td>
+<td>No publicable</td>
+</tr>
+</tbody>
+</table>
+<p>La decisión no es de marketing. Es de dirección, y este documento la plantea en lugar de asumirla.</p><h2 id="sec-6-5">6.5 · Automatización y uso de inteligencia artificial</h2><p>La automatización puede confirmar recepción, ordenar campos y preparar borradores. <strong>Las respuestas técnicas, institucionales, de precio y de compromiso conservan revisión humana.</strong> Un acuse automático no cuenta como respuesta sustantiva para acreditar el nivel de servicio, salvo acuerdo expreso.</p>
+<p><strong>Declaración de uso de inteligencia artificial generativa</strong>, conforme al §15 del pliego <span class="ev ev-dato">dato</span>:</p>
+<blockquote>
+<p>Se utiliza inteligencia artificial generativa para borradores, variantes editoriales y apoyo de clasificación, con revisión humana previa a toda publicación o uso comercial. Las herramientas, datos permitidos y condiciones de acceso se documentan con Dronamex. No se cargan datos personales ni materiales confidenciales en servicios no autorizados. Toda afirmación técnica se valida con documentación del cliente.</p>
+</blockquote>
+<p><span class="ev ev-pendiente">pendiente: texto definitivo autorizado por ambas partes</span></p>
+<hr /><h1 id="sec-07">07 · Niveles de servicio</h1><table>
+<thead>
+<tr>
+<th>Compromiso del pliego</th>
+<th>Aplicación propuesta</th>
+<th>Dependencia</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Atención de lunes a viernes, 09:00 a 19:00, hora del centro de México <span class="ev ev-dato">dato, §4.5</span></td>
+<td>Monitoreo de bandejas y comentarios en las cinco redes, con bitácora diaria</td>
+<td>Accesos e integración de cuentas</td>
+</tr>
+<tr>
+<td>Primera respuesta en máximo 30 minutos <span class="ev ev-dato">dato, §4.5</span></td>
+<td>Medición desde la recepción dentro de la ventana de servicio hasta la respuesta pertinente</td>
+<td>Reloj declarado; fuera de horario inicia al abrir</td>
+</tr>
+<tr>
+<td>Hasta 2 horas en casos no comerciales complejos <span class="ev ev-dato">dato, §4.5</span></td>
+<td>Clasificación documentada por catálogo de casos. <strong>No se extiende a consultas comerciales</strong></td>
+<td>Catálogo aprobado</td>
+</tr>
+<tr>
+<td>Alta intención entregada en máximo 15 minutos <span class="ev ev-dato">dato, §4.5</span></td>
+<td>Registro del momento de identificación y de la entrega técnica</td>
+<td>Contacto comercial designado y canal de contingencia</td>
+</tr>
+<tr>
+<td>Reporte en los primeros 5 días hábiles del mes siguiente <span class="ev ev-dato">dato, §6</span></td>
+<td>Resultados disponibles con pendientes identificados</td>
+<td>Conciliación comercial del cliente</td>
+</tr>
+</tbody>
+</table><h2 id="sec-7-1">7.1 · La excepción que cambia el dimensionamiento</h2><p>El §4.5 concede hasta <strong>dos horas</strong> de primera respuesta en casos no comerciales complejos <span class="ev ev-dato">dato</span>. La mayoría de los proveedores va a cotizar contra los treinta minutos y a dimensionar de más.</p>
+<p>Esa segunda banda permite estructurar la atención en dos filas: resolución inmediata para lo comercial y lo informativo, y cola técnica con criterio para lo que requiere consulta. Se aprovecha, se declara y se refleja en el costo.</p><h2 id="sec-7-2">7.2 · El tiempo de respuesta como indicador de conversión</h2><p>Si hay clics hacia la conversación y no hay ventas, la causa puede estar en la velocidad de respuesta comercial y no en la calidad del tráfico.</p>
+<p>Por eso el tiempo de primera respuesta se reporta en dos lugares: como cumplimiento de servicio y como <strong>indicador de fuga de intención</strong> dentro del tablero de resultados. Es la única forma de distinguir un problema de marketing de un problema de operación comercial.</p><h2 id="sec-7-3">7.3 · Ausencias, picos y crisis</h2><p>Ante ausencia, el relevo designado recibe accesos y bitácora. Ante pico, se activa la capacidad de reserva contratada. Ante crisis, se escala al contacto autorizado sin emitir postura institucional.</p>
+<p>Umbrales de volumen, capacidad de reserva y tiempos de escalamiento <span class="ev ev-pendiente">pendiente</span>.</p><h2 id="sec-7-4">7.4 · Qué cuenta y qué no</h2><p>El registro distingue retraso atribuible al proveedor, caída documentada de plataforma, falta de acceso y espera de validación del cliente. Las exclusiones requieren evidencia y no operan automáticamente.</p>
+<p><strong>La demora comercial del cliente no borra la obligación de entregar el prospecto a tiempo.</strong></p>
+<hr /><h1 id="sec-08">08 · Economía</h1><h2 id="sec-8-1">8.1 · Naturaleza de la oferta</h2><p>Todos los importes se expresan en pesos mexicanos antes de IVA. La tasa aplicada es 16%.</p>
+<p><strong>Vigencia de la oferta: 45 días naturales</strong> <span class="ev ev-dato">dato, §14</span>. Entregando el 21 de septiembre de 2026, el precio queda firme hasta el <strong>5 de noviembre de 2026</strong>. Ese plazo alcanza a cubrir la Expo del 12 y 13 de noviembre, por lo que cualquier partida ligada al evento se cotiza sabiendo que no podrá ajustarse.</p><h2 id="sec-8-2">8.2 · Estructura del precio</h2><table>
+<thead>
+<tr>
+<th>Concepto</th>
+<th>Monto mensual</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Costo directo — equipo, perfiles a incorporar y herramientas</td>
+<td>$251,031</td>
+</tr>
+<tr>
+<td>Gastos generales (12%)</td>
+<td>$30,124</td>
+</tr>
+<tr>
+<td><strong>Costo total</strong></td>
+<td><strong>$281,155</strong></td>
+</tr>
+<tr>
+<td>Margen</td>
+<td>$150,000</td>
+</tr>
+<tr>
+<td><strong>Iguala mensual sin IVA</strong></td>
+<td><strong>$431,155</strong></td>
+</tr>
+<tr>
+<td>IVA 16%</td>
+<td>$68,985</td>
+</tr>
+<tr>
+<td><strong>Iguala mensual con IVA</strong></td>
+<td><strong>$500,140</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>El margen es la utilidad de la firma.</strong> No se suma un fee de agencia adicional: cobrar la utilidad dos veces con distinto nombre es lo primero que se detecta al desglosar, y el §13 pondera transparencia al 25%.</p>
+<p>Composición del costo directo:</p>
+<table>
+<thead>
+<tr>
+<th>Componente</th>
+<th>Monto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Equipo wmn/nd — cinco personas de tiempo completo</td>
+<td>$152,778</td>
+</tr>
+<tr>
+<td>Perfiles a incorporar — atención con relevo, medios, analítica</td>
+<td>$77,753</td>
+</tr>
+<tr>
+<td>Herramientas y licencias</td>
+<td>$20,500</td>
+</tr>
+</tbody>
+</table>
+<p>Base de cálculo por persona: <code>bruto mensual × factor de integración × (1 + carga patronal)</code>. Factor de integración salarial 2026 = <strong>1.0493</strong>, de (365 + 15 + 12 × 0.25) / 365 <span class="ev ev-dato">dato</span>. Carga patronal aplicada: 30%, punto medio del rango verificado de 25% a 35% <span class="ev ev-dato">dato</span>.</p><h2 id="sec-8-3">8.3 · Formato del §12</h2><table>
+<thead>
+<tr>
+<th>Concepto</th>
+<th>Unidad</th>
+<th>Cantidad</th>
+<th>Precio sin IVA</th>
+<th>IVA</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Iguala mensual integral</td>
+<td>Mes</td>
+<td>1</td>
+<td>$431,155</td>
+<td>$68,985</td>
+<td>$500,140</td>
+</tr>
+<tr>
+<td>Gestión de pauta incluida en iguala</td>
+<td>Mes</td>
+<td>1</td>
+<td>Incluida</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Comisión por administración de medios</td>
+<td>Mes</td>
+<td>1</td>
+<td>10% sobre inversión</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Producción presencial opcional</td>
+<td>Jornada</td>
+<td>Según necesidad</td>
+<td>Ver §8.5</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Landing page adicional</td>
+<td>Unidad</td>
+<td>Según necesidad</td>
+<td><span class="ev ev-pendiente">pendiente</span></td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Cobertura extendida de atención</td>
+<td>Mes</td>
+<td>1</td>
+<td><span class="ev ev-pendiente">pendiente</span></td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Dos páginas de destino están incluidas al mes.</strong> La tercera y siguientes se cotizan por separado.</p><h2 id="sec-8-4">8.4 · Administración de medios</h2><p>La inversión publicitaria la contrata y factura Dronamex directamente. Las cuentas son de su propiedad <span class="ev ev-dato">dato, §4.4</span>.</p>
+<p><strong>Esquema propuesto: comisión del 10% sobre la inversión administrada</strong>, facturada mensualmente y separada de la iguala. Es el esquema de intermediación documentado en contratación pública mexicana <span class="ev ev-dato">dato</span>.</p>
+<p>La inversión mínima recomendada por unidad no puede establecerse sin conocer el techo presupuestal, el costo por resultado en cada plataforma y la capacidad comercial de atender el volumen resultante <span class="ev ev-pendiente">pendiente</span>. Se propone determinarla al cierre del primer corte de treinta días, con la línea base medida.</p><h2 id="sec-8-5">8.5 · Partidas que se cotizan por separado</h2><table>
+<thead>
+<tr>
+<th>Concepto</th>
+<th>Unidad</th>
+<th>Tarifa</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Jornada de camarógrafo</td>
+<td>Jornada</td>
+<td>$8,500</td>
+</tr>
+<tr>
+<td>Grabación con dron</td>
+<td>Jornada</td>
+<td>$3,400</td>
+</tr>
+<tr>
+<td>Edición de video</td>
+<td>Minuto final</td>
+<td>$1,436</td>
+</tr>
+<tr>
+<td>Jornada de dos cámaras con crew</td>
+<td>Jornada</td>
+<td>$22,546</td>
+</tr>
+<tr>
+<td>Video corporativo institucional</td>
+<td>Pieza</td>
+<td>$40,000 – $120,000 según alcance</td>
+</tr>
+<tr>
+<td>Landing page adicional</td>
+<td>Unidad</td>
+<td><span class="ev ev-pendiente">pendiente</span></td>
+</tr>
+<tr>
+<td>Cobertura extendida — nocturno, fin de semana, festivo</td>
+<td>Mes</td>
+<td><span class="ev ev-pendiente">pendiente</span></td>
+</tr>
+<tr>
+<td><strong>Cobertura de la Expo del 12 y 13 de noviembre</strong></td>
+<td>Evento</td>
+<td><span class="ev ev-pendiente">pendiente</span></td>
+</tr>
+<tr>
+<td>Tablero de aprobación — desarrollo</td>
+<td>Único</td>
+<td><span class="ev ev-pendiente">pendiente</span></td>
+</tr>
+<tr>
+<td>Tablero de aprobación — mantenimiento</td>
+<td>Mes</td>
+<td><span class="ev ev-pendiente">pendiente</span></td>
+</tr>
+</tbody>
+</table><h2 id="sec-8-6">8.6 · Condiciones comerciales</h2><table>
+<thead>
+<tr>
+<th>Concepto</th>
+<th>Propuesta</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Plazo mínimo de contrato</td>
+<td><span class="ev ev-pendiente">pendiente</span></td>
+</tr>
+<tr>
+<td>Costo de implementación, días 1 a 30</td>
+<td><span class="ev ev-pendiente">pendiente</span></td>
+</tr>
+<tr>
+<td>Forma de pago</td>
+<td><span class="ev ev-pendiente">pendiente</span></td>
+</tr>
+<tr>
+<td>Vigencia de precios</td>
+<td>12 meses</td>
+</tr>
+<tr>
+<td>Incremento anual</td>
+<td>Conforme al INPC del periodo</td>
+</tr>
+<tr>
+<td>Vigencia de la oferta</td>
+<td>45 días naturales <span class="ev ev-dato">dato, §14</span></td>
+</tr>
+</tbody>
+</table><h2 id="sec-8-7">8.7 · Penalizaciones propuestas</h2><p>El pliego <strong>no impone penalizaciones: solicita que el proveedor proponga cuáles aplican</strong> <span class="ev ev-dato">dato, §12</span>.</p>
+<p>Se proponen acotadas, medibles y <strong>simétricas</strong>. Un esquema que sólo penaliza al proveedor por incumplimientos que dependen de la aprobación del cliente es inaplicable en la práctica.</p>
+<table>
+<thead>
+<tr>
+<th>Supuesto</th>
+<th>Medición</th>
+<th>Consecuencia propuesta</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Primera respuesta fuera del plazo en más del 10% de los casos del mes</td>
+<td>Bitácora de atención</td>
+<td>Nota de crédito del 5% de la iguala del mes</td>
+</tr>
+<tr>
+<td>Entrega de alta intención fuera de los 15 minutos en más del 10% de los casos</td>
+<td>Bitácora con marca temporal</td>
+<td>Nota de crédito del 5% de la iguala del mes</td>
+</tr>
+<tr>
+<td>Pieza del mínimo mensual no entregada por causa del proveedor</td>
+<td>Calendario aprobado</td>
+<td>Reposición en el mes siguiente o acreditación proporcional</td>
+</tr>
+<tr>
+<td>Reporte mensual entregado fuera de los 5 días hábiles</td>
+<td>Fecha de entrega</td>
+<td>Nota de crédito del 2% de la iguala del mes</td>
+</tr>
+<tr>
+<td><strong>Contrapartida:</strong> aprobación del cliente fuera del plazo acordado</td>
+<td>Registro del tablero</td>
+<td>El calendario se recorre sin penalización al proveedor y sin reducción de la iguala</td>
+</tr>
+</tbody>
+</table>
+<p>Topes, plazos de aprobación y mecanismo de aplicación se acuerdan antes de firmar. <strong>Ninguna penalización opera sin evidencia registrada.</strong></p><h2 id="sec-8-8">8.8 · Piso de rentabilidad</h2><p><span class="ev ev-pendiente">pendiente</span> — el importe por debajo del cual wmn/nd no suscribe el contrato queda declarado en la versión final.</p>
+<hr /><h1 id="sec-09">09 · Legal</h1><table>
+<thead>
+<tr>
+<th>Concepto</th>
+<th>Estado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Razón social contratante</td>
+<td><span class="ev ev-pendiente">pendiente</span></td>
+</tr>
+<tr>
+<td>RFC y domicilio fiscal</td>
+<td><span class="ev ev-pendiente">pendiente</span></td>
+</tr>
+<tr>
+<td>Representante legal</td>
+<td><span class="ev ev-pendiente">pendiente</span></td>
+</tr>
+<tr>
+<td>Régimen fiscal</td>
+<td><span class="ev ev-pendiente">pendiente</span></td>
+</tr>
+<tr>
+<td>Referencias comerciales autorizadas</td>
+<td><span class="ev ev-pendiente">pendiente</span></td>
+</tr>
+<tr>
+<td>Subcontratistas a declarar</td>
+<td>Los tres perfiles a incorporar y, en su caso, el proveedor del tablero</td>
+</tr>
+<tr>
+<td>Conflicto de interés con competidores de Dronamex</td>
+<td><span class="ev ev-pendiente">pendiente</span></td>
+</tr>
+<tr>
+<td>Declaración de uso de IA generativa</td>
+<td>Ver §6.5</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Compromisos que se aceptan:</strong> firma de contrato, acuerdo de confidencialidad y anexos de tratamiento de datos y propiedad intelectual <span class="ev ev-dato">dato, §8</span>.</p>
+<p><strong>Propiedad.</strong> Dronamex será propietario de cuentas, audiencias, píxeles, etiquetas, bases de datos, tableros, diseños, videos, textos y archivos fuente pagados bajo el contrato <span class="ev ev-dato">dato, §9</span>.</p>
+<p>Con una excepción que debe acordarse expresamente: <strong>el tablero de aprobación</strong>, si se desarrolla, puede tratarse como licencia de uso en lugar de cesión de propiedad. Es una decisión comercial que se resuelve antes de firmar y no se asume en este documento.</p>
+<p><strong>Al término del servicio</strong>, todos los accesos, fuentes, históricos, datos, campañas y documentación se entregan en máximo cinco días hábiles <span class="ev ev-dato">dato, §9</span>.</p>
+<hr /><h1 id="sec-10">10 · Muestra</h1><blockquote>
+<p>Calendario de dos semanas y concepto de campaña, conforme al §11.10.</p>
+</blockquote><h2 id="sec-10-1">10.1 · Alcance de la muestra</h2><p>Diez días hábiles. <strong>Dieciocho publicaciones y dieciocho secuencias de historias</strong> —tres por semana por unidad, conforme al §4.2— más <strong>dos videos largos</strong> <span class="ev ev-dato">dato</span>.</p>
+<p>Cada pieza declara de qué insumo sale. Esa columna es lo que separa un plan ejecutable de una lista de deseos.</p><h2 id="sec-10-2">10.2 · Semana A — instalar el método</h2><h3 id="sec-dronamex-2">Dronamex</h3><table>
+<thead>
+<tr>
+<th>Día</th>
+<th>Canal</th>
+<th>Formato</th>
+<th>Pieza</th>
+<th>Objetivo</th>
+<th>Insumo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Lun</td>
+<td>LinkedIn</td>
+<td>Documento 6 láminas</td>
+<td><strong>El protocolo.</strong> Cómo se diseña una prueba: variable única, condiciones declaradas, criterio de medición</td>
+<td>Autoridad</td>
+<td>Guion. Sin producción</td>
+</tr>
+<tr>
+<td>Mié</td>
+<td>LinkedIn</td>
+<td>Publicación + enlace</td>
+<td><strong>Careo 01 — anuncio.</strong> Dos equipos, una misión, fecha de ejecución. Se invita a proponer la variable a medir</td>
+<td>Expectativa</td>
+<td>Copy</td>
+</tr>
+<tr>
+<td>Vie</td>
+<td>YouTube</td>
+<td><strong>Video largo</strong></td>
+<td><strong>HASTA DÓNDE AGUANTA.</strong> Autonomía declarada contra autonomía medida, con cronómetro a la vista</td>
+<td>Descubrimiento y autoridad</td>
+<td>Equipo en bodega. Sin locación</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Historias:</strong> lunes, encuesta sobre qué variable medir · miércoles, montaje de la prueba · viernes, resultado en tiempo real.</p><h3 id="sec-academy">Academy</h3><table>
+<thead>
+<tr>
+<th>Día</th>
+<th>Canal</th>
+<th>Formato</th>
+<th>Pieza</th>
+<th>Objetivo</th>
+<th>Insumo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mar</td>
+<td>Instagram + Facebook</td>
+<td>Carrusel 5 láminas</td>
+<td><strong>Las cinco rutas de formación</strong>, nombradas por resultado y no por temario</td>
+<td>Educación de oferta</td>
+<td>Diseño sobre contenido existente</td>
+</tr>
+<tr>
+<td>Jue</td>
+<td>TikTok + Reels</td>
+<td>Video 45 s</td>
+<td><strong>"El dron voló bien. El reporte estaba mal."</strong> Qué distingue un levantamiento entregable</td>
+<td>Descubrimiento</td>
+<td>Grabación simple en sede</td>
+</tr>
+<tr>
+<td>Sáb</td>
+<td>Facebook</td>
+<td>Publicación</td>
+<td><strong>Ficha del próximo curso</strong>: fecha, sede, duración, cupo, precio</td>
+<td>Conversión</td>
+<td>Dato del cliente</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Historias:</strong> martes, encuesta sobre nivel de experiencia · jueves, detrás del video · sábado, cupo restante.</p><h3 id="sec-tienda">Tienda</h3><table>
+<thead>
+<tr>
+<th>Día</th>
+<th>Canal</th>
+<th>Formato</th>
+<th>Pieza</th>
+<th>Objetivo</th>
+<th>Insumo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Lun</td>
+<td>Instagram</td>
+<td>Carrusel 4 láminas</td>
+<td><strong>Compatibilidad</strong>: qué accesorio sirve con qué equipo y cuál no</td>
+<td>Consulta</td>
+<td>Catálogo propio</td>
+</tr>
+<tr>
+<td>Mié</td>
+<td>Facebook</td>
+<td>Publicación</td>
+<td><strong>Disponibilidad real</strong> de tres referencias, con existencia confirmada</td>
+<td>Cotización</td>
+<td>Inventario</td>
+</tr>
+<tr>
+<td>Vie</td>
+<td>Instagram</td>
+<td>Video 30 s</td>
+<td><strong>Un accesorio contra otro</strong> en la misma tarea</td>
+<td>Consideración</td>
+<td>Bodega</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Historias:</strong> lunes, pregunta abierta sobre equipo actual · miércoles, respuestas frecuentes de la semana · viernes, resultado de la comparación.</p><h2 id="sec-10-3">10.3 · Semana B — la prueba y su consecuencia</h2><h3 id="sec-dronamex-3">Dronamex</h3><table>
+<thead>
+<tr>
+<th>Día</th>
+<th>Canal</th>
+<th>Formato</th>
+<th>Pieza</th>
+<th>Objetivo</th>
+<th>Insumo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Lun</td>
+<td>LinkedIn</td>
+<td><strong>Careo 01 completo</strong></td>
+<td>Dos marcas, la misión, la medición y <strong>el ganador nombrado</strong>. Con enlace al archivo íntegro</td>
+<td><strong>Decisión</strong></td>
+<td>Grabación semana A</td>
+</tr>
+<tr>
+<td>Mié</td>
+<td>LinkedIn</td>
+<td>Publicación de texto</td>
+<td><strong>Lo que salió mal en la prueba.</strong> El contratiempo, sin editar</td>
+<td>Credibilidad</td>
+<td>Material de la misma grabación</td>
+</tr>
+<tr>
+<td>Vie</td>
+<td>YouTube</td>
+<td><strong>Video largo</strong></td>
+<td><strong>EL TURNO.</strong> Una operación completa: llegada, armado, briefing, vuelo, contratiempo, entrega</td>
+<td>Autoridad y Academy</td>
+<td>Jornada de producción</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Historias:</strong> lunes, resultado del careo · miércoles, la descarga del archivo · viernes, fragmentos del turno.</p><h3 id="sec-academy-2">Academy</h3><table>
+<thead>
+<tr>
+<th>Día</th>
+<th>Canal</th>
+<th>Formato</th>
+<th>Pieza</th>
+<th>Objetivo</th>
+<th>Insumo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mar</td>
+<td>LinkedIn</td>
+<td>Publicación</td>
+<td><strong>"Ciento veinte empresas ya mandaron a su gente."</strong> Qué preguntan antes de contratar capacitación</td>
+<td>Prospecto B2B</td>
+<td>Cifra propia + guion</td>
+</tr>
+<tr>
+<td>Jue</td>
+<td>Instagram + Facebook</td>
+<td>Carrusel</td>
+<td><strong>Lo que sí acredita la constancia</strong> — y por qué esa claridad es una ventaja</td>
+<td>Confianza</td>
+<td>Diseño</td>
+</tr>
+<tr>
+<td>Sáb</td>
+<td>Facebook</td>
+<td>Publicación</td>
+<td><strong>Cierre de inscripciones</strong> con cupo real</td>
+<td>Conversión</td>
+<td>Dato del cliente</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Historias:</strong> martes, testimonio de egresado con su puesto actual · jueves, preguntas frecuentes de la bandeja · sábado, recordatorio de cierre.</p><h3 id="sec-tienda-2">Tienda</h3><table>
+<thead>
+<tr>
+<th>Día</th>
+<th>Canal</th>
+<th>Formato</th>
+<th>Pieza</th>
+<th>Objetivo</th>
+<th>Insumo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Lun</td>
+<td>Instagram</td>
+<td>Publicación</td>
+<td><strong>El accesorio que ganó</strong> la comparación de la semana anterior, y por qué</td>
+<td>Cotización</td>
+<td>Semana A</td>
+</tr>
+<tr>
+<td>Mié</td>
+<td>Facebook</td>
+<td>Carrusel</td>
+<td><strong>Qué pedir al cotizar</strong>: los cinco datos que aceleran la respuesta</td>
+<td>Calidad de consulta</td>
+<td>Copy</td>
+</tr>
+<tr>
+<td>Vie</td>
+<td>TikTok</td>
+<td>Video 30 s</td>
+<td><strong>Un error de compra frecuente</strong> y cómo se evita</td>
+<td>Descubrimiento</td>
+<td>Bodega</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Historias:</strong> lunes, resultado · miércoles, plantilla de consulta · viernes, respuesta a la duda más repetida.</p><h2 id="sec-10-4">10.4 · Resumen de insumos</h2><p>De las veinte piezas del calendario, <strong>dieciséis se producen sin salir a grabar en locación</strong>. Dos requieren grabación en sede o bodega. Una exige jornada de producción y se cotiza aparte. Una depende de material que el cliente debe autorizar.</p>
+<p>Es la consecuencia directa del sistema: <strong>el Campo de Prueba produce contenido con equipo que ya está en bodega</strong>, no con producciones que dependen de un banco de material que todavía no sabemos si existe.</p><h2 id="sec-10-5">10.5 · Qué mide esta muestra</h2><table>
+<thead>
+<tr>
+<th>Pieza</th>
+<th>Indicador principal</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Careo 01</td>
+<td>Descargas del archivo con correo corporativo · solicitudes de comparativa</td>
+</tr>
+<tr>
+<td>Hasta dónde aguanta</td>
+<td>Retención a 3 y 15 segundos · alcance</td>
+</tr>
+<tr>
+<td>El Turno</td>
+<td>Duración media de reproducción · consultas de capacitación</td>
+</tr>
+<tr>
+<td>Fichas y disponibilidad</td>
+<td>Conversaciones iniciadas con contexto de producto</td>
+</tr>
+<tr>
+<td>Curso</td>
+<td>Solicitudes de inscripción · costo por solicitud</td>
+</tr>
+</tbody>
+</table>
+<p>Las metas numéricas se proponen al cierre del primer corte de treinta días, con la línea base medida.</p>
+<hr /><h1 id="anexo-a">Anexo A · Matriz de cumplimiento</h1><p><em>Cumple</em> indica que el elemento está desarrollado en esta propuesta. <em>Parcial</em> indica una condición pendiente que afecta el compromiso. Las observaciones describen el estado actual, no el esperado después de contratar.</p>
+<table>
+<thead>
+<tr>
+<th>Requisito</th>
+<th>Estado</th>
+<th>Observación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Iguala mensual</td>
+<td><strong>Cumple</strong></td>
+<td>Modelo y desglose en §08. Importe declarado</td>
+</tr>
+<tr>
+<td>Tres publicaciones semanales por unidad</td>
+<td><strong>Cumple</strong></td>
+<td>Alcance en §3.1, muestra en §10</td>
+</tr>
+<tr>
+<td>Cinco redes incluidas</td>
+<td><strong>Cumple</strong></td>
+<td>Estrategia §2.2 y alcance §3.1. Sujeto a entrega de accesos</td>
+</tr>
+<tr>
+<td>Atención de mensajes y comentarios</td>
+<td><strong>Parcial</strong></td>
+<td>Protocolo y SLA definidos en §07. Volumen y plantilla final por confirmar</td>
+</tr>
+<tr>
+<td>Generación y calificación de prospectos</td>
+<td><strong>Cumple</strong></td>
+<td>Método, estados y entrega en §2.4.11 y §06</td>
+</tr>
+<tr>
+<td>Gestión de campañas pagadas</td>
+<td><strong>Cumple</strong></td>
+<td>Operación en §2.4.14 y §08. Inversión facturada por separado</td>
+</tr>
+<tr>
+<td>Tablero y reporte mensual</td>
+<td><strong>Cumple</strong></td>
+<td>Contenido y fechas en §06 y §07</td>
+</tr>
+<tr>
+<td>Integración o entrega a CRM</td>
+<td><strong>Parcial</strong></td>
+<td>Arquitectura definida. Sistema destino y pruebas pendientes</td>
+</tr>
+<tr>
+<td>Archivos editables y propiedad de Dronamex</td>
+<td><strong>Cumple</strong></td>
+<td>§09, con la excepción del tablero declarada expresamente</td>
+</tr>
+<tr>
+<td>Niveles de servicio y escalamiento</td>
+<td><strong>Cumple</strong></td>
+<td>§07, incluidas ausencias, picos y crisis</td>
+</tr>
+</tbody>
+</table>
+<p>Los casos del §8 no constituyen fila de esta matriz. Su ausencia se declara en §05 y no se compensa alterando este anexo.</p>
+<hr /><h1 id="anexo-c">Anexo C · Respuestas al proponente</h1><p><strong>1 · ¿Qué distribución de contenido y medios propone para las tres unidades y por qué?</strong></p>
+<p>Dronamex concentra evidencia técnica y contacto institucional; Academy, habilidad, temario e inscripción; Tienda, compatibilidad, disponibilidad y cotización. El mínimo del §4.2 se sostiene como base y la inversión se asigna por unidad según evidencia de conversión, no por reparto proporcional entre plataformas. La distribución numérica definitiva se fija con la línea base de los primeros treinta días.</p>
+<p><strong>2 · ¿Cómo evita que el mismo contenido se replique sin adaptación en todas las redes?</strong></p>
+<p>Cada canal recibe una variante con apertura, profundidad, formato y llamada distintos. El control editorial registra la aportación de cada adaptación. Un cambio de tamaño no genera pieza adicional <span class="ev ev-dato">dato, §4.2</span>. Y la regla de exclusión del sistema de contenido lo refuerza: si una pieza funcionaría igual en dos canales sin cambio, está mal escrita.</p>
+<p><strong>3 · ¿Cómo define, califica y entrega un prospecto a ventas?</strong></p>
+<p>Contacto válido: persona identificable, consulta pertinente y datos utilizables conforme a la finalidad autorizada. Prospecto calificado: necesidad y ajuste documentados. Alta intención: solicitud explícita de cotización, reunión, demostración o inscripción; se entrega en máximo quince minutos con contexto completo <span class="ev ev-dato">dato, §4.5</span>. La oportunidad la acepta el equipo comercial de Dronamex; no la asigna el proveedor unilateralmente.</p>
+<p><strong>4 · ¿Qué mecanismos utiliza para medir calidad, atribución y ventas influenciadas?</strong></p>
+<p>Los ocho estados de §2.4.11, con parámetros de origen, identificador de contacto, deduplicación y conciliación con ventas. Ventas atribuidas e influenciadas se reportan por separado. <strong>No se reporta retorno sobre ventas sin ingresos conciliados.</strong> Las consultas resueltas en interfaces conversacionales privadas se declaran estructuralmente invisibles: no se sustituyen por un indicador aproximado presentado como medición.</p>
+<p><strong>5 · ¿Qué volumen de inversión mensual en pauta recomienda por unidad para la fase inicial?</strong></p>
+<p>No puede recomendarse un número sin el techo presupuestal, el costo por resultado por plataforma y la capacidad comercial de atender el volumen <span class="ev ev-pendiente">pendiente</span>. La estructura propuesta: primera tanda de validación por consulta con presupuesto acotado durante los primeros treinta días, medición de cuáles producen conversación calificada, y asignación definitiva contra esa evidencia. Comisión de administración del 10% sobre la inversión, facturada aparte.</p>
+<p><strong>6 · ¿Quién atenderá las comunidades y qué sucede ante ausencias, crisis o picos?</strong></p>
+<p>Un perfil de atención de tiempo completo más relevo incluido en plantilla, no como contingencia. Ante ausencia, el relevo recibe accesos y bitácora. Ante pico, se activa la capacidad de reserva. Ante crisis, se escala al contacto autorizado sin emitir postura institucional. La excepción de dos horas del §4.5 permite estructurar dos filas de atención sin sobredimensionar. Nombres, umbrales y capacidad de reserva <span class="ev ev-pendiente">pendiente</span>.</p>
+<p><strong>7 · ¿Qué necesita de Dronamex durante los primeros 30 días?</strong></p>
+<p>Accesos a las cinco redes, al sitio, a Search Console, a analítica, a la ficha de negocio y al CRM o base acordada. Inventario audiovisual y sus derechos de uso. Prioridades comerciales por unidad. Responsables de aprobación de marca, de validación técnica y de autorización de temas institucionales. Datos históricos de mensajes y de ventas. Avisos de privacidad vigentes. Confirmación de programa y alcance de la Expo. Decisión sobre acceso de rastreadores generativos y sobre indexación de la línea de defensa.</p>
+<p><strong>8 · ¿Qué resultados considera realistas a 30, 60 y 90 días?</strong></p>
+<p>A 30: medición operando, protocolo publicado, línea base documentada, primeras evidencias en línea. A 60: operación de la Expo ejecutada, primera lectura de calidad por origen, contactos del evento segmentados y entregados. A 90: seguimiento de oportunidades, revisión de costos y plan del siguiente trimestre con evidencia propia. <strong>No se promete volumen ni venta sin histórico, presupuesto y capacidad comercial confirmados.</strong> Si faltan accesos o aprobaciones, se documenta el efecto sobre los hitos afectados.</p>
+<p><strong>9 · ¿Qué herramientas, licencias y costos adicionales se requieren?</strong></p>
+<p>Programación y escucha, bandeja unificada, medición y conectores, banco de recursos audiovisuales. Presupuesto mensual estimado de $20,500, sujeto a verificación de tarifas vigentes. CRM, tablero propio y ampliaciones se cotizan por separado cuando corresponda, sin duplicar lo incluido. Proveedores y cantidades definitivas <span class="ev ev-pendiente">pendiente</span>.</p>
+<p><strong>10 · ¿Qué información o actividades quedarán excluidas de su propuesta?</strong></p>
+<p>Inversión publicitaria, producción presencial, estudio o locación, talento, viajes y viáticos, creadores externos, licencias de terceros, desarrollo complejo, CRM, fotografía, traducciones, impresión y atención fuera de horario <span class="ev ev-dato">dato, §10</span>. Además: asesoría jurídica, gestión de procedimientos de contratación pública, expedición de licencias o acreditaciones, garantías de adjudicación, cierre comercial a cargo del cliente, y afirmaciones técnicas sin validación documental. El desarrollo de comercio electrónico completo y la producción de campo tienen alcance y precio propios.</p>
+<hr /><h1 id="sec-supuestos-declarados">Supuestos declarados</h1><table>
+<thead>
+<tr>
+<th>Supuesto</th>
+<th>Qué cambia si no se confirma</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>El equipo trabaja en exclusiva para esta cuenta</td>
+<td>Cambia el costo directo y, con él, la iguala completa</td>
+</tr>
+<tr>
+<td>Dronamex acepta publicar una comparación donde pierde el equipo de mayor margen</td>
+<td><strong>Se cae el Campo de Prueba.</strong> El sistema vuelve a ser de mensajes y pierde su diferencial</td>
+</tr>
+<tr>
+<td>Existe equipo demo disponible sin afectar inventario</td>
+<td>El Careo requiere dos unidades en la misma mesa</td>
+</tr>
+<tr>
+<td>Los acuerdos de distribución permiten comparativas públicas</td>
+<td>Puede limitar qué pares se comparan y qué se publica</td>
+</tr>
+<tr>
+<td>El curso puede acreditarse contra la compra de equipo</td>
+<td>Cambia el rol de Academy y el embudo entre unidades</td>
+</tr>
+<tr>
+<td>Acceso abierto a rastreadores generativos</td>
+<td>Cambia la visibilidad en la capa generativa</td>
+</tr>
+<tr>
+<td>La Expo se confirma en fecha, programa y alcance</td>
+<td>Se reprograman campañas, recursos y seguimiento del mes 2</td>
+</tr>
+<tr>
+<td>Dos páginas de destino incluidas al mes</td>
+<td>Cambia el alcance y la tarifa de la adicional</td>
+</tr>
+<tr>
+<td>Carga patronal del 30% y gastos generales del 12%</td>
+<td>Se recalcula el costo directo y la rentabilidad</td>
+</tr>
+<tr>
+<td>La tienda se mide por cotización calificada</td>
+<td>Si aparece pasarela, se amplían eventos y métricas</td>
+</tr>
+<tr>
+<td>Academy comunica sólo competencias documentadas</td>
+<td>La evidencia recibida determina las afirmaciones permitidas</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Campos que permanecen abiertos:</strong> casos con métricas verificables, datos legales, piso de rentabilidad, plazo mínimo, forma de pago, costo de implementación, tarifas de páginas adicionales y de cobertura extendida, presupuesto de pauta, nombres y trayectorias de los perfiles a incorporar, y el texto definitivo de la declaración de uso de inteligencia artificial.</p>
+<p>Ninguno de esos campos se ha completado con estimaciones ni se ha convertido en acuerdo por este documento.</p>
+<hr />
+<p><em>Documento para revisión · wmn/nd · septiembre de 2026</em></p></div>
+  <button class="bt" id="docX">Volver a la presentación</button>
+</div>
+
+<script>
+const deck=document.getElementById('deck'), ss=[...document.querySelectorAll('.s')], TOT=ss.length;
+let i=0;
+function ir(n){ i=Math.max(0,Math.min(TOT-1,n)); ss[i].scrollIntoView({behavior:'smooth'}); pinta(); }
+function pinta(){
+  document.getElementById('cuenta').textContent=String(i+1).padStart(2,'0')+' / '+TOT;
+  document.querySelector('#prog i').style.width=((i)/(TOT-1)*100)+'%';
+  document.getElementById('ant').disabled=i===0;
+  document.getElementById('sig').disabled=i===TOT-1;
+}
+const obs=new IntersectionObserver(es=>es.forEach(e=>{
+  if(e.isIntersecting){ i=+e.target.dataset.i; pinta(); }
+}),{threshold:.55});
+ss.forEach(s=>obs.observe(s));
+document.getElementById('ant').onclick=()=>ir(i-1);
+document.getElementById('sig').onclick=()=>ir(i+1);
+document.onkeydown=e=>{
+  if(document.getElementById('doc').classList.contains('on')){ if(e.key==='Escape') cerrarDoc(); return; }
+  if(document.getElementById('idx').classList.contains('on')){ if(e.key==='Escape') idxOff(); return; }
+  if(['ArrowRight','ArrowDown','PageDown',' '].includes(e.key)){e.preventDefault();ir(i+1);}
+  if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){e.preventDefault();ir(i-1);}
+  if(e.key==='Home') ir(0); if(e.key==='End') ir(TOT-1);
+};
+const idxEl=document.getElementById('idx');
+const idxOff=()=>idxEl.classList.remove('on');
+document.getElementById('bIdx').onclick=()=>idxEl.classList.add('on');
+document.getElementById('idxX').onclick=idxOff;
+document.querySelectorAll('.ix').forEach(b=>b.onclick=()=>{ idxOff(); ir(+b.dataset.i); });
+const docEl=document.getElementById('doc');
+function abrirDoc(a){
+  docEl.classList.add('on');
+  if(a){ const t=document.getElementById(a);
+    if(t) document.getElementById('docBody').scrollTop = t.offsetTop - 70; }
+  else document.getElementById('docBody').scrollTop=0;
+}
+function cerrarDoc(){ docEl.classList.remove('on'); }
+document.getElementById('bDoc').onclick=()=>abrirDoc(null);
+document.getElementById('docX').onclick=cerrarDoc;
+document.querySelectorAll('.verdoc').forEach(b=>b.onclick=()=>abrirDoc(b.dataset.a));
+document.querySelectorAll('#docNav a').forEach(a=>a.onclick=e=>{
+  e.preventDefault(); const t=document.getElementById(a.getAttribute('href').slice(1));
+  if(t) document.getElementById('docBody').scrollTo({top:t.offsetTop-70,behavior:'smooth'});
+});
+pinta();
+</script></body></html>
