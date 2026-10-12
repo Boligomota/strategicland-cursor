@@ -2,5 +2,12 @@
   "framework": null,
   "buildCommand": null,
   "outputDirectory": ".",
-  "installCommand": null
+  "installCommand": null,
+  "redirects": [
+    {
+      "source": "/proyectos.html",
+      "destination": "/#work",
+      "permanent": false
+    }
+  ]
 }
