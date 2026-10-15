@@ -7,3 +7,7 @@ docs/internal/
 
 # Salidas de Claude — fuera del repo
 Claude outputs/
+
+# Campaña industria — datos y envíos por empresa (nunca al repo)
+_envios/
+tools/industria/lotes/
