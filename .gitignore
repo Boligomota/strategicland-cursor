@@ -11,3 +11,6 @@ Claude outputs/
 # Campaña industria — datos y envíos por empresa (nunca al repo)
 _envios/
 tools/industria/lotes/
+
+# Python
+__pycache__/
