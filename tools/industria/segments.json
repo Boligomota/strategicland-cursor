@@ -1,0 +1,39 @@
+{
+  "_doc": "Per-segment copy for the INTRO and TESIS blocks of industria-b2b.html. Values are Spanish product copy. **text** renders bold; \\n in h2 renders a line break; highlight=true renders the paragraph in the light text colour.",
+  "b2b": {
+    "intro": "Cuando un área de compras busca un proveedor nuevo, casi nunca empieza por el teléfono. Empieza en Google, o cada vez más en ChatGPT, abre unos cuantos sitios y arma una lista corta con los que le dieron confianza. **A los demás no los llama.** Su empresa pasa por ese filtro más seguido de lo que parece, y casi nunca se entera.",
+    "tesis_h2": "Lo que les costó años,\nel sitio lo resume en un minuto.",
+    "tesis": [
+      {"text": "Una certificación, una planta, clientes que regresan desde hace décadas. Eso no se consigue rápido y ustedes lo saben mejor que nadie."},
+      {"text": "El problema es que un comprador nuevo no tiene cómo verlo de primera mano. Ve lo que el sitio le enseña, y con eso decide si les pide una cotización o pasa al siguiente."},
+      {"text": "Cuando algo del sitio no está bien, **nadie les avisa**. Simplemente no llaman.", "highlight": true}
+    ]
+  },
+  "hospitalario": {
+    "intro": "Antes de que un hospital o un distribuidor agregue un producto a su lista, alguien en compras investiga al fabricante. Revisa su sitio, busca el registro sanitario, compara con otras dos o tres marcas y, cada vez más, le pregunta a ChatGPT. Todo eso pasa **antes de la primera llamada**, y el fabricante rara vez se entera de que lo estaban evaluando.",
+    "tesis_h2": "En salud, la confianza\nse revisa antes de comprar.",
+    "tesis": [
+      {"text": "Un fabricante de medicamentos o de insumos médicos responde por cada lote: registros, certificaciones, trazabilidad. Es un trabajo de años que casi nunca se ve desde afuera."},
+      {"text": "Quien evalúa para un hospital o un distribuidor busca justo eso, y lo busca primero en internet. Si la información está incompleta, desactualizada o en otro idioma, la duda no se queda en el sitio. Se la lleva el producto."},
+      {"text": "Nadie va a llamar para preguntar por qué la página dice otra cosa. **Van a elegir a quien se lo dejó claro.**", "highlight": true}
+    ]
+  },
+  "aerolineas": {
+    "intro": "Cuando una aerolínea abre una ruta o cambia de proveedor en un aeropuerto, alguien de operaciones arma la lista de candidatos para el servicio en tierra. Lo hace desde su escritorio, muchas veces en otro país: busca, abre sitios, compara. Para cuando su empresa recibe la primera solicitud, esa persona **ya decidió si valía la pena escribirle**.",
+    "tesis_h2": "Su operación se ve en la pista.\nSu sitio, desde mucho antes.",
+    "tesis": [
+      {"text": "En tierra, un servicio bien hecho no se nota: el avión sale a tiempo, el pasajero que necesitaba silla de ruedas la tuvo, nadie se queja. Eso es lo difícil, y ustedes lo hacen todos los días."},
+      {"text": "Pero la aerolínea que todavía no trabaja con ustedes no ha visto nada de eso. Ve el sitio, lo compara con dos o tres proveedores más y decide a quién mandarle la solicitud."},
+      {"text": "Si el sitio se ve descuidado, la pregunta que se hacen es razonable: **¿así cuidarán también nuestra operación?**", "highlight": true}
+    ]
+  },
+  "b2c": {
+    "intro": "Hoy mucha gente decide qué comprar en la farmacia antes de llegar al mostrador. Busca el síntoma en el celular, lee dos o tres resultados, le pregunta a ChatGPT y llega con un nombre en la cabeza. Si su marca no aparece en esa búsqueda, **la decisión ya se tomó por otra**.",
+    "tesis_h2": "La gente ya eligió\nantes de llegar a la farmacia.",
+    "tesis": [
+      {"text": "Un laboratorio puede tener décadas de investigación y productos que funcionan. Pero en el mostrador, o en la farmacia en línea, la decisión se toma en segundos y casi siempre con lo que la persona leyó antes."},
+      {"text": "Ahí compiten las marcas hoy: en la búsqueda del celular, en lo que responde un asistente, en si el enlace lleva al producto correcto."},
+      {"text": "Si su marca no está clara en ese momento, **el cliente no la busca dos veces**.", "highlight": true}
+    ]
+  }
+}
