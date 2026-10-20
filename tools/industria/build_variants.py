@@ -10,7 +10,7 @@ Usage:
 CSV columns (UTF-8, header required):
     slug         short file-safe id, e.g. atramat
     segmento     optional: key in segments.json (b2b, hospitalario, aerolineas, b2c).
-                 Fills the INTRO and TESIS blocks. Default: b2b
+                 Fills the PRE (preheader), HERO, INTRO and TESIS blocks. Default: b2b
     empresa      company name (manifest only)
     para         recipients, separated by ';'
     asunto       subject line (manifest only)
@@ -48,7 +48,19 @@ def inline(text: str) -> str:
     return re.sub(r"\*\*(.+?)\*\*", lambda m: f"{STRONG}{m.group(1)}</strong>", safe)
 
 
+EYEBROW_STYLE = "margin:0 0 22px; font-size:11px; color:#ff5e00; text-transform:uppercase; letter-spacing:3px;"
+H1_STYLE = ("margin:0 0 26px; font-size:46px; line-height:1.02; font-weight:800; color:#bebbb6; "
+            "letter-spacing:-1px; text-transform:uppercase;")
+
+
+def lines(text: str) -> str:
+    return "<br>".join(html.escape(x.strip(), quote=False) for x in text.split("\n"))
+
+
 def render_segment(seg: dict) -> dict:
+    hero = (f'<p class="f-mono" style="{EYEBROW_STYLE}">{html.escape(seg["eyebrow"], quote=False)}</p>\n'
+            f'<h1 class="f-display h1" style="{H1_STYLE}">{lines(seg["h1"])}</h1>')
+    pre = html.escape(" ".join(seg["preheader"].split()), quote=False)
     intro = f'<p class="f-body" style="{INTRO_STYLE}">{inline(seg["intro"])}</p>'
     h2 = "<br>".join(html.escape(x.strip(), quote=False) for x in seg["tesis_h2"].split("\n"))
     parts = [f'<h2 class="f-display h2" style="{H2_STYLE}">{h2}</h2>']
@@ -58,7 +70,7 @@ def render_segment(seg: dict) -> dict:
         color = TESIS_COLOR[bool(para.get("highlight"))]
         parts.append(f'<p class="f-body" style="margin:{margin}; font-size:17px; line-height:1.62; '
                      f'color:{color};">{inline(para["text"])}</p>')
-    return {"INTRO": intro, "TESIS": "\n".join(parts)}
+    return {"PRE": pre, "HERO": hero, "INTRO": intro, "TESIS": "\n".join(parts)}
 
 
 def replace_block(page: str, name: str, content: str) -> str:
