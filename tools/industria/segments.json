@@ -75,5 +75,24 @@
         "highlight": true
       }
     ]
+  },
+  "servicios": {
+    "eyebrow": "Servicios profesionales · Despachos",
+    "h1": "Lo eligen\nsin conocerlo\ntodavía.",
+    "preheader": "Antes de llamarle, su próximo cliente ya revisó su sitio y le preguntó a ChatGPT.",
+    "intro": "Cuando una empresa necesita un asesor nuevo, casi siempre empieza buscando en internet. Revisa dos o tres sitios, a veces le pregunta a ChatGPT, y con eso decide a quién llamar. **Los despachos que no convencen en esa primera vuelta no reciben la llamada**, y nunca se enteran de que estuvieron en la lista.",
+    "tesis_h2": "La confianza de un despacho\nse revisa antes de la primera cita.",
+    "tesis": [
+      {
+        "text": "Un despacho vive de su criterio: años resolviendo casos, auditorías que salieron bien, clientes que se quedan. Eso no cabe en una tarjeta de presentación."
+      },
+      {
+        "text": "Quien busca asesoría tampoco puede verlo de primera mano. Ve lo que el sitio le enseña, lo compara con otros dos o tres y con eso decide a quién le escribe."
+      },
+      {
+        "text": "En servicios profesionales, un sitio descuidado no se lee como un detalle. **Se lee como una forma de trabajar.**",
+        "highlight": true
+      }
+    ]
   }
 }
