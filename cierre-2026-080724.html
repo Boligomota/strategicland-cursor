@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Cierre 2026 — Respuesta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Oswald:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F4F4F0;
+    --raised:#d0d0cc;
+    --ink:#0D0D0D;
+    --muted:#555555;      /* derived LA gray for readable secondary text (6.8:1 on --bg) */
+    --tertiary:#6E6E6E;   /* derived LA gray for labels (4.6:1 on --bg) */
+    --line:rgba(140,140,140,.35);
+    --accent:#cf2033;
+    --ease:cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column;}
+  .display{font-family:'Oswald','Arial Narrow','Helvetica Neue',Arial,sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:-0.02em;line-height:.9;}
+  .mono{font-family:'Inter','Helvetica Neue',Helvetica,Arial,sans-serif;font-weight:600;text-transform:uppercase;letter-spacing:.1em;}
+  .wrap{max-width:680px;margin:0 auto;padding:0 20px;width:100%;}
+  main{flex:1;}
+
+  .nav{border-bottom:1px solid var(--ink);}
+  .nav-inner{padding:20px 0;}
+  .nav-brand{display:block;white-space:nowrap;font-weight:600;font-size:clamp(9px,2.9vw,13px);letter-spacing:.04em;color:var(--ink);}
+
+  .view{display:none;padding:56px 0 40px;}
+  .view.on{display:block;}
+  .eyebrow{font-size:11px;color:var(--accent);margin:0 0 18px;}
+  h1{font-size:clamp(2.8rem,12vw,4.4rem);line-height:.88;margin:0 0 20px;}
+  .lede{margin:0;font-size:17px;color:var(--muted);}
+
+  .stamp{display:flex;align-items:center;gap:14px;border:1px solid var(--ink);padding:16px;margin:28px 0 0;}
+  .box{flex:0 0 22px;width:22px;height:22px;border:2px solid var(--accent);position:relative;background:var(--bg);transition:background .35s var(--ease);}
+  .stamp.ok .box{background:var(--accent);}
+  .stamp.ok .box::after{content:"";position:absolute;left:5px;top:1px;width:6px;height:11px;border:solid var(--bg);border-width:0 2px 2px 0;transform:rotate(45deg);}
+  .stamp-text{font-size:13px;font-weight:600;}
+  .stamp-meta{font-size:10px;color:var(--muted);margin:0 0 2px;}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:28px 0 12px;}
+  label.f{display:block;font-size:10px;color:var(--muted);margin:0 0 6px;}
+  input[type=text],textarea{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:0;color:var(--ink);font-family:inherit;font-size:16px;padding:12px 14px;transition:border-color .3s var(--ease);}
+  textarea{min-height:110px;resize:vertical;line-height:1.55;}
+  input[type=text]:focus,textarea:focus{outline:none;border-color:var(--accent);}
+  input::placeholder,textarea::placeholder{color:var(--tertiary);}
+
+  .btn{display:inline-block;background:var(--ink);color:var(--bg);border:0;border-radius:0;font-size:12px;padding:16px 28px;cursor:pointer;text-decoration:none;transition:background .3s var(--ease);margin-top:24px;}
+  .btn:hover{background:var(--accent);}
+  .btn[disabled]{opacity:.6;cursor:default;}
+  .note{font-size:10px;line-height:1.8;color:var(--tertiary);margin:18px 0 0;}
+
+  footer{border-top:1px solid var(--ink);padding:24px 0 40px;font-size:10px;color:var(--tertiary);}
+
+  @media (max-width:560px){
+    .grid2{grid-template-columns:1fr;}
+    .btn{width:100%;text-align:center;}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;}}
+</style>
+</head>
+<body>
+
+<div class="nav"><div class="wrap"><div class="nav-inner"><span class="nav-brand mono">LA / RTH / MEDICINE / IKAL (RESTAURA/ARENA)</span></div></div></div>
+
+<main><div class="wrap">
+
+  <!-- Casilla: registro con un toque -->
+  <section class="view" id="v-check">
+    <p class="eyebrow mono" id="c-section">Cierre 2026</p>
+    <h1 class="display" id="c-title">Registrando…</h1>
+    <p class="lede" id="c-lede">Un momento.</p>
+    <div class="stamp" id="c-stamp">
+      <span class="box"></span>
+      <div><p class="stamp-meta mono" id="c-meta"></p><span class="stamp-text mono" id="c-label"></span></div>
+    </div>
+    <a class="btn mono" id="c-retry" href="#" style="display:none">Responder por correo &rarr;</a>
+  </section>
+
+  <!-- Bono -->
+  <section class="view" id="v-bono">
+    <p class="eyebrow mono">1. Calendario diciembre · Bono</p>
+    <h1 class="display">Bono</h1>
+    <p class="lede">¿Cómo quedaría y qué día?</p>
+    <form id="form" novalidate>
+      <input type="checkbox" name="botcheck" id="botcheck" style="display:none" tabindex="-1" autocomplete="off">
+      <div class="grid2">
+        <div><label class="f mono" for="monto">Monto</label><input type="text" id="monto" placeholder="$"></div>
+        <div><label class="f mono" for="fecha">Fecha</label><input type="text" id="fecha" placeholder="Día de pago"></div>
+      </div>
+      <label class="f mono" for="comentario">Comentario</label>
+      <textarea id="comentario"></textarea>
+      <button type="submit" class="btn mono" id="submit">Enviar &rarr;</button>
+    </form>
+  </section>
+
+  <!-- Bono enviado -->
+  <section class="view" id="v-bono-ok">
+    <p class="eyebrow mono">1. Calendario diciembre · Bono</p>
+    <h1 class="display">Recibido</h1>
+    <p class="lede">Ya me llegó tu respuesta sobre el bono.</p>
+  </section>
+
+  <!-- Enlace sin casilla válida -->
+  <section class="view" id="v-none">
+    <p class="eyebrow mono">Cierre 2026</p>
+    <h1 class="display">Cierre fin<br>de año 2026</h1>
+    <p class="lede">Las respuestas se marcan desde los botones del correo.</p>
+  </section>
+
+</div></main>
+
+<footer><div class="wrap mono">Juan Luis Contreras · Cierre fin de año 2026</div></footer>
+
+<script>
+var ACCESS_KEY = "36956a5a-c0e0-4539-9759-e273452a3120";
+var ENDPOINT = "https://api.web3forms.com/submit";
+var CORREO_DESTINO = "juanluis.contreras@gmail.com";
+var ITEMS = {
+  empezamos:   {section:"Entrada",                              label:"Empezamos"},
+  enterado:    {section:"1. Calendario diciembre",              label:"Enterado"},
+  compromiso:  {section:"Petición urgente · Adelanto diciembre", label:"Compromiso de revisión"},
+  planear:     {section:"2. Acuerdo de aumento",                label:"Planear acuerdo"},
+  considerando:{section:"3. Horas extras",                      label:"Considerando"}
+};
+function $(id){ return document.getElementById(id); }
+function show(id){ ['v-check','v-bono','v-bono-ok','v-none'].forEach(function(v){ $(v).classList.toggle('on', v===id); }); }
+function mailto(subject, body){ return 'mailto:'+CORREO_DESTINO+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body); }
+function send(data){
+  data.access_key = ACCESS_KEY;
+  data.from_name = 'Respuestas Cierre 2026';
+  data['Enviado el'] = new Date().toLocaleString('es-MX');
+  return fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(data)})
+    .then(function(r){ return r.json(); })
+    .then(function(r){ if(r.success===false) throw new Error(r.message||'error'); return r; });
+}
+function sentFlag(k, set){
+  try{ if(set){ sessionStorage.setItem('cierre2026-'+k,'1'); return true; } return sessionStorage.getItem('cierre2026-'+k)==='1'; }catch(e){ return false; }
+}
+
+var r = (new URLSearchParams(location.search).get('r') || '').toLowerCase();
+
+if(ITEMS[r]){
+  var it = ITEMS[r];
+  show('v-check');
+  $('c-section').textContent = it.section;
+  $('c-meta').textContent = it.section;
+  $('c-label').textContent = it.label;
+  var ok = function(){
+    $('c-title').textContent = 'Registrado';
+    $('c-lede').textContent = 'Listo. Ya me llegó. Puedes cerrar esta página.';
+    $('c-stamp').classList.add('ok');
+  };
+  if(sentFlag(r)){ ok(); }
+  else{
+    send({subject:'Cierre 2026 — '+it.label.toUpperCase(), 'Punto':it.section, 'Respuesta':it.label.toUpperCase()})
+      .then(function(){ sentFlag(r,true); ok(); })
+      .catch(function(){
+        $('c-title').textContent = 'Sin conexión';
+        $('c-lede').textContent = 'No se pudo registrar. Puedes mandármelo por correo con el botón.';
+        var b=$('c-retry'); b.style.display='inline-block';
+        b.href = mailto('Re: CIERRE FIN DE AÑO 2026', it.section+': '+it.label.toUpperCase());
+      });
+  }
+}
+else if(r==='bono'){
+  show('v-bono');
+  setTimeout(function(){ $('monto').focus(); }, 150);
+  $('form').addEventListener('submit', function(e){
+    e.preventDefault();
+    if($('botcheck').checked) return;
+    var btn=$('submit'); btn.disabled=true; btn.textContent='Enviando…';
+    var monto=$('monto').value, fecha=$('fecha').value, com=$('comentario').value;
+    send({subject:'Cierre 2026 — BONO', 'Punto':'1. Calendario diciembre · Bono', 'Monto':monto, 'Fecha':fecha, 'Comentario':com})
+      .then(function(){ show('v-bono-ok'); window.scrollTo(0,0); })
+      .catch(function(){
+        window.location.href = mailto('Re: CIERRE FIN DE AÑO 2026', 'BONO\nMonto: '+monto+'\nFecha: '+fecha+'\nComentario: '+com);
+        btn.disabled=false; btn.textContent='Enviar →';
+      });
+  });
+}
+else{ show('v-none'); }
+</script>
+</body>
+</html>
