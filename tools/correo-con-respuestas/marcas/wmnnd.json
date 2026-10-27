@@ -1,0 +1,33 @@
+{
+  "nombre": "wmn/nd",
+  "sistema": "jlc-design-system",
+  "estado": "completo",
+  "registro": "Email light register derived from the wmn/nd canon: .u-theme-light tokens, table layout, inline styles, no grain/WebGL.",
+  "google_fonts": "https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800&family=Space+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap",
+  "color": {
+    "ink": "#080807",
+    "bg": "#fafaf9",
+    "raised": "#d1d1c7",
+    "muted": "#524d47",
+    "label": "#6b645c",
+    "gray": "#938f8a",
+    "accent": "#ff5e00",
+    "on_accent": "#080807",
+    "on_dark_muted": "#bebbb6",
+    "instr_bg": "#d1d1c7",
+    "line": "rgba(8,8,7,0.18)",
+    "accent_field_line": "rgba(8,8,7,0.35)",
+    "tile_divider": "rgba(250,250,249,0.15)"
+  },
+  "fuente": {
+    "display": "font-family:Archivo,'Helvetica Neue',Helvetica,Arial,sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:-0.015em;",
+    "body": "font-family:'Space Grotesk','Helvetica Neue',Helvetica,Arial,sans-serif;",
+    "label": "font-family:'IBM Plex Mono',Menlo,Consolas,'Courier New',monospace;text-transform:uppercase;letter-spacing:0.06em;",
+    "header_line": "font-family:'IBM Plex Mono',Menlo,Consolas,'Courier New',monospace;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0;",
+    "page_display": "font-family:'Archivo','Helvetica Neue',Helvetica,Arial,sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:-0.015em;line-height:.95;",
+    "page_label": "font-family:'IBM Plex Mono',Menlo,Consolas,'Courier New',monospace;text-transform:uppercase;letter-spacing:.06em;",
+    "page_body": "'Space Grotesk','Helvetica Neue',Helvetica,Arial,sans-serif"
+  },
+  "ease": "cubic-bezier(.6,0,.2,1)",
+  "radius": "0"
+}

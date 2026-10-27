@@ -1,0 +1,37 @@
+{
+  "nombre": "Love Academy",
+  "sistema": "love-academy-design-system",
+  "estado": "completo",
+  "google_fonts": "https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Oswald:wght@300;400;500;700&display=swap",
+  "color": {
+    "ink": "#0D0D0D",
+    "bg": "#F4F4F0",
+    "raised": "#d0d0cc",
+    "muted": "#555555",
+    "label": "#6E6E6E",
+    "gray": "#8C8C8C",
+    "accent": "#cf2033",
+    "on_accent": "#F4F4F0",
+    "on_dark_muted": "#d0d0cc",
+    "instr_bg": "#e8e8e4",
+    "line": "rgba(140,140,140,0.35)",
+    "accent_field_line": "rgba(244,244,240,0.5)",
+    "tile_divider": "rgba(244,244,240,0.15)"
+  },
+  "notas_color": {
+    "muted": "Derived gray: 6.8:1 on bg. Tasks, notes, secondary text.",
+    "label": "Derived gray: 4.6:1 on bg. Labels.",
+    "instr_bg": "Derived: #d0d0cc at 35% over the cream bg."
+  },
+  "fuente": {
+    "display": "font-family:Oswald,'Arial Narrow','Helvetica Neue',Arial,sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:-0.01em;",
+    "body": "font-family:Inter,'Helvetica Neue',Helvetica,Arial,sans-serif;",
+    "label": "font-family:Inter,'Helvetica Neue',Helvetica,Arial,sans-serif;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;",
+    "header_line": "font-family:Inter,'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;",
+    "page_display": "font-family:'Oswald','Arial Narrow','Helvetica Neue',Arial,sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:-0.02em;line-height:.9;",
+    "page_label": "font-family:'Inter','Helvetica Neue',Helvetica,Arial,sans-serif;font-weight:600;text-transform:uppercase;letter-spacing:.1em;",
+    "page_body": "'Inter','Helvetica Neue',Helvetica,Arial,sans-serif"
+  },
+  "ease": "cubic-bezier(0.16, 1, 0.3, 1)",
+  "radius": "0"
+}

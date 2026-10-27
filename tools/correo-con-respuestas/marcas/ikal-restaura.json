@@ -1,0 +1,33 @@
+{
+  "nombre": "IKAL RESTAURA 2026",
+  "sistema": "ikal-restaura-brand",
+  "estado": "incompleto",
+  "pendiente": "The brand has no approved solid background for documents: the web build runs on gradients, and Amarillo #eccb81, Ocre #f9c28f and Cafe #a0502d are approved but not placed. JLCV must decide which solid goes as email background, which as shaded rows and which as accent before this file can be used. build.py refuses to run while estado is not 'completo'.",
+  "google_fonts": "https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500&family=Oswald:wght@400;500;600&display=swap",
+  "color": {
+    "ink": "#1a1a1a",
+    "bg": null,
+    "raised": null,
+    "muted": null,
+    "label": null,
+    "gray": null,
+    "accent": null,
+    "on_accent": null,
+    "on_dark_muted": null,
+    "instr_bg": null,
+    "line": null,
+    "accent_field_line": null,
+    "tile_divider": null
+  },
+  "fuente": {
+    "display": "font-family:Barlow,Arial,sans-serif;font-weight:500;",
+    "body": "font-family:Barlow,Arial,sans-serif;",
+    "label": "font-family:Oswald,'Arial Narrow',Arial,sans-serif;font-weight:500;text-transform:uppercase;letter-spacing:0.12em;",
+    "header_line": "font-family:Oswald,'Arial Narrow',Arial,sans-serif;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.04em;",
+    "page_display": "font-family:'Barlow',Arial,sans-serif;font-weight:500;line-height:1;",
+    "page_label": "font-family:'Oswald','Arial Narrow',Arial,sans-serif;font-weight:500;text-transform:uppercase;letter-spacing:.12em;",
+    "page_body": "'Barlow',Arial,sans-serif"
+  },
+  "ease": "cubic-bezier(.6,0,.2,1)",
+  "radius": "0"
+}

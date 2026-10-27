@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>{{TITLE}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="{{GOOGLE_FONTS}}" rel="stylesheet">
+<style>
+  :root{
+    --bg:{{BG}};
+    --raised:{{RAISED}};
+    --ink:{{INK}};
+    --muted:{{MUTED}};
+    --tertiary:{{LABEL}};
+    --line:{{LINE}};
+    --accent:{{ACCENT}};
+    --ease:{{EASE}};
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:{{BODY_FONT}};font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column;}
+  .display{ {{DISPLAY_CSS}} }
+  .mono{ {{LABEL_CSS}} }
+  .wrap{max-width:680px;margin:0 auto;padding:0 20px;width:100%;}
+  main{flex:1;}
+
+  .nav{border-bottom:1px solid var(--ink);}
+  .nav-inner{padding:20px 0;}
+  .nav-brand{display:block;white-space:nowrap;font-weight:600;font-size:clamp(9px,2.9vw,13px);letter-spacing:.04em;color:var(--ink);}
+
+  .view{display:none;padding:56px 0 40px;}
+  .view.on{display:block;}
+  .eyebrow{font-size:11px;color:var(--accent);margin:0 0 18px;}
+  h1{font-size:clamp(2.8rem,12vw,4.4rem);line-height:.88;margin:0 0 20px;}
+  .lede{margin:0;font-size:17px;color:var(--muted);}
+
+  .stamp{display:flex;align-items:center;gap:14px;border:1px solid var(--ink);padding:16px;margin:28px 0 0;}
+  .box{flex:0 0 22px;width:22px;height:22px;border:2px solid var(--accent);position:relative;background:var(--bg);transition:background .35s var(--ease);}
+  .stamp.ok .box{background:var(--accent);}
+  .stamp.ok .box::after{content:"";position:absolute;left:5px;top:1px;width:6px;height:11px;border:solid var(--bg);border-width:0 2px 2px 0;transform:rotate(45deg);}
+  .stamp-text{font-size:13px;font-weight:600;}
+  .stamp-meta{font-size:10px;color:var(--muted);margin:0 0 2px;}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:28px 0 12px;}
+  .fld{margin:0 0 12px;}
+  label.f{display:block;font-size:10px;color:var(--muted);margin:0 0 6px;}
+  input[type=text],textarea{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:{{RADIUS}};color:var(--ink);font-family:inherit;font-size:16px;padding:12px 14px;transition:border-color .3s var(--ease);}
+  textarea{min-height:110px;resize:vertical;line-height:1.55;}
+  input[type=text]:focus,textarea:focus{outline:none;border-color:var(--accent);}
+  input::placeholder,textarea::placeholder{color:var(--tertiary);}
+
+  .btn{display:inline-block;background:var(--ink);color:var(--bg);border:0;border-radius:{{RADIUS}};font-size:12px;padding:16px 28px;cursor:pointer;text-decoration:none;transition:background .3s var(--ease);margin-top:24px;}
+  .btn:hover{background:var(--accent);}
+  .btn[disabled]{opacity:.6;cursor:default;}
+
+  footer{border-top:1px solid var(--ink);padding:24px 0 40px;font-size:10px;color:var(--tertiary);}
+
+  @media (max-width:560px){
+    .grid2{grid-template-columns:1fr;}
+    .btn{width:100%;text-align:center;}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;}}
+</style>
+</head>
+<body>
+
+<div class="nav"><div class="wrap"><div class="nav-inner"><span class="nav-brand mono">{{HEADER_LINE}}</span></div></div></div>
+
+<main><div class="wrap">
+
+  <section class="view" id="v-check">
+    <p class="eyebrow mono" id="c-section"></p>
+    <h1 class="display" id="c-title">Registrando…</h1>
+    <p class="lede" id="c-lede">Un momento.</p>
+    <div class="stamp" id="c-stamp">
+      <span class="box"></span>
+      <div><p class="stamp-meta mono" id="c-meta"></p><span class="stamp-text mono" id="c-label"></span></div>
+    </div>
+    <a class="btn mono" id="c-retry" href="#" style="display:none">Responder por correo &rarr;</a>
+  </section>
+
+  <section class="view" id="v-form">
+    <p class="eyebrow mono" id="f-section"></p>
+    <h1 class="display" id="f-title"></h1>
+    <p class="lede" id="f-question"></p>
+    <form id="form" novalidate>
+      <input type="checkbox" name="botcheck" id="botcheck" style="display:none" tabindex="-1" autocomplete="off">
+      <div class="grid2" id="f-short"></div>
+      <div id="f-long"></div>
+      <button type="submit" class="btn mono" id="submit">Enviar &rarr;</button>
+    </form>
+  </section>
+
+  <section class="view" id="v-form-ok">
+    <p class="eyebrow mono" id="fo-section"></p>
+    <h1 class="display">Recibido</h1>
+    <p class="lede" id="fo-lede"></p>
+  </section>
+
+  <section class="view" id="v-none">
+    <p class="eyebrow mono">{{NONE_EYEBROW}}</p>
+    <h1 class="display">{{NONE_TITLE}}</h1>
+    <p class="lede">{{NONE_LEDE}}</p>
+  </section>
+
+</div></main>
+
+<footer><div class="wrap mono">{{FOOTER}}</div></footer>
+
+<script>
+var CFG = {{CONFIG}};
+var ENDPOINT = "https://api.web3forms.com/submit";
+function $(id){ return document.getElementById(id); }
+function show(id){ ['v-check','v-form','v-form-ok','v-none'].forEach(function(v){ $(v).classList.toggle('on', v===id); }); }
+function mailto(subject, body){ return 'mailto:'+CFG.to+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body); }
+function send(data){
+  data.access_key = CFG.accessKey;
+  data.from_name = CFG.fromName;
+  data['Enviado el'] = new Date().toLocaleString('es-MX');
+  return fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(data)})
+    .then(function(r){ return r.json(); })
+    .then(function(r){ if(r.success===false) throw new Error(r.message||'error'); return r; });
+}
+function sentFlag(k, set){
+  try{ if(set){ sessionStorage.setItem(CFG.storeKey+'-'+k,'1'); return true; } return sessionStorage.getItem(CFG.storeKey+'-'+k)==='1'; }catch(e){ return false; }
+}
+
+var r = (new URLSearchParams(location.search).get('r') || '').toLowerCase();
+
+if(CFG.items[r]){
+  var it = CFG.items[r];
+  show('v-check');
+  $('c-section').textContent = it.section;
+  $('c-meta').textContent = it.section;
+  $('c-label').textContent = it.label;
+  var ok = function(){
+    $('c-title').textContent = CFG.okTitle;
+    $('c-lede').textContent = CFG.okLede;
+    $('c-stamp').classList.add('ok');
+  };
+  if(sentFlag(r)){ ok(); }
+  else{
+    send({subject: CFG.subjectPrefix+' — '+it.label.toUpperCase(), 'Punto': it.section, 'Respuesta': it.label.toUpperCase()})
+      .then(function(){ sentFlag(r,true); ok(); })
+      .catch(function(){
+        $('c-title').textContent = CFG.errTitle;
+        $('c-lede').textContent = CFG.errLede;
+        var b=$('c-retry'); b.style.display='inline-block';
+        b.href = mailto(CFG.fallbackSubject, it.section+': '+it.label.toUpperCase());
+      });
+  }
+}
+else if(CFG.forms[r]){
+  var fm = CFG.forms[r];
+  show('v-form');
+  $('f-section').textContent = fm.section;
+  $('fo-section').textContent = fm.section;
+  $('f-title').textContent = fm.title;
+  $('f-question').textContent = fm.question;
+  $('fo-lede').textContent = fm.done;
+  fm.fields.forEach(function(x){
+    var wrap = document.createElement('div'); wrap.className = 'fld';
+    var lab = document.createElement('label'); lab.className='f mono'; lab.htmlFor='fld-'+x.id; lab.textContent=x.label;
+    var inp = document.createElement(x.type==='textarea'?'textarea':'input');
+    if(x.type!=='textarea') inp.type='text';
+    inp.id='fld-'+x.id; if(x.placeholder) inp.placeholder=x.placeholder;
+    wrap.appendChild(lab); wrap.appendChild(inp);
+    $(x.type==='textarea'?'f-long':'f-short').appendChild(wrap);
+  });
+  var first = document.querySelector('#form input[type=text], #form textarea');
+  setTimeout(function(){ if(first) first.focus(); }, 150);
+  $('form').addEventListener('submit', function(e){
+    e.preventDefault();
+    if($('botcheck').checked) return;
+    var btn=$('submit'); btn.disabled=true; btn.textContent='Enviando…';
+    var data = {subject: CFG.subjectPrefix+' — '+fm.title.toUpperCase(), 'Punto': fm.section};
+    var body = fm.title.toUpperCase();
+    fm.fields.forEach(function(x){ var v=$('fld-'+x.id).value; data[x.label]=v; body += '\n'+x.label+': '+v; });
+    send(data)
+      .then(function(){ show('v-form-ok'); window.scrollTo(0,0); })
+      .catch(function(){
+        window.location.href = mailto(CFG.fallbackSubject, body);
+        btn.disabled=false; btn.textContent='Enviar →';
+      });
+  });
+}
+else{ show('v-none'); }
+</script>
+</body>
+</html>
