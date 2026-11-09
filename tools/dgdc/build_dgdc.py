@@ -152,15 +152,14 @@ def build(row, base):
     return page
 
 
-UNSUB = ('mailto:juanluis.contreras@gmail.com?subject=Baja%20de%20lista', 'mailto:pulse@wemakenoisenotdigital.com?subject=Baja%20de%20lista')
-VIEW = 'https://wemakenoisenotdigital.com/industria-b2b.html'
+UNSUB = 'mailto:pulse@wemakenoisenotdigital.com?subject=Baja%20de%20lista'
+VIEW = 'https://wemakenoisenotdigital.com/industria-servicios.html'
 
 def build_final(row, base):
+    """Each email's view-online link opens its own published copy; unsubscribes go to pulse@."""
     page = build(row, base)
-    assert page.count(UNSUB[0]) == 1 and page.count(VIEW) == 1
-    page = page.replace(UNSUB[0], UNSUB[1])
-    page = page.replace(VIEW, f"https://wemakenoisenotdigital.com/dgdc-{row['slug']}.html")
-    return page
+    assert page.count(UNSUB) == 1 and page.count(VIEW) == 1
+    return page.replace(VIEW, f"https://wemakenoisenotdigital.com/dgdc-{row['slug']}.html")
 
 if __name__ == '__main__':
     src = Path(sys.argv[1]); out = REPO / '_envios' / 'lote-04-dgdc'; out.mkdir(parents=True, exist_ok=True)
